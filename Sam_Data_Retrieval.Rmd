@@ -1,0 +1,163 @@
+---
+title: "Scrape.it for Final Project"
+author: "Sam Tolbert"
+date: "2024-11-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(rvest)
+library(purrr)
+library(lubridate)
+library(here)
+library(dplyr)
+
+#install.packages("dataRetrieval")
+library(dataRetrieval)
+
+
+
+```
+
+Retrieving data for Sugar Grove Gage from USGS using USGS's dataRetrieval package.
+I find its siteNumber is 03479000 from "https://waterdata.usgs.gov/monitoring-location/03479000/#parameterCode=
+00060&period=P7D&showMedian=false".
+```{r}
+
+siteNumberSugarGrove<-('03479000')
+
+#I find the MetaData for the site
+SugarGroveMeta <- whatNWISsites(siteNumbers = siteNumberSugarGrove)
+print(SugarGroveMeta) 
+
+#I then use sitedata function to look at what data is available
+SugarGroveSiteData<-suppressWarnings(whatNWISdata(siteNumber=siteNumberSugarGrove))
+```
+
+Looking at what data is available, I see that the parameter codes (parmcodes)
+for stream discharge (00060) , precipitation (00045), and gage height (0065).
+I also see that our relevant stat codes are daily mean (0003) and sum (00006)
+#
+
+```{r warning= FALSE message=FALSE}
+pcodes<-c('00060','00045','00065') #parameters discharge, precip, and gage height
+scode<-c('00003', '00006') #daily mean and daily accumulated
+
+
+SugarGroveData<-readNWISdata( #dataRetrival function from USGS API
+  siteNumbers = siteNumberSugarGrove,
+  parameterCd= pcodes,
+  statCd= scode,
+  startDate= ymd('1900-01-01'),
+  endDate= Sys.Date()
+)
+  
+View(SugarGroveData)  
+```
+
+This is my data! However, I need to clean this up. 
+First I want to remove the 'cd' columns that indicate if the data is official or 
+provisional as this won't have a significant effect on our findings. 
+We can mention that in our discussion of the meta data but its not 
+worth a column in our df. 
+
+Then I want to clearly label each column with its parameter and stat code:
+
+```{r}
+CleanedDataSugarGrove<-SugarGroveData%>% 
+select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
+  rename(
+  'Total Daily Precipitation (Inches)' = X_00045_00006, #renaming columns
+    'Mean Discharge' = X_00060_00003,
+    'Mean Gage Height' = X_00065_00003
+  )
+  
+View(CleanSugarGroveData)
+
+
+```
+
+I want to repeat this data retrieval and cleaning for two additional sites,
+French Broad River in Asheville in Southwestern NC (03451500) 
+and East Fork Pigeon River in far Southwestern NC near Canton (03456500) for
+examinations of 3 different rivers in different parts of the state.
+
+First I check the metadata and sitedata to see if similar data and parameters
+are availale to compare to Sugar Grove
+
+```{r}
+
+#First the Asheville site
+
+siteNumberAsheville<-('03451500')
+
+#I find the MetaData for the site
+AshevilleMeta <- whatNWISsites(siteNumbers = siteNumberAsheville)
+print(AshevilleMeta) 
+
+#I then use sitedata function to look at what data is available
+AshevilleSiteData<-whatNWISdata(siteNumber=siteNumberAsheville)
+
+```
+
+Then I decide I want to create an easy data retrieval function for my chosen
+parameters based on my previous retreival.
+
+```{r}
+
+WaterData.Function<-function(siteNo, pcode, scode){
+
+SiteData<-readNWISdata(
+  siteNumbers = siteNo,
+  parameterCd= pcode,
+  statCd= scode,
+  startDate= ymd('1900-01-01'),
+  endDate= Sys.Date()
+)
+
+  CleanData<-SiteData%>% 
+select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
+  rename(
+  'Total Daily Precipitation (Inches)' = X_00045_00006, #renaming columns
+    'Mean Discharge' = X_00060_00003,
+    'Mean Gage Height' = X_00065_00003
+  )
+  
+df_name<-paste0('CleanData_', siteNo)
+assign(df_name, CleanData, envir= .GlobalEnv)
+
+return(invisible(CleanData))
+}
+```
+
+I run this function for Asheville's siteNo
+```{r}
+siteNoAsheville<-'03451500'
+
+siteNo<-siteNoAsheville
+pcode<-c('00060','00045','00065')
+scode<-c('00003', '00006')
+
+CleanedDataAsheville<-WaterData.Function(siteNo, pcode, scode)
+View(CleanedDataAsheville)
+
+
+```
+
+I then do the same for the Pigeon River Site and its site number
+
+```{r}
+
+siteNoPigeonRiver<-'03456500'
+
+siteNo<-siteNoPigeonRiver
+pcode<-c('00060','00045','00065')
+scode<-c('00003', '00006')
+
+CleanedDataPigeonRiver<-WaterData.Function(siteNo, pcode, scode)
+View(CleanedDataPigeonRiver)
+  
+
+```
