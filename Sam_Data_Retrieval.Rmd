@@ -14,7 +14,7 @@ library(lubridate)
 library(here)
 library(dplyr)
 
-#install.packages("dataRetrieval")
+install.packages("dataRetrieval")
 library(dataRetrieval)
 
 
@@ -161,3 +161,455 @@ View(CleanedDataPigeonRiver)
   
 
 ```
+
+##Data Visualization## 
+```{r}
+
+library(ggplot2)
+
+ggplot(CleanedDataAsheville, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_line(color = "green", size = 1) +  
+  geom_point(color = "darkgreen", size = 2) +  
+  labs(
+    title = "Mean Daily Discharge Over Time",
+    subtitle = "Asheville(1954-2024)",
+    x = "Date",
+    y = "Mean Discharge (cubic meters per second)"
+  ) +
+  theme_minimal() 
+
+ggplot(CleanedDataPigeonRiver, aes(
+  x= dateTime,
+  y= `Mean Discharge`)) +
+  geom_line(color="purple")+
+  geom_point(color="maroon")+
+  labs(
+    title = "Mean Daily Discharge Over time",
+    subtitle = "Pigeon River(1954-2024)",
+    x= "Date",
+    y= "Mean Discharge (cubic meters per second)"
+  )+ theme_minimal()
+
+
+ggplot(CleanedDataSugarGrove, aes(
+  x= dateTime,
+  y= `Mean Discharge`)) +
+  geom_line(color="blue")+
+  geom_point(color="darkblue")+
+  labs(
+    title = "Mean Daily Discharge Over time",
+    subtitle = "Sugar Grove(1954-2024)",
+    x= "Date",
+    y= "Mean Discharge (cubic meters per second)"
+  )+ theme_minimal()
+  
+
+
+#note: what I am noticing is that we have a lot of daily data which is good when
+#we take a closer look at Helene. I am going to do some work looking at the monthly
+#mean daily precip for now- We will need to cut data in the future 1980-2024
+#these do show the outliers which is kind of neat 
+
+
+```
+
+##Pigeon River Visualizations##
+```{r}
+
+#This is basically useless but I will keep it in here so we can see monthly
+
+PRMonthlyMean <- CleanedDataPigeonRiver %>%
+  mutate(dateTime = floor_date(dateTime, "month")) %>% #first day of the month
+  group_by(dateTime) %>%
+  summarize(`Mean Discharge` = mean(`Mean Discharge`, na.rm = TRUE))
+
+#What I did here was aggregate the data so now we have a monthly mean 
+#I made it just show up as the first day of the month 
+#getting the mean value for the specific month 
+#basically I am just playing with less data 
+
+ggplot(PRMonthlyMean, aes(
+  x= dateTime,
+  y= `Mean Discharge`)) +
+  geom_line(color="purple")+
+  geom_point(color="maroon")+
+  labs(
+    title = "Mean Monthly Discharge Over time",
+    subtitle = "Pigeon River(1954-2024)",
+    x= "Date",
+    y= "Mean Discharge (cubic meters per second)")+ 
+    theme_minimal()
+
+str(CleanedDataPigeonRiver)
+
+CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(dateTime = as.Date(dateTime))  
+
+#okay I still don't like the visualization 
+#I think we need to do a log scale 
+
+
+
+```
+
+##Pigeon River seasonal breakdown and log regression## 
+```{r}
+#I am now breaking the data into hurricane and frontal seasons 
+#hurricane season is July to November 
+#frontal season is December- June
+#This info is from previous Hydrology project 
+
+SeasonalCleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(season = case_when(
+    month(dateTime) %in% 7:11 ~ "Hurricane",  # July to November
+    month(dateTime) %in% c(12, 1:6) ~ "Frontal"  # December to June
+  ))
+
+head(SeasonalCleanedDataPigeonRiver)
+
+#Pigeon River Data is now in frontal and hurricane seasons with a new column
+#called seasons 
+
+PRHurricaneData <- SeasonalCleanedDataPigeonRiver %>%
+  filter(season == "Hurricane")
+
+PRFrontalData <- SeasonalCleanedDataPigeonRiver %>%
+  filter(season == "Frontal")
+
+#plotting the two seasons 
+
+ggplot(SeasonalCleanedDataPigeonRiver, aes(
+  x = dateTime, 
+  y = `Mean Discharge`, 
+  color = season)) +
+  geom_point(size = 1) +  # Scatterplot
+  labs(
+    title = "Mean Daily Discharge During Hurricane and Frontal Seasons",
+    subtitle = "Pigeon River (1954-2024",
+    x = "Date",
+    y = "Mean Daily Discharge (cfs)",
+    color = "Season"
+  ) +
+  scale_color_manual(values = c("Hurricane" = "purple", "Frontal" = "blue"))  
+
+
+ggplot(PRHurricaneData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "purple") +  # Points for yearly average precipitation
+  geom_smooth(method = "lm", color = "black", se = TRUE) +  # Linear regression with confidence interval
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons",
+    x = "Year",
+    y = "Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+#plotting a linear regression for hurricane season on the Pigeon River 
+
+#log data 
+
+ggplot(PRHurricaneData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Pigeon River (1954-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+#filtering data for years 1980-2024
+
+
+PRYearFilteredData <- PRHurricaneData %>%
+  filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
+
+View(PRYearFilteredData)
+
+ggplot(PRYearFilteredData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons (1980-2024)",
+    subtitle = "Pigeon River",
+    x = "Year",
+    y = "Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+ggplot(PRYearFilteredData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Pigeon River (180-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+
+
+
+
+
+
+
+
+```
+##Asheville Data Visualization##
+```{r}
+
+
+SeasonalCleanedDataAsheville <- CleanedDataAsheville %>%
+  mutate(season = case_when(
+    month(dateTime) %in% 7:11 ~ "Hurricane",  # July to November
+    month(dateTime) %in% c(12, 1:6) ~ "Frontal"  # December to June
+  ))
+
+head(SeasonalCleanedDataAsheville)
+
+#Asheville Data is now in frontal and hurricane seasons with a new column
+#called seasons 
+
+AVHurricaneData <- SeasonalCleanedDataAsheville %>%
+  filter(season == "Hurricane")
+
+AVFrontalData <- SeasonalCleanedDataAsheville %>%
+  filter(season == "Frontal")
+
+#plotting the two seasons 
+
+ggplot(SeasonalCleanedDataAsheville, aes(
+  x = dateTime, 
+  y = `Mean Discharge`, 
+  color = season)) +
+  geom_point(size = 1) +  # Scatterplot
+  labs(
+    title = "Mean Daily Discharge During Hurricane and Frontal Seasons",
+    subtitle = "Asheville (1954-2024",
+    x = "Date",
+    y = "Mean Daily Discharge (cfs)",
+    color = "Season"
+  ) +
+  scale_color_manual(values = c("Hurricane" = "darkgreen", "Frontal" = "lightgreen"))  
+#this looks disgusting
+#but from this we can see there is not much variance between seasonal precipitation 
+
+
+ggplot(AVHurricaneData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "darkgreen") +  # Points for yearly average precipitation
+  geom_smooth(method = "lm", color = "white", se = TRUE) +  # Linear regression with confidence interval
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Asheville",
+    x = "Year",
+    y = "Mean Precipitation"
+  ) +
+  theme_minimal()
+
+#plotting a linear regression for hurricane season in Asheville
+
+#log data 
+
+ggplot(AVHurricaneData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "darkgreen") +
+  geom_smooth(method = "lm", color = "white", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Asheville (1954-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+#filtering data for years 1980-2024
+
+
+AVYearFilteredData <- AVHurricaneData %>%
+  filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
+
+View(AVYearFilteredData)
+
+ggplot(AVYearFilteredData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "darkgreen") +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons (1980-2024)",
+    subtitle = "Asheville",
+    x = "Year",
+    y = "Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+ggplot(AVYearFilteredData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "darkgreen") +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Asheville (180-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+
+
+
+
+
+
+
+```
+
+##Sugar Grove Data Visualization##
+
+```{r}
+
+
+SeasonalCleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+  mutate(season = case_when(
+    month(dateTime) %in% 7:11 ~ "Hurricane",  # July to November
+    month(dateTime) %in% c(12, 1:6) ~ "Frontal"  # December to June
+  ))
+
+head(SeasonalCleanedDataSugarGrove)
+
+#Sugar Grove Data is now in frontal and hurricane seasons with a new column
+#called seasons 
+
+SGHurricaneData <- SeasonalCleanedDataSugarGrove %>%
+  filter(season == "Hurricane")
+
+SGFrontalData <- SeasonalCleanedDataSugarGrove %>%
+  filter(season == "Frontal")
+
+#plotting the two seasons 
+
+ggplot(SeasonalCleanedDataSugarGrove, aes(
+  x = dateTime, 
+  y = `Mean Discharge`, 
+  color = season)) +
+  geom_point(size = 1) +  # Scatterplot
+  labs(
+    title = "Mean Daily Discharge During Hurricane and Frontal Seasons",
+    subtitle = "Sugar Grove (1954-2024",
+    x = "Date",
+    y = "Mean Daily Discharge (cfs)",
+    color = "Season"
+  ) +
+  scale_color_manual(values = c("Hurricane" = "darkblue", "Frontal" = "lightblue"))  
+
+#again, not much variance between the two seasons 
+
+
+ggplot(SGHurricaneData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "darkblue") +  # Points for yearly average precipitation
+  geom_smooth(method = "lm", color = "white", se = TRUE) +  # Linear regression with confidence interval
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Sugar Grove (1954-2024)",
+    x = "Year",
+    y = "Mean Precipitation"
+  ) +
+  theme_minimal()
+
+#plotting a linear regression for hurricane season in Sugar Grove
+
+#log data 
+
+ggplot(SGHurricaneData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "darkblue") +
+  geom_smooth(method = "lm", color = "white", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Sugar Grove (1954-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+#filtering data for years 1980-2024
+
+
+SGYearFilteredData <- SGHurricaneData %>%
+  filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
+
+View(SGYearFilteredData)
+
+ggplot(SGYearFilteredData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "darkblue") +
+  geom_smooth(method = "lm", color = "white", se = TRUE) +
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons (1980-2024)",
+    subtitle = "Sugar Grove",
+    x = "Year",
+    y = "Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+ggplot(SGYearFilteredData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "darkblue") +
+  geom_smooth(method = "lm", color = "grey", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Asheville (180-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+
+#SGYearFilteredData is the data for the hurricane season for 1980-2024
+#Hurricane season is filtered based on outside knowledge (July-November)
+#we don't really need frontal season information since Helene happened during 
+#hurricane season months
+
+
+
+
+
+#next steps: I think we could draw out the 2024 year data to look specifically 
+#at Helene precipitation 
+#Sam will put in the Hazen method function into the code so we can start looking at
+#the streamflow characteristics based on the precipitation 
+
+
+
+```
+
+
+
