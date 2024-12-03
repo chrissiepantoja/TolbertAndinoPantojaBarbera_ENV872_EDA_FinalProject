@@ -14,7 +14,7 @@ library(lubridate)
 library(here)
 library(dplyr)
 
-#install.packages("dataRetrieval")
+install.packages("dataRetrieval")
 library(dataRetrieval)
 
 
@@ -161,3 +161,127 @@ View(CleanedDataPigeonRiver)
   
 
 ```
+
+##Data Visualization## 
+```{r}
+
+library(ggplot2)
+
+ggplot(CleanedDataAsheville, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_line(color = "green", size = 1) +  
+  geom_point(color = "darkgreen", size = 2) +  
+  labs(
+    title = "Mean Daily Discharge Over Time",
+    subtitle = "Asheville(1954-2024)",
+    x = "Date",
+    y = "Mean Discharge (cubic meters per second)"
+  ) +
+  theme_minimal() 
+
+ggplot(CleanedDataPigeonRiver, aes(
+  x= dateTime,
+  y= `Mean Discharge`)) +
+  geom_line(color="purple")+
+  geom_point(color="maroon")+
+  labs(
+    title = "Mean Daily Discharge Over time",
+    subtitle = "Pigeon River(1954-2024)",
+    x= "Date",
+    y= "Mean Discharge (cubic meters per second)"
+  )+ theme_minimal()
+
+
+ggplot(CleanedDataSugarGrove, aes(
+  x= dateTime,
+  y= `Mean Discharge`)) +
+  geom_line(color="blue")+
+  geom_point(color="darkblue")+
+  labs(
+    title = "Mean Daily Discharge Over time",
+    subtitle = "Sugar Grove(1954-2024)",
+    x= "Date",
+    y= "Mean Discharge (cubic meters per second)"
+  )+ theme_minimal()
+  
+
+
+#note: what I am noticing is that we have a lot of daily data which is good when
+#we take a closer look at Helene. I am going to do some work looking at the monthly
+#mean daily precip for now- We will need to cut data in the future 1980-2024
+#these do show the outliers which is kind of neat 
+
+
+```
+```{r}
+
+
+
+PRMonthlyMean <- CleanedDataPigeonRiver %>%
+  mutate(dateTime = floor_date(dateTime, "month")) %>% #first day of the month
+  group_by(dateTime) %>%
+  summarize(`Mean Discharge` = mean(`Mean Discharge`, na.rm = TRUE))
+
+#What I did here was aggregate the data so now we have a monthly mean 
+#I made it just show up as the first day of the month 
+#getting the mean value for the specific month 
+#basically I am just playing with less data 
+
+ggplot(PRMonthlyMean, aes(
+  x= dateTime,
+  y= `Mean Discharge`)) +
+  geom_line(color="purple")+
+  geom_point(color="maroon")+
+  labs(
+    title = "Mean Monthly Discharge Over time",
+    subtitle = "Pigeon River(1954-2024)",
+    x= "Date",
+    y= "Mean Discharge (cubic meters per second)")+ 
+    theme_minimal()
+
+str(CleanedDataPigeonRiver)
+
+CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(dateTime = as.Date(dateTime))  
+
+#okay I still don't like the visualization 
+#I think we need to do a log scale 
+
+
+
+```
+```{r}
+#I am now breaking the data into hurricane and frontal seasons 
+#hurricane season is July to November 
+#frontal season is December- June
+#This info is from previous Hydrology project 
+
+SeasonalCleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(season = case_when(
+    month(dateTime) %in% 7:11 ~ "Hurricane",  # July to November
+    month(dateTime) %in% c(12, 1:6) ~ "Frontal"  # December to June
+  ))
+
+head(SeasonalCleanedDataPigeonRiver)
+
+#Pigeon River Data is now in frontal and hurricane seasons with a new column
+#called seasons 
+
+PRHurricaneData <- SeasonalCleanedDataPigeonRiver %>%
+  filter(season == "Hurricane")
+
+PRFrontalData <- SeasonalCleanedDataPigeonRiver %>%
+  filter(season == "Frontal")
+
+
+
+
+
+
+
+```
+
+
+
+
