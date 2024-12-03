@@ -74,7 +74,7 @@ select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or 
     'Mean Gage Height' = X_00065_00003
   )
   
-View(CleanSugarGroveData)
+View(CleanedDataSugarGrove)
 
 
 ```
@@ -128,7 +128,7 @@ select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or 
 df_name<-paste0('CleanData_', siteNo)
 assign(df_name, CleanData, envir= .GlobalEnv)
 
-return(invisible(CleanData))
+return(CleanData)
 }
 ```
 
