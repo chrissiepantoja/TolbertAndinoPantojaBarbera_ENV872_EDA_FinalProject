@@ -214,6 +214,8 @@ ggplot(CleanedDataSugarGrove, aes(
 
 
 ```
+
+##Pigeon River Visualizations##
 ```{r}
 
 
@@ -251,6 +253,8 @@ CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
 
 
 ```
+
+##Pigeon River seasonal breakdown and log regression## 
 ```{r}
 #I am now breaking the data into hurricane and frontal seasons 
 #hurricane season is July to November 
@@ -273,6 +277,53 @@ PRHurricaneData <- SeasonalCleanedDataPigeonRiver %>%
 
 PRFrontalData <- SeasonalCleanedDataPigeonRiver %>%
   filter(season == "Frontal")
+
+#plotting the two seasons 
+
+ggplot(SeasonalCleanedDataPigeonRiver, aes(
+  x = dateTime, 
+  y = `Mean Discharge`, 
+  color = season)) +
+  geom_point(size = 1) +  # Scatterplot
+  labs(
+    title = "Mean Daily Discharge During Hurricane and Frontal Seasons",
+    subtitle = "Pigeon River (1954-2024",
+    x = "Date",
+    y = "Mean Daily Discharge (cfs)",
+    color = "Season"
+  ) +
+  scale_color_manual(values = c("Hurricane" = "purple", "Frontal" = "blue"))  
+
+
+ggplot(PRHurricaneData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "purple") +  # Points for yearly average precipitation
+  geom_smooth(method = "lm", color = "black", se = TRUE) +  # Linear regression with confidence interval
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons",
+    x = "Year",
+    y = "Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+#plotting a linear regression for hurricane season on the Pigeon River 
+
+#log data 
+
+ggplot(PRHurricaneData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Pigeon River (1954-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
 
 
 
