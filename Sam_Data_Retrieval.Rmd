@@ -593,9 +593,19 @@ ggplot(SGYearFilteredData, aes(
 
 
 
+#SGYearFilteredData is the data for the hurricane season for 1980-2024
+#Hurricane season is filtered based on outside knowledge (July-November)
+#we don't really need frontal season information since Helene happened during 
+#hurricane season months
 
 
 
+
+
+#next steps: I think we could draw out the 2024 year data to look specifically 
+#at Helene precipitation 
+#Sam will put in the Hazen method function into the code so we can start looking at
+#the streamflow characteristics based on the precipitation 
 
 
 
