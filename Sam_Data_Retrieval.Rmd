@@ -218,7 +218,7 @@ ggplot(CleanedDataSugarGrove, aes(
 ##Pigeon River Visualizations##
 ```{r}
 
-
+#This is basically useless but I will keep it in here so we can see monthly
 
 PRMonthlyMean <- CleanedDataPigeonRiver %>%
   mutate(dateTime = floor_date(dateTime, "month")) %>% #first day of the month
@@ -332,7 +332,157 @@ ggplot(PRHurricaneData, aes(
 
 
 ```
+##Asheville Data Visualization##
+```{r}
 
+
+SeasonalCleanedDataAsheville <- CleanedDataAsheville %>%
+  mutate(season = case_when(
+    month(dateTime) %in% 7:11 ~ "Hurricane",  # July to November
+    month(dateTime) %in% c(12, 1:6) ~ "Frontal"  # December to June
+  ))
+
+head(SeasonalCleanedDataAsheville)
+
+#Asheville Data is now in frontal and hurricane seasons with a new column
+#called seasons 
+
+AVHurricaneData <- SeasonalCleanedDataAsheville %>%
+  filter(season == "Hurricane")
+
+AVFrontalData <- SeasonalCleanedDataAsheville %>%
+  filter(season == "Frontal")
+
+#plotting the two seasons 
+
+ggplot(SeasonalCleanedDataAsheville, aes(
+  x = dateTime, 
+  y = `Mean Discharge`, 
+  color = season)) +
+  geom_point(size = 1) +  # Scatterplot
+  labs(
+    title = "Mean Daily Discharge During Hurricane and Frontal Seasons",
+    subtitle = "Asheville (1954-2024",
+    x = "Date",
+    y = "Mean Daily Discharge (cfs)",
+    color = "Season"
+  ) +
+  scale_color_manual(values = c("Hurricane" = "darkgreen", "Frontal" = "lightgreen"))  
+#this looks disgusting
+#but from this we can see there is not much variance between seasonal precipitation 
+
+
+ggplot(AVHurricaneData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "darkgreen") +  # Points for yearly average precipitation
+  geom_smooth(method = "lm", color = "white", se = TRUE) +  # Linear regression with confidence interval
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Asheville",
+    x = "Year",
+    y = "Mean Precipitation"
+  ) +
+  theme_minimal()
+
+#plotting a linear regression for hurricane season in Asheville
+
+#log data 
+
+ggplot(AVHurricaneData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "darkgreen") +
+  geom_smooth(method = "lm", color = "white", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Asheville (1954-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+
+
+
+
+```
+
+##Sugar Grove Data Visualization##
+
+```{r}
+
+
+SeasonalCleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+  mutate(season = case_when(
+    month(dateTime) %in% 7:11 ~ "Hurricane",  # July to November
+    month(dateTime) %in% c(12, 1:6) ~ "Frontal"  # December to June
+  ))
+
+head(SeasonalCleanedDataSugarGrove)
+
+#Sugar Grove Data is now in frontal and hurricane seasons with a new column
+#called seasons 
+
+SGHurricaneData <- SeasonalCleanedDataSugarGrove %>%
+  filter(season == "Hurricane")
+
+SGFrontalData <- SeasonalCleanedDataSugarGrove %>%
+  filter(season == "Frontal")
+
+#plotting the two seasons 
+
+ggplot(SeasonalCleanedDataSugarGrove, aes(
+  x = dateTime, 
+  y = `Mean Discharge`, 
+  color = season)) +
+  geom_point(size = 1) +  # Scatterplot
+  labs(
+    title = "Mean Daily Discharge During Hurricane and Frontal Seasons",
+    subtitle = "Sugar Grove (1954-2024",
+    x = "Date",
+    y = "Mean Daily Discharge (cfs)",
+    color = "Season"
+  ) +
+  scale_color_manual(values = c("Hurricane" = "darkblue", "Frontal" = "lightblue"))  
+
+#again, not much variance between the two seasons 
+
+
+ggplot(SGHurricaneData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "darkblue") +  # Points for yearly average precipitation
+  geom_smooth(method = "lm", color = "white", se = TRUE) +  # Linear regression with confidence interval
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Sugar Grove (1954-2024)",
+    x = "Year",
+    y = "Mean Precipitation"
+  ) +
+  theme_minimal()
+
+#plotting a linear regression for hurricane season in Sugar Grove
+
+#log data 
+
+ggplot(SGHurricaneData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "darkblue") +
+  geom_smooth(method = "lm", color = "white", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Sugar Grove (1954-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+
+```
 
 
 
