@@ -323,6 +323,43 @@ ggplot(PRHurricaneData, aes(
   ) +
   theme_minimal()
 
+#filtering data for years 1980-2024
+
+
+PRYearFilteredData <- PRHurricaneData %>%
+  filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
+
+View(PRYearFilteredData)
+
+ggplot(PRYearFilteredData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", color = "red", se = TRUE) +
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons (1980-2024)",
+    subtitle = "Pigeon River",
+    x = "Year",
+    y = "Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+ggplot(PRYearFilteredData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "purple") +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Pigeon River (180-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
 
 
 
@@ -401,6 +438,44 @@ ggplot(AVHurricaneData, aes(
   ) +
   theme_minimal()
 
+#filtering data for years 1980-2024
+
+
+AVYearFilteredData <- AVHurricaneData %>%
+  filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
+
+View(AVYearFilteredData)
+
+ggplot(AVYearFilteredData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "darkgreen") +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons (1980-2024)",
+    subtitle = "Asheville",
+    x = "Year",
+    y = "Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+ggplot(AVYearFilteredData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "darkgreen") +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Asheville (180-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+
 
 
 
@@ -478,6 +553,48 @@ ggplot(SGHurricaneData, aes(
     y = "Log of Mean Precipitation (mm)"
   ) +
   theme_minimal()
+
+
+#filtering data for years 1980-2024
+
+
+SGYearFilteredData <- SGHurricaneData %>%
+  filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
+
+View(SGYearFilteredData)
+
+ggplot(SGYearFilteredData, aes(
+  x = dateTime, 
+  y = `Mean Discharge`)) +
+  geom_point(color = "darkblue") +
+  geom_smooth(method = "lm", color = "white", se = TRUE) +
+  labs(
+    title = "Trend in Precipitation During Hurricane Seasons (1980-2024)",
+    subtitle = "Sugar Grove",
+    x = "Year",
+    y = "Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+ggplot(SGYearFilteredData, aes(
+  x = dateTime, y = log(`Mean Discharge`))) + 
+  geom_point(color = "darkblue") +
+  geom_smooth(method = "lm", color = "grey", se = TRUE) +
+  labs(
+    title = "Log-Transformed Trend in Precipitation During Hurricane Seasons",
+    subtitle = "Asheville (180-2024)",
+    x = "Year",
+    y = "Log of Mean Precipitation (mm)"
+  ) +
+  theme_minimal()
+
+
+
+
+
+
 
 
 
