@@ -79,7 +79,7 @@ select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or 
     'Mean Gage Height' = X_00065_00003
   )
   
-#View(CleanedDataSugarGrove)
+View(CleanedDataSugarGrove)
 
 
 ```
@@ -980,4 +980,228 @@ leaflet(locations) %>%
 
 hi everyone this is the hazen analysis
 
+```{r SugarGrove Stream Flow Hazen}
+
+library(zoo)
+
+SugarGroveFlood <- CleanedDataSugarGrove %>% 
+  mutate(moving_avg = rollapply(`Mean Discharge`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+SugarGroveFlood <- SugarGroveFlood %>%
+  mutate(Year = year(dateTime))
+
+SugarGroveFlood <- SugarGroveFlood %>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm=T))
+
+SugarGroveFlood <- SugarGroveFlood %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100*(2*rank - 1))/(2*n()))) %>% 
+  mutate(hazen = 100/Fa_Value)
+
+SugarGroveDischargeHazen_2024 <- SugarGroveFlood %>% filter(Year == 2024)
+print(SugarGroveDischargeHazen_2024)
+
+
+```
+
+
+```{r Asheville Streamflow Hazen}
+
+AshevilleFlood <- CleanedDataAsheville %>% 
+  mutate(moving_avg = rollapply(`Mean Discharge`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+AshevilleFlood <- AshevilleFlood %>%
+  mutate(Year = year(dateTime))
+
+AshevilleFlood <- AshevilleFlood %>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm=T))
+
+AshevilleFlood <- AshevilleFlood %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100*(2*rank - 1))/(2*n()))) %>% 
+  mutate(hazen = 100/Fa_Value)
+
+
+AshevilleDischargeHazen_2024 <- AshevilleFlood %>% filter(Year == 2024)
+print(AshevilleDischargeHazen_2024)
+```
+
+```{r Pigeon Grove Streamflow }
+
+
+PigeonRiverFlood <- CleanedDataPigeonRiver %>% 
+  mutate(moving_avg = rollapply(`Mean Discharge`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+PigeonRiverFlood <- PigeonRiverFlood %>%
+  mutate(Year = year(dateTime))
+
+PigeonRiverFlood <- PigeonRiverFlood%>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm=T))
+
+PigeonRiverFlood <- PigeonRiverFlood %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100*(2*rank - 1))/(2*n()))) %>% 
+  mutate(hazen = 100/Fa_Value)
+
+PigeonRiverDischargeHazen_2024 <- PigeonRiverFlood %>% filter(Year == 2024)
+print(PigeonRiverDischargeHazen_2024)
+
+
+```
 ```{r}
+SugarGrovePrecip <- CleanedDataSugarGrove %>% 
+  mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+SugarGrovePrecip <- SugarGrovePrecip %>%
+  mutate(Year = year(dateTime))
+
+SugarGrovePrecip <- SugarGrovePrecip %>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm=T))
+
+SugarGrovePrecip <- SugarGrovePrecip %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100*(2*rank - 1))/(2*9))) %>% 
+  mutate(hazen = 100/Fa_Value)
+
+SugarGrovePrecipHazen_2024 <- SugarGrovePrecip %>% filter(Year == 2024)
+print(SugarGrovePrecipHazen_2024)
+
+
+
+```
+
+```{r}
+
+AshevillePrecip <- CleanedDataAsheville %>% 
+  mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+AshevillePrecip <- AshevillePrecip %>%
+  mutate(Year = year(dateTime))
+
+AshevillePrecip <- AshevillePrecip %>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm = TRUE))
+
+AshevillePrecip <- AshevillePrecip %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * 27))) %>% 
+  mutate(hazen = 100 / Fa_Value)
+
+AshevillePrecipHazen_2024 <- AshevillePrecip %>% filter(Year == 2024)
+print(AshevillePrecipHazen_2024)
+
+
+
+```
+```{r}
+
+PigeonRiverPrecip <- CleanedDataPigeonRiver %>% 
+  mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+PigeonRiverPrecip <- PigeonRiverPrecip %>%
+  mutate(Year = year(dateTime))
+
+PigeonRiverPrecip <- PigeonRiverPrecip %>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm = TRUE))
+
+PigeonRiverPrecip <- PigeonRiverPrecip %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * 25))) %>% 
+  mutate(hazen = 100 / Fa_Value)
+
+PigeonRiverPrecipHazen_2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
+print(PigeonRiverPrecipHazen_2024)
+
+
+
+```
+```{r}
+SugarGroveGageHeight <- CleanedDataSugarGrove %>% 
+  mutate(moving_avg = rollapply(`Mean Gage Height`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+SugarGroveGageHeight <- SugarGroveGageHeight %>%
+  mutate(Year = year(dateTime))
+
+SugarGroveGageHeight <- SugarGroveGageHeight %>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm = TRUE))
+
+SugarGroveGageHeight <- SugarGroveGageHeight %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * 29))) %>% 
+  mutate(hazen = 100 / Fa_Value)
+
+SugarGroveGageHeightHazen_2024 <- SugarGroveGageHeight %>% filter(Year == 2024)
+print(SugarGroveGageHeightHazen_2024)
+
+
+
+
+
+
+
+
+
+
+```
+
+
+```{r}
+AshevilleGageHeight <- CleanedDataAsheville %>% 
+  mutate(moving_avg = rollapply(`Mean Gage Height`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+AshevilleGageHeight <- AshevilleGageHeight %>%
+  mutate(Year = year(dateTime))
+
+AshevilleGageHeight <- AshevilleGageHeight %>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm = TRUE))
+
+AshevilleGageHeight <- AshevilleGageHeight %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * 39))) %>% 
+  mutate(hazen = 100 / Fa_Value)
+
+AshevilleGageHeightHazen_2024 <- AshevilleGageHeight %>% filter(Year == 2024)
+print(AshevilleGageHeightHazen_2024)
+
+
+
+
+```
+
+
+```{r}
+
+PigeonRiverGageHeight <- CleanedDataPigeonRiver %>% 
+  mutate(moving_avg = rollapply(`Mean Gage Height`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+PigeonRiverGageHeight <- PigeonRiverGageHeight %>%
+  mutate(Year = year(dateTime))
+
+PigeonRiverGageHeight <- PigeonRiverGageHeight %>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm = TRUE))
+
+PigeonRiverGageHeight <- PigeonRiverGageHeight %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * 29))) %>% 
+  mutate(hazen = 100 / Fa_Value)
+
+PigeonRiverGageHeightHazen_2024 <- PigeonRiverGageHeight %>% filter(Year == 2024)
+print(PigeonRiverGageHeightHazen_2024)
+```
