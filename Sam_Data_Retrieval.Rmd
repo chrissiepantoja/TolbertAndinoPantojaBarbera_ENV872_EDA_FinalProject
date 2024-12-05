@@ -13,20 +13,13 @@ testing testing git
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-<<<<<<< HEAD
-=======
-#testing git!
-
->>>>>>> 497c3fd472eb446bb7cc721a5a81fd080ad3c03e
-  
-
 library(rvest)
 library(purrr)
 library(lubridate)
 library(here)
 library(dplyr)
 
-install.packages("dataRetrieval")
+#install.packages("dataRetrieval")
 library(dataRetrieval)
 
 
@@ -179,11 +172,11 @@ CleanedDataPigeonRiver<-WaterData.Function(siteNo, pcode, scode)
 
 library(ggplot2)
 
-ggplot(CleanedDataAsheville, aes(
+AshevilleDailyDischargeLinePlot<-ggplot(CleanedDataAsheville, aes(
   x = dateTime, 
   y = `Mean Discharge`)) +
   geom_line(color = "green", size = 1) +  
-  geom_point(color = "darkgreen", size = 2) +  
+ # geom_point(color = "darkgreen", size = 2) +  
   labs(
     title = "Mean Daily Discharge Over Time",
     subtitle = "Asheville(1954-2024)",
@@ -192,11 +185,13 @@ ggplot(CleanedDataAsheville, aes(
   ) +
   theme_minimal() 
 
-ggplot(CleanedDataPigeonRiver, aes(
+print(AshevilleDailyDischargeLinePlot)
+
+PigeonRiverDailyDischargeLinePlot<-ggplot(CleanedDataPigeonRiver, aes(
   x= dateTime,
   y= `Mean Discharge`)) +
   geom_line(color="purple")+
-  geom_point(color="maroon")+
+ # geom_point(color="maroon")+
   labs(
     title = "Mean Daily Discharge Over time",
     subtitle = "Pigeon River(1954-2024)",
@@ -204,19 +199,21 @@ ggplot(CleanedDataPigeonRiver, aes(
     y= "Mean Discharge (cubic meters per second)"
   )+ theme_minimal()
 
+print(PigeonRiverDailyDischargeLinePlot)
 
-ggplot(CleanedDataSugarGrove, aes(
+SugarGroveDailyDischargeLinePlot<-ggplot(CleanedDataSugarGrove, aes(
   x= dateTime,
   y= `Mean Discharge`)) +
   geom_line(color="blue")+
-  geom_point(color="darkblue")+
+ # geom_point(color="darkblue")+
   labs(
     title = "Mean Daily Discharge Over time",
     subtitle = "Sugar Grove(1954-2024)",
     x= "Date",
     y= "Mean Discharge (cubic meters per second)"
   )+ theme_minimal()
-  
+ 
+print(SugarGroveDailyDischargeLinePlot) 
 
 
 #note: what I am noticing is that we have a lot of daily data which is good when
@@ -246,7 +243,7 @@ ggplot(PRMonthlyMean, aes(
   x= dateTime,
   y= `Mean Discharge`)) +
   geom_line(color="purple")+
-  geom_point(color="maroon")+
+  #geom_point(color="maroon")+
   labs(
     title = "Mean Monthly Discharge Over time",
     subtitle = "Pigeon River(1954-2024)",
@@ -749,7 +746,7 @@ ggplot() +
 
 ```{r all cobined}
 #combined the data in the 3 chunks above to look at it aggregated 
-HeleneCombined_plot <- bind_rows(
+HeleneCombined_test <- bind_rows(
   mutate(HeleneData_pg, Location = "Pigeon River"),
   mutate(HeleneData_ash, Location = "Asheville"),
   mutate(HeleneData_sg, Location = "Sugar Grove")
@@ -773,13 +770,15 @@ ggplot(HeleneCombined_test, aes(x = dateTime, y = `Mean Discharge`, color = Loca
 *Important* Interesting that Asheville has NAs for 3 days during Hurricane Helene. 
 
 
+
 ```{r Visualization onf precipitation and discharge}
 
 
 # Pigeon River Visualization
 ggplot(HeleneData_pg, aes(x = dateTime)) +
   geom_line(aes(y = `Mean Discharge`), color = "lightblue", size = 1) +
-  geom_line(aes(y = `Total Daily Precipitation (Inches)`), color = "blue", linetype = "dashed") +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`) color = "blue", #there's a bug here the plots don't look right
+            linetype = "dashed") +
   scale_y_continuous(
     name = "Mean Discharge (cubic meters per second)",
     sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
@@ -978,3 +977,7 @@ leaflet(locations) %>%
 # Just go show off we can start with this map to show the locations. I cant think of what other map to do 
 
 ```
+
+hi everyone this is the hazen analysis
+
+```{r}
