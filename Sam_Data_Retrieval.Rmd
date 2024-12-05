@@ -918,4 +918,29 @@ ggplot(ExpandedCombined, aes(x = dateTime, color = Location)) +
 
 ```
 
-I will try to do some maps as well. 
+
+
+
+```{r}
+library(gganimate)
+
+ggplot(AllData2024, aes(x = Location, y = `Mean Discharge`, fill = Location)) +
+  geom_boxplot() +
+  labs(
+    title = "Flood Discharge Comparison Across Locations",
+    x = "Location",
+    y = "Mean Discharge (cubic meters per second)",
+    fill = "Location"
+  ) +
+  theme_minimal()
+
+##is this useful?
+
+```
+
+
+
+I will try to do some maps as well eventually.. 
+```{r}
+
+```
