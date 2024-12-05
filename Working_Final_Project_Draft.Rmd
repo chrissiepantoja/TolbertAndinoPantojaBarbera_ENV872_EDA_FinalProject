@@ -12,12 +12,6 @@ testing testing git
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-<<<<<<< HEAD
-=======
-#testing git!
-
->>>>>>> 497c3fd472eb446bb7cc721a5a81fd080ad3c03e
   
 
 library(rvest)
