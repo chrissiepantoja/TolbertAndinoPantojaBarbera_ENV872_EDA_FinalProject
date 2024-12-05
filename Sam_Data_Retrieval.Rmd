@@ -2,14 +2,15 @@
 title: "Scrape.it for Final Project"
 author: "Sam Tolbert"
 date: "2024-11-27"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 #testing git!
-  #TESTING GIT 2
 
   
 
@@ -29,7 +30,7 @@ library(dataRetrieval)
 Retrieving data for Sugar Grove Gage from USGS using USGS's dataRetrieval package.
 I find its siteNumber is 03479000 from "https://waterdata.usgs.gov/monitoring-location/03479000/#parameterCode=
 00060&period=P7D&showMedian=false".
-```{r}
+```{r echo=TRUE}
 
 siteNumberSugarGrove<-('03479000')
 
@@ -46,7 +47,7 @@ for stream discharge (00060) , precipitation (00045), and gage height (0065).
 I also see that our relevant stat codes are daily mean (0003) and sum (00006)
 #
 
-```{r warning= FALSE message=FALSE}
+```{r message=FALSE, warning=FALSE}
 pcodes<-c('00060','00045','00065') #parameters discharge, precip, and gage height
 scode<-c('00003', '00006') #daily mean and daily accumulated
 
@@ -59,7 +60,7 @@ SugarGroveData<-readNWISdata( #dataRetrival function from USGS API
   endDate= Sys.Date()
 )
   
-View(SugarGroveData)  
+#View(SugarGroveData)  
 ```
 
 This is my data! However, I need to clean this up. 
@@ -79,7 +80,7 @@ select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or 
     'Mean Gage Height' = X_00065_00003
   )
   
-View(CleanedDataSugarGrove)
+#View(CleanedDataSugarGrove)
 
 
 ```
@@ -146,7 +147,7 @@ pcode<-c('00060','00045','00065')
 scode<-c('00003', '00006')
 
 CleanedDataAsheville<-WaterData.Function(siteNo, pcode, scode)
-View(CleanedDataAsheville)
+#View(CleanedDataAsheville)
 
 
 ```
@@ -162,7 +163,7 @@ pcode<-c('00060','00045','00065')
 scode<-c('00003', '00006')
 
 CleanedDataPigeonRiver<-WaterData.Function(siteNo, pcode, scode)
-View(CleanedDataPigeonRiver)
+#View(CleanedDataPigeonRiver)
   
 
 ```
@@ -334,7 +335,7 @@ ggplot(PRHurricaneData, aes(
 PRYearFilteredData <- PRHurricaneData %>%
   filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
 
-View(PRYearFilteredData)
+#View(PRYearFilteredData)
 
 ggplot(PRYearFilteredData, aes(
   x = dateTime, 
@@ -449,7 +450,7 @@ ggplot(AVHurricaneData, aes(
 AVYearFilteredData <- AVHurricaneData %>%
   filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
 
-View(AVYearFilteredData)
+#View(AVYearFilteredData)
 
 ggplot(AVYearFilteredData, aes(
   x = dateTime, 
@@ -566,7 +567,7 @@ ggplot(SGHurricaneData, aes(
 SGYearFilteredData <- SGHurricaneData %>%
   filter(year(dateTime) >= 1980 & year(dateTime) <= 2024)
 
-View(SGYearFilteredData)
+#View(SGYearFilteredData)
 
 ggplot(SGYearFilteredData, aes(
   x = dateTime, 
@@ -616,5 +617,305 @@ ggplot(SGYearFilteredData, aes(
 
 ```
 
+```{r 2024 trend Ana Andino}
 
 
+###HERE###
+#Following the last note above: 
+
+Data2024_pg <- SeasonalCleanedDataPigeonRiver %>%
+  filter(year(dateTime) == 2024)
+
+Data2024_ash <- SeasonalCleanedDataAsheville %>%
+  filter(year(dateTime) == 2024)
+
+Data2024_sg <- SeasonalCleanedDataSugarGrove %>%
+  filter(year(dateTime) == 2024)
+
+# First: Pigeon River Precipitation for 2024
+ggplot(Data2024_pg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
+  geom_line(color = "lightblue") +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
+  labs(
+    title = "Precipitation Trends for 2024 in Pigeon River",
+    x = "Date",
+    y = "Total Daily Precipitation (Inches)"
+  ) +
+  theme_minimal()
+
+# Second: Asheville Precipitation for 2024
+ggplot(Data2024_ash, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
+  geom_line(color = "lightblue") +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
+  labs(
+    title = "Precipitation Trends for 2024 in Asheville",
+    x = "Date",
+    y = "Total Daily Precipitation (Inches)"
+  ) +
+  theme_minimal()
+
+# Third: Sugar Grove Precipitation for 2024
+ggplot(Data2024_sg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
+  geom_line(color = "lightblue") +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 2) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 2) +
+  labs(
+    title = "Precipitation Trends for 2024 in Sugar Grove",
+    x = "Date",
+    y = "Total Daily Precipitation (Inches)"
+  ) +
+  theme_minimal()
+
+
+
+```
+
+
+```{r Pigeon River}
+# Filtered for Helene's exact dates following what reports mentioned. 
+HeleneData_pg <- SeasonalCleanedDataPigeonRiver %>%
+  filter(dateTime >= as.Date("2024-09-24") & dateTime <= as.Date("2024-09-27"))
+
+# Compare Helene discharge vs otjer hurricane seasons
+AllHurricaneData_pg <- SeasonalCleanedDataPigeonRiver %>%
+  filter(season == "Hurricane")
+
+#Plot
+ggplot() +
+  geom_point(data = AllHurricaneData_pg, aes(x = dateTime, y = `Mean Discharge`), color = "gray", alpha = 0.6) +
+  geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Discharge`), color = "red", size = 3) +
+  labs(
+    title = "Discharge During Hurricane Helene vs. Other Hurricane Seasons in Pigeon River",
+    x = "Date",
+    y = "Mean Discharge"
+  ) +
+  theme_minimal()
+
+
+```
+
+
+```{r Asheville}
+#Same process for Asheville
+HeleneData_ash <- SeasonalCleanedDataAsheville %>%
+  filter(dateTime >= as.Date("2024-09-24") & dateTime <= as.Date("2024-09-27"))
+
+AllHurricaneData_ash <- SeasonalCleanedDataAsheville %>%
+  filter(season == "Hurricane")
+
+library(ggplot2)
+ggplot() +
+  geom_point(data = AllHurricaneData_ash, aes(x = dateTime, y = `Mean Discharge`), color = "gray", alpha = 0.6) +
+  geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Discharge`), color = "red", size = 3) +
+  labs(
+    title = "Discharge During Hurricane Helene vs. Other Hurricane Seasons in Asheville",
+    x = "Date",
+    y = "Mean Discharge"
+  ) +
+  theme_minimal()
+
+
+```
+
+```{r AnaG SugarGrove}
+# Same for Sugar Grove 
+HeleneData_sg <- SeasonalCleanedDataSugarGrove %>%
+  filter(dateTime >= as.Date("2024-09-24") & dateTime <= as.Date("2024-09-27"))
+
+AllHurricaneData_sg <- SeasonalCleanedDataSugarGrove %>%
+  filter(season == "Hurricane")
+
+library(ggplot2)
+ggplot() +
+  geom_point(data = AllHurricaneData_sg, aes(x = dateTime, y = `Mean Discharge`), color = "gray", alpha = 0.6) +
+  geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Discharge`), color = "red", size = 3) +
+  labs(
+    title = "Discharge During Hurricane Helene vs. Other Hurricane Seasons in Asheville",
+    x = "Date",
+    y = "Mean Discharge"
+  ) +
+  theme_minimal()
+
+
+```
+
+```{r all cobined}
+#combined the data in the 3 chunks above to look at it aggregated 
+HeleneCombined_plot <- bind_rows(
+  mutate(HeleneData_pg, Location = "Pigeon River"),
+  mutate(HeleneData_ash, Location = "Asheville"),
+  mutate(HeleneData_sg, Location = "Sugar Grove")
+)
+
+ggplot(HeleneCombined_test, aes(x = dateTime, y = `Mean Discharge`, color = Location)) +
+  geom_line() +
+  labs(
+    title = "Discharge During Hurricane Helene Across Locations",
+    x = "Date",
+    y = "Mean Discharge (cubic meters per second)",
+    color = "Location"
+  ) +
+  theme_minimal()
+
+
+#Not sure if this is useful to be honest
+
+```
+
+*Important* Interesting that Asheville has NAs for 3 days during Hurricane Helene. 
+
+
+```{r Visualization onf precipitation and discharge}
+
+
+# Pigeon River Visualization
+ggplot(HeleneData_pg, aes(x = dateTime)) +
+  geom_line(aes(y = `Mean Discharge`), color = "lightblue", size = 1) +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`), color = "blue", linetype = "dashed") +
+  scale_y_continuous(
+    name = "Mean Discharge (cubic meters per second)",
+    sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
+  ) +
+  labs(
+    title = "Discharge and Precipitation During Hurricane Helene in Pigeon River",
+    x = "Date"
+  ) +
+  theme_minimal()
+
+# Asheville Visualization
+ggplot(HeleneData_ash, aes(x = dateTime)) +
+  geom_line(aes(y = `Mean Discharge`), color = "lightblue", size = 1) +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`), color = "blue", linetype = "dashed") +
+  scale_y_continuous(
+    name = "Mean Discharge (cubic meters per second)",
+    sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
+  ) +
+  labs(
+    title = "Discharge and Precipitation During Hurricane Helene in Asheville",
+    x = "Date"
+  ) +
+  theme_minimal()
+
+# Sugar Grove Visualization
+ggplot(HeleneData_sg, aes(x = dateTime)) +
+  geom_line(aes(y = `Mean Discharge`), color = "lightblue", size = 1) +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`), color = "blue", linetype = "dashed") +
+  scale_y_continuous(
+    name = "Mean Discharge (cubic meters per second)",
+    sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
+  ) +
+  labs(
+    title = "Discharge and Precipitation During Hurricane Helene in Sugar Grove",
+    x = "Date"
+  ) +
+  theme_minimal()
+
+# Combined Visualization 
+
+ggplot(HeleneCombined_plot, aes(x = dateTime, color = Location)) +
+  geom_line(aes(y = `Mean Discharge`), size = 1) +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`, linetype = "dashed"), size = 1) +
+  scale_y_continuous(
+    name = "Mean Discharge (cubic meters per second)",
+    sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
+  ) +
+  labs(
+    title = "Discharge and Precipitation During Hurricane Helene Across Sugar Grove, Asheville, and Pigeon",
+    x = "Date",
+    color = "Location"
+  ) +
+  theme_minimal()
+
+
+
+
+```
+
+```{r Expanded Dates around Helene}
+
+# Since I could't see a trend the days before and after, I expanded the dates to be plotted (10 days before and after)
+
+
+ExpandedDate_pg <- SeasonalCleanedDataPigeonRiver %>%
+  filter(dateTime >= as.Date("2024-09-14") & dateTime <= as.Date("2024-10-07"))
+
+ExpandedDate_ash <- SeasonalCleanedDataAsheville %>%
+  filter(dateTime >= as.Date("2024-09-14") & dateTime <= as.Date("2024-10-07"))
+
+ExpandedDate_sg <- SeasonalCleanedDataSugarGrove %>%
+  filter(dateTime >= as.Date("2024-09-14") & dateTime <= as.Date("2024-10-07"))
+
+
+# Pigeon River Visualization
+ggplot(ExpandedDate_pg, aes(x = dateTime)) +
+  geom_line(aes(y = `Mean Discharge`), color = "lightblue", size = 1) +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`), color = "blue", linetype = "dashed") +
+  scale_y_continuous(
+    name = "Mean Discharge (cubic meters per second)",
+    sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
+  ) +
+  labs(
+    title = "Discharge and Precipitation Trends Around Hurricane Helene in Pigeon River",
+    subtitle = "Including 10 Days Before and After",
+    x = "Date"
+  ) +
+  theme_minimal()
+
+# Asheville Visualization
+ggplot(ExpandedDate_ash, aes(x = dateTime)) +
+  geom_line(aes(y = `Mean Discharge`), color = "lightblue", size = 1) +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`), color = "blue", linetype = "dashed") +
+  scale_y_continuous(
+    name = "Mean Discharge (cubic meters per second)",
+    sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
+  ) +
+  labs(
+    title = "Discharge and Precipitation Trends Around Hurricane Helene in Asheville",
+    subtitle = "Including 10 Days Before and After",
+    x = "Date"
+  ) +
+  theme_minimal()
+
+# Sugar Grove Visualization
+ggplot(ExpandedDate_sg, aes(x = dateTime)) +
+  geom_line(aes(y = `Mean Discharge`), color = "lightblue", size = 1) +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`), color = "blue", linetype = "dashed") +
+  scale_y_continuous(
+    name = "Mean Discharge (cubic meters per second)",
+    sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
+  ) +
+  labs(
+    title = "Discharge and Precipitation Trends Around Hurricane Helene in Sugar Grove",
+    subtitle = "Including 10 Days Before and After",
+    x = "Date"
+  ) +
+  theme_minimal()
+
+# Combined Visualization for All Locations
+ExpandedCombined <- bind_rows(
+  mutate(ExpandedDate_pg, Location = "Pigeon River"),
+  mutate(ExpandedDate_ash, Location = "Asheville"),
+  mutate(ExpandedDate_sg, Location = "Sugar Grove")
+)
+
+ggplot(ExpandedCombined, aes(x = dateTime, color = Location)) +
+  geom_line(aes(y = `Mean Discharge`), size = 1) +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`, linetype = "dashed"), size = 1) +
+  scale_y_continuous(
+    name = "Mean Discharge (cubic meters per second)",
+    limits = c(0, 22000),
+    sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
+  ) +
+  labs(
+    title = "Discharge and Precipitation Trends Across Locations Around Hurricane Helene",
+    subtitle = "Including 10 Days Before and After",
+    x = "Date",
+    color = "Location"
+  ) +
+  theme_minimal()
+
+```
+
+I will try to do some maps as well. 
