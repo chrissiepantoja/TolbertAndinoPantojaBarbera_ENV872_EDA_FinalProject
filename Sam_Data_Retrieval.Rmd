@@ -943,4 +943,32 @@ ggplot(AllData2024, aes(x = Location, y = `Mean Discharge`, fill = Location)) +
 I will try to do some maps as well eventually.. 
 ```{r}
 
+library(leaflet)
+
+locations <- data.frame(
+  Location = c("Pigeon River", "Asheville", "Sugar Grove"),
+  Latitude = c(35.554, 35.595, 36.267),
+  Longitude = c(-82.982, -82.551, -81.785),
+  Precipitation = c(max(Data2024_pg$`Total Daily Precipitation (Inches)`, na.rm = TRUE),
+                    max(Data2024_ash$`Total Daily Precipitation (Inches)`, na.rm = TRUE),
+                    max(Data2024_sg$`Total Daily Precipitation (Inches)`, na.rm = TRUE)),
+  Discharge = c(max(Data2024_pg$`Mean Discharge`, na.rm = TRUE),
+                max(Data2024_ash$`Mean Discharge`, na.rm = TRUE),
+                max(Data2024_sg$`Mean Discharge`, na.rm = TRUE))
+)
+
+leaflet(locations) %>%
+  addTiles() %>%
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    label = ~paste0(Location, "<br>Precipitation: ", Precipitation, " in",
+                    "<br>Discharge: ", Discharge, " m³/s"),
+    radius = 8,
+    color = "blue",
+    fillOpacity = 0.7
+  ) %>%
+  addLegend("bottomright", colors = "blue", labels = "Monitoring Sites", title = "Legend")
+
+# Just go show off we can start with this map to show the locations. I cant think of what other map to do 
+
 ```
