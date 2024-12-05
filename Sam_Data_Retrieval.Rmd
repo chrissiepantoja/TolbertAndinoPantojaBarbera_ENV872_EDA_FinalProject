@@ -1054,7 +1054,7 @@ print(PigeonRiverDischargeHazen_2024)
 
 
 ```
-```{r}
+```{r SugarGrove Precip Hazen}
 SugarGrovePrecip <- CleanedDataSugarGrove %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
@@ -1078,7 +1078,7 @@ print(SugarGrovePrecipHazen_2024)
 
 ```
 
-```{r}
+```{r Asheville Precip Hazen}
 
 AshevillePrecip <- CleanedDataAsheville %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
@@ -1102,7 +1102,7 @@ print(AshevillePrecipHazen_2024)
 
 
 ```
-```{r}
+```{r Pigeon River Precip Hazen}
 
 PigeonRiverPrecip <- CleanedDataPigeonRiver %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
@@ -1126,7 +1126,7 @@ print(PigeonRiverPrecipHazen_2024)
 
 
 ```
-```{r}
+```{r Sugar Grove Gage Height Hazen}
 SugarGroveGageHeight <- CleanedDataSugarGrove %>% 
   mutate(moving_avg = rollapply(`Mean Gage Height`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
@@ -1158,7 +1158,7 @@ print(SugarGroveGageHeightHazen_2024)
 ```
 
 
-```{r}
+```{r Asheville Gage Heigt Hazen}
 AshevilleGageHeight <- CleanedDataAsheville %>% 
   mutate(moving_avg = rollapply(`Mean Gage Height`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
@@ -1184,7 +1184,7 @@ print(AshevilleGageHeightHazen_2024)
 ```
 
 
-```{r}
+```{r Pigeon River Gage Heigh Hazen}
 
 PigeonRiverGageHeight <- CleanedDataPigeonRiver %>% 
   mutate(moving_avg = rollapply(`Mean Gage Height`, width = 7, FUN = mean, align = "center", fill = NA)) 
