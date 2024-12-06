@@ -18,6 +18,7 @@ library(purrr)
 library(lubridate)
 library(here)
 library(dplyr)
+library(zoo)
 
 #install.packages("dataRetrieval")
 library(dataRetrieval)
@@ -1687,7 +1688,11 @@ return(CleanDataFlood2024)
 
 SugarGroveFloodHazen2024<-Hazen2024Flood.Function(siteNumberSugarGrove, pcode, scode)
 AshevilleFloodHazen2024<-Hazen2024Flood.Function(siteNumberAsheville, pcode, scode)
-PigeonRiverFloodHazen2024<-Hazen2024.Function(siteNoPigeonRiver, pcode, scode)
+PigeonRiverFloodHazen2024<-Hazen2024Flood.Function(siteNoPigeonRiver, pcode, scode)
+
+SugarGroveFloodHazen2024
+AshevilleFloodHazen2024
+PigeonRiverFloodHazen2024
 ```
 
 ```{r function for precip}
@@ -1743,6 +1748,7 @@ return(CleanDataPrecip2024)
 SugarGrovePrecipHazen2024<-Hazen2024Precip.Function(siteNumberSugarGrove, pcode, scode)
 AshevillePrecipHaze024<-Hazen2024Precip.Function(siteNumberAsheville, pcode, scode)
 PigeonRiverPrecipHaze2024<-Hazen2024Precip.Function(siteNoPigeonRiver, pcode, scode)
+
 ```
 
 
