@@ -22,7 +22,7 @@ library(dplyr)
 #install.packages("dataRetrieval")
 library(dataRetrieval)
 
-
+install.packages("forecast")
 
 ```
 
@@ -354,7 +354,6 @@ ggplot(PRYearFilteredData, aes(
   theme_minimal()
 
 
-
 ggplot(PRYearFilteredData, aes(
   x = dateTime, y = log(`Mean Discharge`))) + 
   geom_point(color = "purple") +
@@ -366,15 +365,6 @@ ggplot(PRYearFilteredData, aes(
     y = "Log of Mean Precipitation (mm)"
   ) +
   theme_minimal()
-
-
-
-
-
-
-
-
-
 
 
 ```
@@ -481,14 +471,6 @@ ggplot(AVYearFilteredData, aes(
     y = "Log of Mean Precipitation (mm)"
   ) +
   theme_minimal()
-
-
-
-
-
-
-
-
 
 
 ```
@@ -600,16 +582,10 @@ ggplot(SGYearFilteredData, aes(
   theme_minimal()
 
 
-
-
 #SGYearFilteredData is the data for the hurricane season for 1980-2024
 #Hurricane season is filtered based on outside knowledge (July-November)
 #we don't really need frontal season information since Helene happened during 
 #hurricane season months
-
-
-
-
 
 #next steps: I think we could draw out the 2024 year data to look specifically 
 #at Helene precipitation 
@@ -770,15 +746,13 @@ ggplot(HeleneCombined_test, aes(x = dateTime, y = `Mean Discharge`, color = Loca
 *Important* Interesting that Asheville has NAs for 3 days during Hurricane Helene. 
 
 
-
 ```{r Visualization onf precipitation and discharge}
 
 
 # Pigeon River Visualization
 ggplot(HeleneData_pg, aes(x = dateTime)) +
   geom_line(aes(y = `Mean Discharge`), color = "lightblue", size = 1) +
-  geom_line(aes(y = `Total Daily Precipitation (Inches)`) color = "blue", #there's a bug here the plots don't look right
-            linetype = "dashed") +
+  geom_line(aes(y = `Total Daily Precipitation (Inches)`), color = "blue", linetype = "dashed") +
   scale_y_continuous(
     name = "Mean Discharge (cubic meters per second)",
     sec.axis = sec_axis(~./100, name = "Precipitation (Inches)")
@@ -833,10 +807,8 @@ ggplot(HeleneCombined_plot, aes(x = dateTime, color = Location)) +
   ) +
   theme_minimal()
 
-
-
-
 ```
+
 
 ```{r Expanded Dates around Helene}
 
@@ -922,10 +894,6 @@ ggplot(ExpandedCombined, aes(x = dateTime, color = Location)) +
   theme_minimal()
 
 ```
-
-
-
-
 ```{r}
 library(gganimate)
 
@@ -942,8 +910,6 @@ ggplot(AllData2024, aes(x = Location, y = `Mean Discharge`, fill = Location)) +
 ##is this useful?
 
 ```
-
-
 
 I will try to do some maps as well eventually.. 
 ```{r}
@@ -1099,8 +1065,6 @@ AshevillePrecip <- AshevillePrecip %>%
 AshevillePrecipHazen_2024 <- AshevillePrecip %>% filter(Year == 2024)
 print(AshevillePrecipHazen_2024)
 
-
-
 ```
 ```{r Pigeon River Precip Hazen}
 
@@ -1147,14 +1111,6 @@ SugarGroveGageHeightHazen_2024 <- SugarGroveGageHeight %>% filter(Year == 2024)
 print(SugarGroveGageHeightHazen_2024)
 
 
-
-
-
-
-
-
-
-
 ```
 
 
@@ -1183,7 +1139,6 @@ print(AshevilleGageHeightHazen_2024)
 
 ```
 
-
 ```{r Pigeon River Gage Heigh Hazen}
 
 PigeonRiverGageHeight <- CleanedDataPigeonRiver %>% 
@@ -1205,3 +1160,251 @@ PigeonRiverGageHeight <- PigeonRiverGageHeight %>%
 PigeonRiverGageHeightHazen_2024 <- PigeonRiverGageHeight %>% filter(Year == 2024)
 print(PigeonRiverGageHeightHazen_2024)
 ```
+
+```{r DECOMPOSITION PLOTS: Chrissie-ASHEVILLE}
+
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+# Convert dateTime to Date class
+CleanedDataAsheville <- CleanedDataAsheville %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values
+CleanedDataAsheville.clean <- CleanedDataAsheville %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Generate time series objects
+CleanedDataAsheville.monthly <- CleanedDataAsheville.clean %>%
+  filter(!is.na(mean_discharge))
+
+# Step 1: Add columns for year and month, then calculate monthly mean discharge
+CleanedDataAsheville.monthly <- CleanedDataAsheville.clean %>%
+  mutate(
+    year = year(dateTime),   # Extract year from dateTime
+    month = month(dateTime)  # Extract month from dateTime
+  ) %>%
+  group_by(year, month) %>%
+  summarize(
+    mean_discharge = mean(Mean.Discharge.clean, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Step 2: Create a new Date column for graphing, setting each month-year combination to the first day of the month
+CleanedDataAsheville.monthly <- CleanedDataAsheville.monthly %>%
+  mutate(
+    dateTime = as.Date(paste(year, month, "01", sep = "-")))
+
+# Extract start and end years and months
+s_year <- year(first(CleanedDataAsheville$dateTime))
+f_year <- year(last(CleanedDataAsheville$dateTime))
+s_month <- month(first(CleanedDataAsheville$dateTime))
+f_month <- month(last(CleanedDataAsheville$dateTime))
+
+# 1. Generate the daily time series object
+CleanedDataAsheville.daily.ts <- ts(
+  CleanedDataAsheville.clean$Mean.Discharge.clean,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# 2. Generate the monthly time series object using aggregated data
+CleanedDataAsheville.monthly.ts <- ts(
+  CleanedDataAsheville.monthly$mean_discharge,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 12
+)
+
+# Display the created time series
+CleanedDataAsheville.daily.ts
+CleanedDataAsheville.monthly.ts
+
+# Decompose the daily time series
+CleanedDataAsheville.daily.decomp <- stl(CleanedDataAsheville.daily.ts, s.window = "periodic")
+
+# Plot the components of the daily decomposition
+plot(CleanedDataAsheville.daily.decomp, main = "Decomposition of Daily Discharge for Asheville")
+
+# Decompose the monthly time series
+CleanedDataAsheville.monthly.decomp <- stl(CleanedDataAsheville.monthly.ts, s.window = "periodic")
+
+# Plot the components of the monthly decomposition
+plot(CleanedDataAsheville.monthly.decomp, main = "Decomposition of Monthly Discharge for Asheville")
+
+
+```
+
+```{r DECOMPOSITION PLOTS: Chrissie-PIGEON RIVER}
+
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+# Convert dateTime to Date class
+CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Generate time series objects
+CleanedDataPigeonRiver.monthly <- CleanedDataPigeonRiver.clean %>%
+  filter(!is.na(mean_discharge))
+
+# Step 1: Add columns for year and month, then calculate monthly mean discharge
+CleanedDataPigeonRiver.monthly <- CleanedDataPigeonRiver.clean %>%
+  mutate(
+    year = year(dateTime),   # Extract year from dateTime
+    month = month(dateTime)  # Extract month from dateTime
+  ) %>%
+  group_by(year, month) %>%
+  summarize(
+    mean_discharge = mean(Mean.Discharge.clean, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Step 2: Create a new Date column for graphing, setting each month-year combination to the first day of the month
+CleanedDataPigeonRiver.monthly <- CleanedDataPigeonRiver.monthly %>%
+  mutate(
+    dateTime = as.Date(paste(year, month, "01", sep = "-")))
+
+# Extract start and end years and months
+s_year <- year(first(CleanedDataPigeonRiver$dateTime))
+f_year <- year(last(CleanedDataPigeonRiver$dateTime))
+s_month <- month(first(CleanedDataPigeonRiver$dateTime))
+f_month <- month(last(CleanedDataPigeonRiver$dateTime))
+
+# 1. Generate the daily time series object
+CleanedDataPigeonRiver.daily.ts <- ts(
+  CleanedDataPigeonRiver.clean$Mean.Discharge.clean,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# 2. Generate the monthly time series object using aggregated data
+CleanedDataPigeonRiver.monthly.ts <- ts(
+  CleanedDataPigeonRiver.monthly$mean_discharge,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 12
+)
+
+# Display the created time series
+CleanedDataPigeonRiver.daily.ts
+CleanedDataPigeonRiver.monthly.ts
+
+# Decompose the daily time series
+CleanedDataPigeonRiver.daily.decomp <- stl(CleanedDataPigeonRiver.daily.ts, s.window = "periodic")
+
+# Plot the components of the daily decomposition
+plot(CleanedDataPigeonRiver.daily.decomp, main = "Decomposition of Daily Discharge for Pigeon River")
+
+# Decompose the monthly time series
+CleanedDataPigeonRiver.monthly.decomp <- stl(CleanedDataPigeonRiver.monthly.ts, s.window = "periodic")
+
+# Plot the components of the monthly decomposition
+plot(CleanedDataPigeonRiver.monthly.decomp, main = "Decomposition of Monthly Discharge for Pigeon River")
+
+```
+
+```{r DECOMPOSITION PLOTS: Chrissie-SUGAR GROVE}
+
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+# Convert dateTime to Date class
+CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Generate time series objects
+CleanedDataSugarGrove.monthly <- CleanedDataSugarGrove.clean %>%
+  filter(!is.na(mean_discharge))
+
+# Step 1: Add columns for year and month, then calculate monthly mean discharge
+CleanedDataSugarGrove.monthly <- CleanedDataSugarGrove.clean %>%
+  mutate(
+    year = year(dateTime),   # Extract year from dateTime
+    month = month(dateTime)  # Extract month from dateTime
+  ) %>%
+  group_by(year, month) %>%
+  summarize(
+    mean_discharge = mean(Mean.Discharge.clean, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Step 2: Create a new Date column for graphing, setting each month-year combination to the first day of the month
+CleanedDataSugarGrove.monthly <- CleanedDataSugarGrove.monthly %>%
+  mutate(
+    dateTime = as.Date(paste(year, month, "01", sep = "-")))
+
+# Extract start and end years and months
+s_year <- year(first(CleanedDataSugarGrove$dateTime))
+f_year <- year(last(CleanedDataSugarGrove$dateTime))
+s_month <- month(first(CleanedDataSugarGrove$dateTime))
+f_month <- month(last(CleanedDataSugarGrove$dateTime))
+
+# 1. Generate the daily time series object
+CleanedDataSugarGrove.daily.ts <- ts(
+  CleanedDataSugarGrove.clean$Mean.Discharge.clean,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# 2. Generate the monthly time series object using aggregated data
+CleanedDataSugarGrove.monthly.ts <- ts(
+  CleanedDataSugarGrove.monthly$mean_discharge,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 12
+)
+
+# Display the created time series
+CleanedDataSugarGrove.daily.ts
+CleanedDataSugarGrove.monthly.ts
+
+# Decompose the daily time series
+CleanedDataSugarGrove.daily.decomp <- stl(CleanedDataSugarGrove.daily.ts, s.window = "periodic")
+
+# Plot the components of the daily decomposition
+plot(CleanedDataSugarGrove.daily.decomp, main = "Decomposition of Daily Discharge for Sugar Grove")
+
+# Decompose the monthly time series
+CleanedDataSugarGrove.monthly.decomp <- stl(CleanedDataSugarGrove.monthly.ts, s.window = "periodic")
+
+# Plot the components of the monthly decomposition
+plot(CleanedDataSugarGrove.monthly.decomp, main = "Decomposition of Monthly Discharge for Sugar Grove")
+
+```
+
