@@ -1556,8 +1556,9 @@ PigeonRiverPrecip <- PigeonRiverPrecip %>%
 
 PigeonRiverPrecipHazen_2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
 print(PigeonRiverPrecipHazen_2024)
+```
 
-{r Sugar Grove Gage Height Hazen}
+```{r Sugar Grove Gage Height Hazen}
 SugarGroveGageHeight <- CleanedDataSugarGrove %>% 
   mutate(moving_avg = rollapply(`Mean Gage Height`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
@@ -1766,7 +1767,7 @@ select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or 
   )
   
 CleanDataGageHeight<-CleanData%>% 
-  mutate(moving_avg = rollapply('Mean Gage Height', width = 7, FUN = mean, align = "center", fill = NA)) 
+  mutate(moving_avg = rollapply(`Mean Gage Height`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
 CleanDataGageHeight<- CleanDataGageHeight%>%
   mutate(Year = year(dateTime))
@@ -1797,5 +1798,6 @@ return(CleanDataGageHeight2024)
 
 SugarGroveGageHeightHazen2024<-Hazen2024GageHeight.Function(siteNumberSugarGrove, pcode, scode)
 AshevilleGageHeightHaze024<-Hazen2024GageHeight.Function(siteNumberAsheville, pcode, scode)
-PigeonRiverGageHeightHaze2024<-Hazen2024Gage
+PigeonRiverGageHeightHaze2024<-Hazen2024GageHeight.Function(siteNoPigeonRiver, pcode, scode)
+
 ```
