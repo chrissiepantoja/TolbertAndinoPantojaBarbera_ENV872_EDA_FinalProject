@@ -1,6 +1,6 @@
 ---
 title: "Final Project Draft"
-author: "Sam Tolbert"
+author: "Sam Tolbert, Chrissie Pantoja, Ana Andino, Gretchen Barbera"
 date: "2024-12-09"
 output:
   html_document:
@@ -669,8 +669,8 @@ SugarGrovePrecip <- SugarGrovePrecip %>%
   mutate(Fa_Value = ((100*(2*rank - 1))/(2*n()))) %>% 
   mutate(hazen = 100/Fa_Value)
 
-SugarGrovePrecipHazen_2024 <- SugarGrovePrecip %>% filter(Year == 2024)
-print(SugarGrovePrecipHazen_2024)
+SugarGrovePrecipHazen2024 <- SugarGrovePrecip %>% filter(Year == 2024)
+print(SugarGrovePrecipHazen2024)
 
 
 ```
@@ -697,8 +697,8 @@ AshevillePrecip <- AshevillePrecip %>%
   mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * n()))) %>% 
   mutate(hazen = 100 / Fa_Value)
 
-AshevillePrecipHazen_2024 <- AshevillePrecip %>% filter(Year == 2024)
-print(AshevillePrecipHazen_2024)
+AshevillePrecipHazen2024 <- AshevillePrecip %>% filter(Year == 2024)
+print(AshevillePrecipHazen2024)
 
 
 ```
@@ -731,9 +731,9 @@ PigeonRiverPrecip <- PigeonRiverPrecip %>%
   mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * n()))) %>% 
   mutate(hazen = 100 / Fa_Value)
 
-PigeonRiverPrecipHazen_2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
+PigeonRiverPrecipHazen2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
 
-print(PigeonRiverPrecipHazen_2024)
+print(PigeonRiverPrecipHazen2024)
 ```
 
 In Pigeon River, it Helene was a 52 year event in terms of total precipitation,
@@ -854,8 +854,6 @@ CleanDataGageHeight <- CleanDataGageHeight %>%
 CleanDataGageHeight2024 <- CleanDataGageHeight %>% filter(Year == 2024)
 
 
-
-
 return(CleanDataGageHeight2024)
 }
 
@@ -864,49 +862,179 @@ return(CleanDataGageHeight2024)
 SugarGroveGageHeightHazen2024<-
   Hazen2024GageHeight.Function(siteNumberSugarGrove, pcode, scode)
 
-AshevilleGageHeightHaze024<-
+AshevilleGageHeightHazen2024<-
   Hazen2024GageHeight.Function(siteNumberAsheville, pcode, scode)
 
-PigeonRiverGageHeightHaze2024<-
+PigeonRiverGageHeightHazen2024<-
   Hazen2024GageHeight.Function(siteNoPigeonRiver, pcode, scode)
 
 SugarGroveGageHeightHazen2024
-AshevilleGageHeightHaze024
-PigeonRiverGageHeightHaze2024
+AshevilleGageHeightHazen2024
+PigeonRiverGageHeightHazen2024
 
 ```
 
 
 
 **Map of Gage Sites**
+
+I would like to be able to now see geographically how unusual Helene was for each
+site:
 ```{r}
 
-library(leaflet)
 
-locations <- data.frame(
-  Location = c("Sugar Grove", "Asheville", "Pigeon River"),
+
+library(RColorBrewer)
+
+# Create Data Frame with Hazen Values
+hazen_data <- data.frame(
+  Location = c("Pigeon River", "Asheville", "Sugar Grove"),
   Latitude = c(35.554, 35.595, 36.267),
   Longitude = c(-82.982, -82.551, -81.785),
-  Precipitation = c(max(Data2024_pg$`Total Daily Precipitation (Inches)`, na.rm = TRUE),
-                    max(Data2024_ash$`Total Daily Precipitation (Inches)`, na.rm = TRUE),
-                    max(Data2024_sg$`Total Daily Precipitation (Inches)`, na.rm = TRUE)),
-  Discharge = c(max(Data2024_pg$`Mean Discharge`, na.rm = TRUE),
-                max(Data2024_ash$`Mean Discharge`, na.rm = TRUE),
-                max(Data2024_sg$`Mean Discharge`, na.rm = TRUE))
+  Precipitation_Hazen = sapply(list(PigeonRiverPrecipHazen2024$hazen, 
+                                    AshevillePrecipHazen2024$hazen, 
+                                    SugarGrovePrecipHazen2024$hazen), function(x) as.numeric(unlist(x))),
+  Discharge_Hazen = sapply(list(PigeonRiverDischargeHazen2024$hazen, 
+                                 AshevilleDischargeHazen2024$hazen, 
+                                 SugarGroveDischargeHazen2024$hazen), function(x) as.numeric(unlist(x))),
+  GageHeight_Hazen = sapply(list(PigeonRiverGageHeightHazen2024$hazen, 
+                                  AshevilleGageHeightHazen2024$hazen, 
+                                  SugarGroveGageHeightHazen2024$hazen), function(x) as.numeric(unlist(x)))
 )
 
-leaflet(locations) %>%
+
+
+
+
+color_pal <- colorNumeric(
+  palette = c("blue", "green", "red"),  # Custom palette: low -> medium -> high
+  domain = range(
+    hazen_data$Precipitation_Hazen,
+    hazen_data$Discharge_Hazen,
+    hazen_data$GageHeight_Hazen,
+    na.rm = TRUE
+  ),
+  reverse = FALSE
+)
+
+
+leaflet(hazen_data) %>%
+  addTiles() %>%
+  
+  # Precipitation Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = ~color_pal(Precipitation_Hazen),
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Precipitation Hazen: ", round(Precipitation_Hazen, 2)
+    ),
+    radius = 10, group = "Precipitation"
+  ) %>%
+  
+  # Discharge Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = ~color_pal(Discharge_Hazen),
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Discharge Hazen: ", round(Discharge_Hazen, 2)
+    ),
+    radius = 10, group = "Discharge"
+  ) %>%
+  
+  # Gage Height Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = ~color_pal(GageHeight_Hazen),
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Gage Height Hazen: ", round(GageHeight_Hazen, 2)
+    ),
+    radius = 10, group = "Gage Height"
+  ) %>%
+  
+  # Add Layer Controls
+  addLayersControl(
+    overlayGroups = c("Precipitation", "Discharge", "Gage Height"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  
+  # Add a Legend
+  addLegend(
+    "bottomright",
+    pal = color_pal,
+    values = range(
+      hazen_data$Precipitation_Hazen,
+      hazen_data$Discharge_Hazen,
+      hazen_data$GageHeight_Hazen,
+      na.rm = TRUE
+    ),
+    title = "Hazen Value (Recurrence Interval)",
+    opacity = 0.7
+  )
+
+
+```
+
+This is cool! I want to add a lot more sites now that I have this functioning.
+I go and download more sites in Western NC, by randomly selecting one per county
+for every counry in Western NC and find the Hazen numbers for each parameter
+```{r}
+
+
+
+
+```
+
+
+
+I then add them to the heatmap
+```{r}
+
+#install.packages("leaflet.extras")
+library(leaflet.extras)
+
+leaflet(hazen_data) %>%
+  addTiles() %>%
+  addHeatmap(
+    lng = ~Longitude,
+    lat = ~Latitude,
+    intensity = ~Precipitation_Hazen,
+    blur = 20,
+    max = max(hazen_data$Precipitation_Hazen, na.rm = TRUE),
+    radius = 15
+  ) %>%
+  addLegend(
+    "bottomright",
+    pal = color_pal,
+    values = hazen_data$Precipitation_Hazen,
+    title = "Precipitation Hazen",
+    opacity = 0.7
+  )
+
+
+leaflet(hazen_data) %>%
   addTiles() %>%
   addCircleMarkers(
     ~Longitude, ~Latitude,
-    label = ~paste0(Location, "<br>Precipitation: ", Precipitation, " in",
-                    "<br>Discharge: ", Discharge, " m³/s"),
-    radius = 8,
-    color = "blue",
-    fillOpacity = 0.7
+    fillColor = ~color_pal(Discharge_Hazen),
+    fillOpacity = 0.8,
+    stroke = FALSE,
+    radius = 10,
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Discharge Hazen: ", round(Discharge_Hazen, 2)
+    )
   ) %>%
-  addLegend("bottomright", colors = "blue", labels = "Monitoring Sites", title = "Legend")
+  addLegend(
+    "bottomright",
+    pal = color_pal,
+    values = hazen_data$Discharge_Hazen,
+    title = "Discharge Hazen",
+    opacity = 0.7
+  )
 
-# Just go show off we can start with this map to show the locations. I cant think of what other map to do 
+
 
 ```
