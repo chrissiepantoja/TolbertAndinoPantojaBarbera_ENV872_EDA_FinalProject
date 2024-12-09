@@ -628,6 +628,7 @@ print(PigeonRiverPrecipHazen_2024)
 ```
 
 ##Sugar Grove Hazen Precipitation##
+
 ```{r Sugar Grove Precip Hazen}
 SugarGrovePrecip <- CleanedDataSugarGrove %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
