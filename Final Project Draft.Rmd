@@ -620,18 +620,236 @@ Let's decompose to account for these trends
 
 ###CHRISSIE PUT YOUR DECOMPS HERE###
 
+```{r SUGAR GROVE}
 
 
+# Convert dateTime to Date class and clean columns
+CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataSugarGrove.clean$dateTime))
+s_month <- month(first(CleanedDataSugarGrove.clean$dateTime))
+f_year <- year(last(CleanedDataSugarGrove.clean$dateTime))
+f_month <- month(last(CleanedDataSugarGrove.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataSugarGrove.daily.7DayAvg.ts <- ts(
+  CleanedDataSugarGrove.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataSugarGrove.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataSugarGrove.daily.7DayAvg.decomp <- stl(
+  CleanedDataSugarGrove.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataSugarGrove.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Sugar Grove"
+)
 
 
+```
 
 
+```{r}
+# Convert dateTime to Date class and clean columns
+CleanedDataAsheville <- CleanedDataAsheville %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataAsheville.clean <- CleanedDataAsheville %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataAsheville.clean <- CleanedDataAsheville.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataAsheville.clean <- CleanedDataAsheville.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataAsheville.clean$dateTime))
+s_month <- month(first(CleanedDataAsheville.clean$dateTime))
+f_year <- year(last(CleanedDataAsheville.clean$dateTime))
+f_month <- month(last(CleanedDataAsheville.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataAsheville.daily.7DayAvg.ts <- ts(
+  CleanedDataAsheville.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataAsheville.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataAsheville.daily.7DayAvg.decomp <- stl(
+  CleanedDataAsheville.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataAsheville.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Asheville"
+)
 
 
+```
 
 
+```{r PIGEON RIVER}
+library(dplyr)
+library(lubridate)
+library(zoo)
 
-These graphs are interesting, and some of them show 2024 as an outlierbut they
+
+# Convert dateTime to Date class and clean columns
+CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataPigeonRiver.clean$dateTime))
+s_month <- month(first(CleanedDataPigeonRiver.clean$dateTime))
+f_year <- year(last(CleanedDataPigeonRiver.clean$dateTime))
+f_month <- month(last(CleanedDataPigeonRiver.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataPigeonRiver.daily.7DayAvg.ts <- ts(
+  CleanedDataPigeonRiver.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataPigeonRiver.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataPigeonRiver.daily.7DayAvg.decomp <- stl(
+  CleanedDataPigeonRiver.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataPigeonRiver.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Pigeon River"
+)
+
+
+```
+
+
+These graphs are interesting, and some of them show 2024 as an outlier but they
 don't say by exactly how much Helen was an outlier.
 
 We want to be able to say with statistical certainty how unusual Helene was as
