@@ -197,6 +197,9 @@ HeleneData_pg <- CleanedDataPigeonRiver %>%
 HeleneData_sg <- CleanedDataSugarGrove %>%
   filter(dateTime >= as.Date("2024-09-22") & dateTime <= as.Date("2024-09-29"))
 
+#View(HeleneData_pg)
+#date is YMD
+
 ```
 
 
@@ -285,6 +288,8 @@ ggplot(Data2024_ash, aes(x = dateTime, y = `Mean Discharge`)) +
     y = "Discharge"
   ) +
   theme_minimal()
+
+#missing Asheville data 
 
 # Third: Sugar Grove Discharge for 2024
 ggplot(Data2024_sg, aes(x = dateTime, y = `Mean Discharge`)) +
@@ -562,7 +567,7 @@ First we find the recurrence intervals of 7 days precipitation events. We know f
 our first graphs that assuming Helen is our 7 day averaged maximum for 2024
 is a reasonable assumption:
 
-
+##Asheville Hazen Precipitation##
 ```{r Asheville Precipitation Hazen}
 AshevillePrecip <- CleanedDataAsheville %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
@@ -590,16 +595,14 @@ print(AshevillePrecipHazen_2024)
 ```
 
 The Hazen number tells us that the 7 day average discharge observed in
-Sugar Grove in 2024 was a 54 year event, in other words it can be expected to
-happen once every 52 years, or about a 2% chance of happening any one year. That
+Asheville in 2024 was a 54 year event, in other words it can be expected to
+happen once every 54 years, or about a 2% chance of happening any one year. That
 gives us a statistical number to match to our observed outliers. Let's find the 
 recurrence intervals for 2024 for our other sites
 
-
-
+##Pigeon River Hazen Precipitation##
 
 ```{r Pigeon River Precip Hazen}
-
 PigeonRiverPrecip <- CleanedDataPigeonRiver %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
@@ -620,9 +623,12 @@ PigeonRiverPrecip <- PigeonRiverPrecip %>%
   mutate(hazen = 100 / Fa_Value)
 
 PigeonRiverPrecipHazen_2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
+
 print(PigeonRiverPrecipHazen_2024)
+```
 
-
+##Sugar Grove Hazen Precipitation##
+```{r Sugar Grove Precip Hazen}
 SugarGrovePrecip <- CleanedDataSugarGrove %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
