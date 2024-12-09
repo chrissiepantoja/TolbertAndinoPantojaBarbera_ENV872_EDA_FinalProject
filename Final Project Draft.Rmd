@@ -548,7 +548,27 @@ print(PigeonRiverDailyGageHeightPlot)
 
 
 ```
-These graphs are interesting, and some of them show 2024 as an outlier, but they
+
+These graphs reaveal that Helene was responsible for some
+outlier behavior, but it doesn't account for seasonality and other
+trends.
+
+Let's decompose to account for these trends
+
+###CHRISSIE PUT YOUR DECOMPS HERE###
+
+
+
+
+
+
+
+
+
+
+
+
+These graphs are interesting, and some of them show 2024 as an outlierbut they
 don't say by exactly how much Helen was an outlier.
 
 We want to be able to say with statistical certainty how unusual Helene was as
@@ -769,9 +789,16 @@ return(CleanDataGageHeight2024)
 
 #testing function
 
-SugarGroveGageHeightHazen2024<-Hazen2024GageHeight.Function(siteNumberSugarGrove, pcode, scode)
-AshevilleGageHeightHaze024<-Hazen2024GageHeight.Function(siteNumberAsheville, pcode, scode)
-PigeonRiverGageHeightHaze2024<-Hazen2024GageHeight.Function(siteNoPigeonRiver, pcode, scode)
+SugarGroveGageHeightHazen2024<-
+  Hazen2024GageHeight.Function(siteNumberSugarGrove, pcode, scode)
+AshevilleGageHeightHaze024<-
+  Hazen2024GageHeight.Function(siteNumberAsheville, pcode, scode)
+PigeonRiverGageHeightHaze2024<-
+  Hazen2024GageHeight.Function(siteNoPigeonRiver, pcode, scode)
+
+SugarGroveGageHeightHazen2024
+AshevilleGageHeightHaze024
+PigeonRiverGageHeightHaze2024
 
 ```
 
