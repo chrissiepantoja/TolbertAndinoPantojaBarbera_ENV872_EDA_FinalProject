@@ -1,0 +1,649 @@
+---
+title: "Scrape.it for Final Project"
+author: "Sam Tolbert"
+date: "2024-11-27"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+testing testing git
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(rvest)
+library(purrr)
+library(lubridate)
+library(here)
+library(dplyr)
+
+#install.packages("dataRetrieval")
+library(dataRetrieval)
+
+install.packages("forecast")
+
+```
+
+Retrieving data for Sugar Grove Gage from USGS using USGS's dataRetrieval package.
+I find its siteNumber is 03479000 from "https://waterdata.usgs.gov/monitoring-location/03479000/#parameterCode=
+00060&period=P7D&showMedian=false".
+```{r echo=TRUE}
+
+siteNumberSugarGrove<-('03479000')
+
+#I find the MetaData for the site
+SugarGroveMeta <- whatNWISsites(siteNumbers = siteNumberSugarGrove)
+print(SugarGroveMeta) 
+
+#I then use sitedata function to look at what data is available
+SugarGroveSiteData<-suppressWarnings(whatNWISdata(siteNumber=siteNumberSugarGrove))
+```
+
+Looking at what data is available, I see that the parameter codes (parmcodes)
+for stream discharge (00060) , precipitation (00045), and gage height (0065).
+I also see that our relevant stat codes are daily mean (0003) and sum (00006)
+#
+
+```{r message=FALSE, warning=FALSE}
+pcodes<-c('00060','00045','00065') #parameters discharge, precip, and gage height
+scode<-c('00003', '00006') #daily mean and daily accumulated
+
+
+SugarGroveData<-readNWISdata( #dataRetrival function from USGS API
+  siteNumbers = siteNumberSugarGrove,
+  parameterCd= pcodes,
+  statCd= scode,
+  startDate= ymd('1900-01-01'),
+  endDate= Sys.Date()
+)
+  
+#View(SugarGroveData)  
+```
+
+This is my data! However, I need to clean this up. 
+First I want to remove the 'cd' columns that indicate if the data is official or 
+provisional as this won't have a significant effect on our findings. 
+We can mention that in our discussion of the meta data but its not 
+worth a column in our df. 
+
+Then I want to clearly label each column with its parameter and stat code:
+
+```{r}
+CleanedDataSugarGrove<-SugarGroveData%>% 
+select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
+  rename(
+  'Total Daily Precipitation (Inches)' = X_00045_00006, #renaming columns
+    'Mean Discharge' = X_00060_00003,
+    'Mean Gage Height' = X_00065_00003
+  )
+
+```
+
+I want to repeat this data retrieval and cleaning for two additional sites,
+French Broad River in Asheville in Southwestern NC (03451500) 
+and East Fork Pigeon River in far Southwestern NC near Canton (03456500) for
+examinations of 3 different rivers in different parts of the state.
+
+First I check the metadata and sitedata to see if similar data and parameters
+are availale to compare to Sugar Grove
+
+```{r}
+
+#First the Asheville site
+
+siteNumberAsheville<-('03451500')
+
+#I find the MetaData for the site
+AshevilleMeta <- whatNWISsites(siteNumbers = siteNumberAsheville)
+print(AshevilleMeta) 
+
+#I then use sitedata function to look at what data is available
+AshevilleSiteData<-whatNWISdata(siteNumber=siteNumberAsheville)
+
+```
+
+Then I decide I want to create an easy data retrieval function for my chosen
+parameters based on my previous retreival.
+
+```{r}
+
+WaterData.Function<-function(siteNo, pcode, scode){
+
+SiteData<-readNWISdata(
+  siteNumbers = siteNo,
+  parameterCd= pcode,
+  statCd= scode,
+  startDate= ymd('1900-01-01'),
+  endDate= Sys.Date()
+)
+
+  CleanData<-SiteData%>% 
+select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
+  rename(
+  'Total Daily Precipitation (Inches)' = X_00045_00006, #renaming columns
+    'Mean Discharge' = X_00060_00003,
+    'Mean Gage Height' = X_00065_00003
+  )
+  
+df_name<-paste0('CleanData_', siteNo)
+assign(df_name, CleanData, envir= .GlobalEnv)
+
+return(CleanData)
+}
+```
+
+I run this function for Asheville's siteNo
+```{r}
+siteNoAsheville<-'03451500'
+
+siteNo<-siteNoAsheville
+pcode<-c('00060','00045','00065')
+scode<-c('00003', '00006')
+
+CleanedDataAsheville<-WaterData.Function(siteNo, pcode, scode)
+#View(CleanedDataAsheville)
+
+
+```
+
+I then do the same for the Pigeon River Site and its site number
+
+```{r}
+
+siteNoPigeonRiver<-'03456500'
+
+siteNo<-siteNoPigeonRiver
+pcode<-c('00060','00045','00065')
+scode<-c('00003', '00006')
+
+CleanedDataPigeonRiver<-WaterData.Function(siteNo, pcode, scode)
+#View(CleanedDataPigeonRiver)
+
+```
+
+```{r DECOMPOSITION PLOTS: Chrissie-ASHEVILLE}
+
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+# Convert dateTime to Date class
+CleanedDataAsheville <- CleanedDataAsheville %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values
+CleanedDataAsheville.clean <- CleanedDataAsheville %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Generate time series objects
+CleanedDataAsheville.monthly <- CleanedDataAsheville.clean %>%
+  filter(!is.na(mean_discharge))
+
+# Step 1: Add columns for year and month, then calculate monthly mean discharge
+CleanedDataAsheville.monthly <- CleanedDataAsheville.clean %>%
+  mutate(
+    year = year(dateTime),   # Extract year from dateTime
+    month = month(dateTime)  # Extract month from dateTime
+  ) %>%
+  group_by(year, month) %>%
+  summarize(
+    mean_discharge = mean(Mean.Discharge.clean, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Step 2: Create a new Date column for graphing, setting each month-year combination to the first day of the month
+CleanedDataAsheville.monthly <- CleanedDataAsheville.monthly %>%
+  mutate(
+    dateTime = as.Date(paste(year, month, "01", sep = "-")))
+
+# Extract start and end years and months
+s_year <- year(first(CleanedDataAsheville$dateTime))
+f_year <- year(last(CleanedDataAsheville$dateTime))
+s_month <- month(first(CleanedDataAsheville$dateTime))
+f_month <- month(last(CleanedDataAsheville$dateTime))
+
+# 1. Generate the daily time series object
+CleanedDataAsheville.daily.ts <- ts(
+  CleanedDataAsheville.clean$Mean.Discharge.clean,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# 2. Generate the monthly time series object using aggregated data
+CleanedDataAsheville.monthly.ts <- ts(
+  CleanedDataAsheville.monthly$mean_discharge,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 12
+)
+
+# Display the created time series
+CleanedDataAsheville.daily.ts
+CleanedDataAsheville.monthly.ts
+
+# Decompose the daily time series
+CleanedDataAsheville.daily.decomp <- stl(CleanedDataAsheville.daily.ts, s.window = "periodic")
+
+# Plot the components of the daily decomposition
+plot(CleanedDataAsheville.daily.decomp, main = "Decomposition of Daily Discharge for Asheville")
+
+# Decompose the monthly time series
+CleanedDataAsheville.monthly.decomp <- stl(CleanedDataAsheville.monthly.ts, s.window = "periodic")
+
+# Plot the components of the monthly decomposition
+plot(CleanedDataAsheville.monthly.decomp, main = "Decomposition of Monthly Discharge for Asheville")
+
+
+```
+
+```{r DECOMPOSITION PLOTS: Chrissie-PIGEON RIVER}
+
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+# Convert dateTime to Date class
+CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Generate time series objects
+CleanedDataPigeonRiver.monthly <- CleanedDataPigeonRiver.clean %>%
+  filter(!is.na(mean_discharge))
+
+# Step 1: Add columns for year and month, then calculate monthly mean discharge
+CleanedDataPigeonRiver.monthly <- CleanedDataPigeonRiver.clean %>%
+  mutate(
+    year = year(dateTime),   # Extract year from dateTime
+    month = month(dateTime)  # Extract month from dateTime
+  ) %>%
+  group_by(year, month) %>%
+  summarize(
+    mean_discharge = mean(Mean.Discharge.clean, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Step 2: Create a new Date column for graphing, setting each month-year combination to the first day of the month
+CleanedDataPigeonRiver.monthly <- CleanedDataPigeonRiver.monthly %>%
+  mutate(
+    dateTime = as.Date(paste(year, month, "01", sep = "-")))
+
+# Extract start and end years and months
+s_year <- year(first(CleanedDataPigeonRiver$dateTime))
+f_year <- year(last(CleanedDataPigeonRiver$dateTime))
+s_month <- month(first(CleanedDataPigeonRiver$dateTime))
+f_month <- month(last(CleanedDataPigeonRiver$dateTime))
+
+# 1. Generate the daily time series object
+CleanedDataPigeonRiver.daily.ts <- ts(
+  CleanedDataPigeonRiver.clean$Mean.Discharge.clean,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# 2. Generate the monthly time series object using aggregated data
+CleanedDataPigeonRiver.monthly.ts <- ts(
+  CleanedDataPigeonRiver.monthly$mean_discharge,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 12
+)
+
+# Display the created time series
+CleanedDataPigeonRiver.daily.ts
+CleanedDataPigeonRiver.monthly.ts
+
+# Decompose the daily time series
+CleanedDataPigeonRiver.daily.decomp <- stl(CleanedDataPigeonRiver.daily.ts, s.window = "periodic")
+
+# Plot the components of the daily decomposition
+plot(CleanedDataPigeonRiver.daily.decomp, main = "Decomposition of Daily Discharge for Pigeon River")
+
+# Decompose the monthly time series
+CleanedDataPigeonRiver.monthly.decomp <- stl(CleanedDataPigeonRiver.monthly.ts, s.window = "periodic")
+
+# Plot the components of the monthly decomposition
+plot(CleanedDataPigeonRiver.monthly.decomp, main = "Decomposition of Monthly Discharge for Pigeon River")
+
+```
+
+```{r DECOMPOSITION PLOTS: Chrissie-SUGAR GROVE}
+
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+# Convert dateTime to Date class
+CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Generate time series objects
+CleanedDataSugarGrove.monthly <- CleanedDataSugarGrove.clean %>%
+  filter(!is.na(mean_discharge))
+
+# Step 1: Add columns for year and month, then calculate monthly mean discharge
+CleanedDataSugarGrove.monthly <- CleanedDataSugarGrove.clean %>%
+  mutate(
+    year = year(dateTime),   # Extract year from dateTime
+    month = month(dateTime)  # Extract month from dateTime
+  ) %>%
+  group_by(year, month) %>%
+  summarize(
+    mean_discharge = mean(Mean.Discharge.clean, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# Step 2: Create a new Date column for graphing, setting each month-year combination to the first day of the month
+CleanedDataSugarGrove.monthly <- CleanedDataSugarGrove.monthly %>%
+  mutate(
+    dateTime = as.Date(paste(year, month, "01", sep = "-")))
+
+# Extract start and end years and months
+s_year <- year(first(CleanedDataSugarGrove$dateTime))
+f_year <- year(last(CleanedDataSugarGrove$dateTime))
+s_month <- month(first(CleanedDataSugarGrove$dateTime))
+f_month <- month(last(CleanedDataSugarGrove$dateTime))
+
+# 1. Generate the daily time series object
+CleanedDataSugarGrove.daily.ts <- ts(
+  CleanedDataSugarGrove.clean$Mean.Discharge.clean,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# 2. Generate the monthly time series object using aggregated data
+CleanedDataSugarGrove.monthly.ts <- ts(
+  CleanedDataSugarGrove.monthly$mean_discharge,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 12
+)
+
+# Display the created time series
+CleanedDataSugarGrove.daily.ts
+CleanedDataSugarGrove.monthly.ts
+
+# Decompose the daily time series
+CleanedDataSugarGrove.daily.decomp <- stl(CleanedDataSugarGrove.daily.ts, s.window = "periodic")
+
+# Plot the components of the daily decomposition
+plot(CleanedDataSugarGrove.daily.decomp, main = "Decomposition of Daily Discharge for Sugar Grove")
+
+# Decompose the monthly time series
+CleanedDataSugarGrove.monthly.decomp <- stl(CleanedDataSugarGrove.monthly.ts, s.window = "periodic")
+
+# Plot the components of the monthly decomposition
+plot(CleanedDataSugarGrove.monthly.decomp, main = "Decomposition of Monthly Discharge for Sugar Grove")
+
+```
+7-day average
+
+
+```{r ASHEVILLE}
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+
+# Convert dateTime to Date class and clean columns
+CleanedDataAsheville <- CleanedDataAsheville %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataAsheville.clean <- CleanedDataAsheville %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataAsheville.clean <- CleanedDataAsheville.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataAsheville.clean <- CleanedDataAsheville.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataAsheville.clean$dateTime))
+s_month <- month(first(CleanedDataAsheville.clean$dateTime))
+f_year <- year(last(CleanedDataAsheville.clean$dateTime))
+f_month <- month(last(CleanedDataAsheville.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataAsheville.daily.7DayAvg.ts <- ts(
+  CleanedDataSugarGrove.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataAsheville.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataAsheville.daily.7DayAvg.decomp <- stl(
+  CleanedDataAsheville.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataAsheville.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Asheville"
+)
+
+
+```
+
+```{r SUGAR GROVE}
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+
+# Convert dateTime to Date class and clean columns
+CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataSugarGrove.clean$dateTime))
+s_month <- month(first(CleanedDataSugarGrove.clean$dateTime))
+f_year <- year(last(CleanedDataSugarGrove.clean$dateTime))
+f_month <- month(last(CleanedDataSugarGrove.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataSugarGrove.daily.7DayAvg.ts <- ts(
+  CleanedDataSugarGrove.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataSugarGrove.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataSugarGrove.daily.7DayAvg.decomp <- stl(
+  CleanedDataSugarGrove.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataSugarGrove.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Sugar Grove"
+)
+
+
+```
+```{r PIGEON RIVER}
+library(dplyr)
+library(lubridate)
+library(zoo)
+
+
+# Convert dateTime to Date class and clean columns
+CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataPigeonRiver.clean$dateTime))
+s_month <- month(first(CleanedDataPigeonRiver.clean$dateTime))
+f_year <- year(last(CleanedDataPigeonRiver.clean$dateTime))
+f_month <- month(last(CleanedDataPigeonRiver.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataPigeonRiver.daily.7DayAvg.ts <- ts(
+  CleanedDataPigeonRiver.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataPigeonRiver.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataPigeonRiver.daily.7DayAvg.decomp <- stl(
+  CleanedDataPigeonRiver.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataPigeonRiver.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Pigeon River"
+)
+
+
+```
+
+
+
