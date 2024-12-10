@@ -75,16 +75,18 @@ knitr::kable(
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+options(warn = -1) 
+
 library(rvest)
 library(purrr)
 library(lubridate)
-library(here)
 library(dplyr)
 library(zoo)
 library(ggplot2)
 library(tidyr)
 library(RColorBrewer)
 library(leaflet)
+library(zoo)
 
 #install.packages("dataRetrieval")
 library(dataRetrieval)
@@ -457,7 +459,7 @@ ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Gage Height`)) +
 ```
 
 
-Okay, so clearly Helen was the maximum event for these parameters for 2024.
+Okay, so clearly Helene was the maximum event for these parameters for 2024.
 
 
 <span style="font-size:15px;font-style:italic;">How do these maximums compare to all historical data we have access to?</span>
@@ -836,9 +838,7 @@ plot(
 
 
 ```{r PIGEON RIVER}
-library(dplyr)
-library(lubridate)
-library(zoo)
+
 
 
 # Convert dateTime to Date class and clean columns
@@ -957,6 +957,9 @@ print(SugarGrovePrecipHazen2024)
 
 
 ```
+The Hazen number of 18 tells us that the max 7 day average precipitation event
+during 2024 was an 18 year event, or had about a 20% chance of happening any given
+year.
 
 
 **Asheville Hazen Precipitation**
@@ -986,7 +989,7 @@ print(AshevillePrecipHazen2024)
 
 ```
 
-The Hazen number tells us that the 7 day average discharge observed in
+This Hazen number tells us that the 7 day average discharge observed in
 Asheville in 2024 was a 54 year event, in other words it can be expected to
 happen once every 54 years, or about a 2% chance of happening any one year. That
 gives us a statistical number to match to our observed outliers. Let's find the 
@@ -1020,8 +1023,8 @@ print(PigeonRiverPrecipHazen2024)
 ```
 
 In Pigeon River, it Helene was a 52 year event in terms of total precipitation,
-but in Sugar Grove only an 18 year event, meaning Helene's
-precipitation was less unusual in Sugar Grove than in Asheville or Pigeon River.
+meaning Helene's precipitation was less unusual in Sugar Grove than in Asheville
+during thrat maxiumum 7 day event or Pigeon River.
 
 
 Let's now automate this function for our other two parameters and run our sites.
