@@ -1,5 +1,6 @@
 ---
-title: "Final Project Draft"
+title: "Title: Rainfall Trends Following the Impact of Hurricane Helene 
+in Sugar Grove, Asheville, and Pigeon River"
 author: "Sam Tolbert, Chrissie Pantoja, Ana Andino, Gretchen Barbera"
 date: "2024-12-09"
 output:
