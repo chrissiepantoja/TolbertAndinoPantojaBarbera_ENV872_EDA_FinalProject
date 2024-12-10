@@ -1214,8 +1214,10 @@ PigeonRiverGageHeightHazen2024
 
 **Map of Gage Sites**
 
-I would like to be able to now see geographically how unusual Helene was for each
-site:
+I would like to be tell visually how unusual Helene was for each
+site. I will create a map that ties the magnitutude of the Hazen interval,
+that is, how unusual the Helene event was, to the size of the dot on the map.
+The larger the dot, the less likely that even was to occur.
 ```{r}
 
 
@@ -1243,7 +1245,7 @@ discharge_color <- "green"
 gage_height_color <- "orange"
 
 # Define a scaling factor for marker sizes
-base_size <- 5  # Base size for markers
+base_size <- 3  # Base size for markers
 scaling_factor <- 10  # Scaling factor for marker sizes
 
 # Create a custom function to add size legend
@@ -1347,9 +1349,8 @@ leaflet(hazen_data) %>%
 ```
 
 This is cool! I want to add a lot more sites now that I have this functioning.
-I go and download more sites in Western NC, by randomly selecting a site that has
-each of the three parameters available for 6 additional in Western NC and 
-find the Hazen numbers for each parameter.
+I go and download more sites in Western NC, selecting sites that have
+all of our the three parameters available. There is a limited number.
 
 
 
@@ -1443,7 +1444,7 @@ discharge_color <- "green"
 gage_height_color <- "orange"
 
 # Define a scaling factor for marker sizes
-base_size <- 5  # Base size for markers
+base_size <- 3  # Base size for markers
 scaling_factor <- 10  # Scaling factor for marker sizes
 
 # Create a custom function to add size legend
