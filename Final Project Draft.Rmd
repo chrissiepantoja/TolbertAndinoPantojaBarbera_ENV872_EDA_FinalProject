@@ -57,7 +57,13 @@ USGS stream gage data shows the latitude and longitude of the stream gage, disch
 
 **Describe wrangling process from raw to processed data**
 
-MISSING 
+MISSING (coming from below: This is our data! However, It needs to be cleaned. 
+First I want to remove the 'cd' columns that indicate if the data is official or 
+provisional as this won't have a significant effect on our findings. 
+We can mention that in our discussion of the meta data but its not 
+worth a column in our df. 
+
+Then I want to clearly label each column with its parameter and stat code:)
 
 **Data Structure**
 ```{r Data Table, echo=FALSE}
@@ -157,13 +163,7 @@ SugarGroveData<-readNWISdata( #dataRetrival function from USGS API
 #View(SugarGroveData)
 ```
 
-This is our data! However, It needs to be cleaned. 
-First I want to remove the 'cd' columns that indicate if the data is official or 
-provisional as this won't have a significant effect on our findings. 
-We can mention that in our discussion of the meta data but its not 
-worth a column in our df. 
 
-Then I want to clearly label each column with its parameter and stat code:
 
 ```{r}
 CleanedDataSugarGrove<-SugarGroveData%>% 
@@ -310,7 +310,7 @@ Then, let's see how the week of Helene compares to the rest of 2024 within our
 parameters
 
 **Precipitation**
-```{r, warning=FALSE}
+```{r precipitation, warning=FALSE}
 
 # First: Sugar Grove Precipitation for 2024
 ggplot(Data2024_sg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
@@ -361,7 +361,7 @@ ggplot(Data2024_pg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`))
 
 
 ```
-
+All three locations show relatively low daily precipitation throughout the year, with notable peaks when Helene struck (around September). Looking at each graph individually, the Pigeon River location experienced the highest peak precipitation event during the hurricane, with over 6 inches in a single day, indicating it faced the most intense rainfall compared to the other two locations. However, this does not diminish the intensity observed in Asheville and Sugar Grove (5 inch peaks). Asheville's peaks appear slightly narrower and more intense compared to Sugar Grove's. Surprisingly, the graphs highlight Asheville's pattern of dry periods, which might explain why many people were surprised by the impacts of Helene in a place like Asheville, given its geographical location.
 
 
 **Then discharge**
