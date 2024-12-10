@@ -1,5 +1,6 @@
 ---
-title: "Final Project Draft"
+title: "Title: Rainfall Trends Following the Impact of Hurricane Helene 
+in Sugar Grove, Asheville, and Pigeon River"
 author: "Sam Tolbert, Chrissie Pantoja, Ana Andino, Gretchen Barbera"
 date: "2024-12-09"
 output:
@@ -7,38 +8,63 @@ output:
     toc: true
     toc_float: true
 ---
-##Context and Motivation
-Hurricane Helene struck North Carolina in late September after it quickly intensified to a Category 4 hurricane with sustained winds of 140 mph. Hurricane Helene brought historical rainfall, catastrophic flooding, landslides, strong winds and tornadoes that struck the economy and livelihoods in such a way that up to this date, they are still recovering. Most striking is that Helene happened just a few days after Hurricane Milton (category 5) had also hit the west coast of the US.  These events underscore the growing severity and frequency of hurricanes, highlighting the urgent need to understand the mechanisms and impacts of such extreme weather events.
+**Context and Motivation**
+Hurricane Helene struck North Carolina in late September, rapidly intensifying
+to a Category 4 storm with sustained winds of 140 mph. The hurricane brought 
+catastrophic rainfall, widespread flooding, landslides, destructive winds, and 
+tornados, causing severe disruptions to both the economy and daily life. Months
+later, the state is still recovering from the storm’s far-reaching effects.
+Particularly striking is that Helene followed closely on the heels of 
+Hurricane Milton, a Category 5 storm that had already devastated the west coast
+of the United States. These concurrent events underscore the increasing severity 
+and frequency of hurricanes, highlighting the urgent need to better understand 
+the mechanisms behind and the impacts of such extreme weather events.
 
- Hurricane Helene has left a profound and lasting impact on North Carolina. The storm caused unprecedented destruction, leaving thousands of homes destroyed or damaged. Millions of residents were left without access to critical infrastructure, including water, electricity, telecommunications, and healthcare (OSBM, 2024). Infrastructure such as roadways and bridges were severely damaged. In economic terms, the impact of the storm will be long standing. Preliminary estimates of damage and needs across the state approach $53.6 billion, including $41.1 billion in direct damage, $7.6 billion in indirect impacts, and $4.8 billion in necessary investments for strengthening and mitigation (OSBM, 2024). These figures highlight the storm's disproportionate impact compared to other recent hurricanes, such as Hurricane Florence in 2018, whose total damages amounted to $16.7 billion. Beyond economic losses, the storm reshaped the physical landscape eroding valuable topsoil, altering river paths, and submerging homes that had stood for generations under newly formed waterways plus affecting agriculture production in the long run as well (OSBM, 2024).
+The devastation caused by Hurricane Helene has left a profound and lasting 
+impact on North Carolina. The storm wreaked unprecedented destruction, 
+leaving thousands of homes either destroyed or severely damaged. Millions of 
+residents were cut off from critical infrastructure, including water, 
+electricity, telecommunications, and healthcare services (OSBM, 2024).
+Key infrastructure, such as roadways and bridges, was also heavily damaged. 
+Economically, the storm's effects will be felt for years to come. 
+Preliminary estimates of the damage and recovery needs across the state total approximately $53.6 billion, which includes $41.1 billion in direct damages, $7.6 billion in indirect impacts, and $4.8 billion needed for strengthening and mitigation efforts (OSBM, 2024). These figures highlight the enormity of the storm’s impact compared to other recent hurricanes, such as Hurricane Florence in 2018, which resulted in $16.7 billion in damages. Beyond the immediate economic losses, the storm significantly altered the state’s physical landscape, eroding valuable topsoil, changing river courses, and submerging homes that had stood for generations. The long-term effects on agriculture and other industries will continue to be felt for years to come (OSBM, 2024).
   
-###Why should we understand rainfall trends and why is disaster preparedness important? 
-The rainfall brought by Hurricane Helene was both unprecedented and catastrophic. Some areas in North Carolina received over 26 inches of rain within a 24-hour period, leading to flooding that decimated entire towns across 27 counties (OSBM, 2024). Analyzing precipitation patterns and discharge before, during, and after the hurricane is critical for understanding its lingering effects on regional climates and water systems. This is necessary to make inform decisions in disaster preparedness and water resource management.  
-Hurricane Helene now serves as a reminder of the importance of strengthening communities against flooding and extreme weather. Climate change has no boundaries, and we should be surprised of these extreme effects keep happening thus by focusing on Helene and its uniqueness, the study provides important benchmarks, analysis and comparisons to think about future disaster response.
-By examining these rainfall trends, this study seeks to highlight the unique nature of Hurricane Helene historically as a rare phenomenon with broad consequences. Understanding these patterns provides a foundation for contextualizing Helene's impact within the wider scope of climate change while identifying anomalies in long-term climatic trends. 
-
-##Research Question 
-Question 1: What were the temporal and spatial rainfall patterns in the countisof Asheville, Sugar Grove, and Pigeon River following Hurricane Helene? 
-
-Question 2: Which counties in North Carolina were most vulnerable to extreme rainfall during and after Hurricane Helene, and why? 
-
-Question 3: How did urban vs. rural areas experience rainfall and flooding impacts differently? 
+**Why should we understand rainfall trends and why is disaster preparedness important?** 
+The rainfall from Hurricane Helene was both unprecedented and catastrophic. In some areas of North Carolina, over 26 inches of rain fell within a 24-hour period, resulting in widespread flooding that devastated entire towns across 27 counties (OSBM, 2024). Analyzing precipitation patterns and discharge before, during, and after the hurricane is crucial for understanding its long-term effects on regional climates and water systems. This information is vital for informed decision-making in disaster preparedness and water resource management.
+Hurricane Helene serves as a reminder for strengthening communities against flooding and extreme weather events. Climate change knows no boundaries, and we should not be surprised when such extreme events continue to occur. By focusing on Helene and its unprecedented nature, this study provides important benchmarks, analyses, and comparisons that will be invaluable for future disaster response planning.
+Through examining these rainfall trends, this study aims to emphasize the historical significance of Hurricane Helene as a rare event with far-reaching consequences. Understanding these patterns offers a foundation for contextualizing the storm’s impact within the broader context of climate change, while also identifying anomalies in long-term climatic trends.
 
 
-###Rationale for Dataset of Choice 
-Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene and to better understanding extreme weather events. To do so, we focused on daily precipitation trends, flood data and hurricane patterns. Additionally, the selection of Asheville, Sugar Grove, and Pigeon River as focal sites ensures both geographical and hydrological diversity, capturing a wide range of storm impacts in North Carolina. The study focuses in three critical parameters: Stream Discharge, Precipitation, and Gage Height. For them, we find the daily means and sums
+**Research Question**
+*Question 1: What were the temporal and spatial rainfall patterns in Asheville, Sugar Grove, and Pigeon River following Hurricane Helene?*
 
-FALTA (explanation on why those three: Asheville is a small urban place that is typically not affected by these events, sugar grove a setting with agro production and pigeon river ??)
+*Question 2: Which counties in North Carolina were most vulnerable to extreme rainfall during and after Hurricane Helene, and why?*
+
+*Question 3: How did urban vs. rural areas experience rainfall and flooding impacts differently?* 
+
+
+**Rationale for Dataset of Choice and Data Description**
+Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene, enhancing our understanding of extreme weather events. USGS stream gages collect daily discharge volumes in cubic feet per second and were used because of their accuracy and daily collection. This data analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, the study selected Sugar Grove, Asheville, and Pigeon River as focal sites. These locations provide a broad representation of the storm’s effects throughout Western North Carolina as they were chosen based on their proximity to Helene’s storm path. 
+
+The study examines three critical parameters: precipitation, stream discharge, and gage height. For each parameter, daily means and cumulative sums were calculated to identify patterns and assess the storm’s severity across different regions.
+
+FALTA (explanation on why those three: 
+Sugar Grove data was used because of it's setting with agricultural production and how hard it was hit from Hurricane Helene. 
+Asheville data was used due to it's size and location as a metropolitan hub in rural Western North Carolina.
+Pigeon River data was used due to its proximity to the Tennessee border and its implications for the necessity of cross-border storm management strategy. 
 
 Together, these datasets and locations provide a multi-dimensional view of Hurricane Helene’s impact, bridging historical context, storm-specific data, and hydrological consequences. This integrated approach ensures that the study not only quantifies the immediate effects of the hurricane but also contributes to long-term disaster preparedness and climate resilience.
-##Data Description 
 
-(Data suources and content)
+**Data Description**
 
-##Describe wrangling process from raw to processed data 
+USGS stream gage data shows the latitude and longitude of the stream gage, discharge in cubic feet per second, and the date-time that the data was recorded. 
+(This was already mostly in the paragraph above- we could keep this here or not)
+
+**Describe wrangling process from raw to processed data**
 
 MISSING 
-###Table with datsdet structure
+
+###Table with dataset structure
 
 
 ```{r Data Table, echo=FALSE}
@@ -71,6 +97,7 @@ knitr::kable(
 )
 
 ```
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -139,7 +166,7 @@ SugarGroveData<-readNWISdata( #dataRetrival function from USGS API
 #View(SugarGroveData)  
 ```
 
-This is my data! However, I need to clean this up. 
+This is our data! However, It needs to be cleaned. 
 First I want to remove the 'cd' columns that indicate if the data is official or 
 provisional as this won't have a significant effect on our findings. 
 We can mention that in our discussion of the meta data but its not 
@@ -149,7 +176,7 @@ Then I want to clearly label each column with its parameter and stat code:
 
 ```{r}
 CleanedDataSugarGrove<-SugarGroveData%>% 
-select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
+select(-ends_with("cd")) %>% #removing cd columns that indicate provisional or official data
   rename(
   'Total Daily Precipitation (Inches)' = X_00045_00006, #renaming columns
     'Mean Discharge' = X_00060_00003,
@@ -167,7 +194,7 @@ and East Fork Pigeon River in far Southwestern NC near Canton (03456500) for
 examinations of 3 different rivers in different parts of the state.
 
 First I check the metadata and sitedata to see if similar data and parameters
-are availale to compare to Sugar Grove
+are available to compare to Sugar Grove
 
 **Asheville**
 
@@ -684,12 +711,11 @@ outlier behavior, but it doesn't account for seasonality and other
 trends.
 
 Let's decompose to account for these trends
-
-###CHRISSIE PUT YOUR DECOMPS HERE###
+**Decompositions**
 
 ```{r SUGAR GROVE}
 
-
+#Sugar Grove#
 # Convert dateTime to Date class and clean columns
 CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
   mutate(
@@ -763,7 +789,10 @@ plot(
 ```
 
 
-```{r}
+```{r ASHEVILLE}
+
+#Asheville
+
 # Convert dateTime to Date class and clean columns
 CleanedDataAsheville <- CleanedDataAsheville %>%
   mutate(
@@ -839,7 +868,7 @@ plot(
 
 ```{r PIGEON RIVER}
 
-
+#Pigeon River
 
 # Convert dateTime to Date class and clean columns
 CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
@@ -914,19 +943,22 @@ plot(
 ```
 
 
-These graphs are interesting, and some of them show 2024 as an outlier but they
-don't say by exactly how much Helen was an outlier.
+The graphs provide valuable insights, with some indicating 2024 as a statistical 
+outlier. However, they do not quantify precisely how much Hurricane Helene 
+deviates from historical norms. To evaluate this with statistical certainty,
+we aim to determine just how unusual Helene was as an event.
 
-We want to be able to say with statistical certainty how unusual Helene was as
-an event.
+To achieve this, we will apply the: Hazen Method, to calculate the recurrence 
+intervals for Hurricane Helene within the analyzed parameters. 
+This approach will help contextualize the storm’s magnitude and frequency 
+compared to historical data.
 
-We will use the Hazen Method to find the recurrence intervals for Helene within
-these parameters. We will do this below.
+
+First we will calculate the recurrence intervals for 7-day precipitation events. 
+Based on our initial analysis, assuming Hurricane Helene represents the 7-day 
+averaged maximum for 2024 is a reasonable starting point.
 
 
-First we find the recurrence intervals of 7 days precipitation events. We know from
-our first graphs that assuming Helen is our 7 day averaged maximum for 2024
-is a reasonable assumption:
 
 <span style="font-size:18px; font-weight:bold;">Helene Recurrence Intervals</span>
 
@@ -957,10 +989,10 @@ print(SugarGrovePrecipHazen2024)
 
 
 ```
-The Hazen number of 18 tells us that the max 7 day average precipitation event
-during 2024 was an 18 year event, or had about a 20% chance of happening any given
-year.
 
+The Hazen number of 18 indicates that the maximum 7-day average precipitation 
+event in 2024 was an 18-year event, meaning it had about a 20% chance of 
+occurring in any given year (Hazen interval: 18 years, probability: 20%).
 
 **Asheville Hazen Precipitation**
 ```{r Asheville Precipitation Hazen, warning=FALSE}
@@ -989,11 +1021,15 @@ print(AshevillePrecipHazen2024)
 
 ```
 
-This Hazen number tells us that the 7 day average discharge observed in
-Asheville in 2024 was a 54 year event, in other words it can be expected to
-happen once every 54 years, or about a 2% chance of happening any one year. That
-gives us a statistical number to match to our observed outliers. Let's find the 
-recurrence intervals for 2024 for our other sites
+The Hazen number reveals that the 7-day average discharge observed in Asheville
+in 2024 qualifies as a 54-year event. In other words, such an event is expected 
+to occur approximately once every 54 years, equating to a 2% probability of 
+happening in any given year.  (Hazen interval: 54 years, probability: 2%)
+
+This provides a statistical metric to quantify the observed outliers. 
+
+Next, we will calculate the recurrence intervals for 2024 at our last 
+selected site.
 
 **Pigeon River Hazen Precipitation**
 
@@ -1022,13 +1058,13 @@ PigeonRiverPrecipHazen2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
 print(PigeonRiverPrecipHazen2024)
 ```
 
-In Pigeon River, it Helene was a 52 year event in terms of total precipitation,
-meaning Helene's precipitation was less unusual in Sugar Grove than in Asheville
-during thrat maxiumum 7 day event or Pigeon River.
+At Pigeon River, Hurricane Helene was a 52-year event in terms of total
+precipitation. This indicates that Helene's precipitation was less unusual at 
+Sugar Grove than it was in Asheville or Pigeon River during the
+maximum 7-day event. (Hazen interval: 52 years, probability: ~2%)
 
 
 Let's now automate this function for all three parameters and run our sites.
-
 
 
 **Automated Precipitation**
@@ -1214,10 +1250,14 @@ PigeonRiverGageHeightHazen2024
 
 **Map of Gage Sites**
 
-I would like to be tell visually how unusual Helene was for each
-site. I will create a map that ties the magnitutude of the Hazen interval,
-that is, how unusual the Helene event was, to the size of the dot on the map.
-The larger the dot, the less likely that even was to occur.
+To visually illustrate how unusual Hurricane Helene was at each site,
+we will create a map that represents the magnitude of the Hazen interval. 
+
+The size of the dot on the map will correspond to the rarity of the event: 
+the larger the dot, the less likely the event was to occur.
+This visualization will help convey the statistical significance of 
+Helene's impact across the selected sites.
+
 ```{r}
 
 
@@ -1348,11 +1388,11 @@ leaflet(hazen_data) %>%
 
 ```
 
-This is cool! I want to add a lot more sites now that I have this functioning.
-I go and download more sites in Western NC, selecting sites that have
-all of our the three parameters available. There is a limited number.
-
-
+What we found was very interesting! 
+Now that we have an easy function, we will download more sites in Western North
+Carolina that have precipitation, discharge, and gage height available. This will
+be a helpful visual in understanding the specific impacts in Sugar Grove, Asheville, 
+and Pigeon River compared to the rest of the state. 
 
 
 ```{r message=FALSE}
@@ -1395,12 +1435,20 @@ TarRiverPrecipHazen2024<-Hazen2024Precip.Function(TarRiverSiteNo , pcode, scode)
 
 
 ```
-I then add these sites to an array to add them to my map and can see the
-magnitude of each hazen interval, that is, how unusual the 7 day Helene event
-was, expressed in the size of the dot. The larger the dot, the more unusual that
-7 day average was for that parameter. While limited sites of have all 3 parameters
-available, further analysis could have us create increasinly granular data for
-each site.
+
+
+After selecting the additional sites, they were Incorporated into an array to 
+enhance the map. 
+The map now displays the magnitude of each Hazen interval, 
+representing how unusual the 7-day Hurricane Helene event was at each site. 
+The size of the dot corresponds to the rarity of the event:
+larger dots indicate more unusual 7-day averages for the given parameter. 
+Although the number of sites with all three parameters is limited, 
+further analysis could enable the creation of increasingly granular data for 
+each site, improving the resolution of our insights.
+
+
+
 
 ```{r}
 
@@ -1551,15 +1599,17 @@ leaflet(Eight_site_hazen_data) %>%
 ```
 **Why this analysis matters**
 
-We could call this a map of relative intensity to historical norms. While the 
-size of the dots don't map the absolute
-intensity of precipitation or flooding, they do indicate the magntitude of
-those parameters in relation to the historical norms of each area.
-Flooding infrastructure is often calibrated to 50 year or 75
-year storms, so the relative magntiude to historical norms is important for
-measuring how much the calibrated infrastructure was overwhelmed (or resiliant to)
-Helene. While our sites that contain all three paramters are limited,
-we can see that Helene's relative intensity to historical norms was greater in a
-path throuh central Western NC, particularly over Ashveille. We can reasonably
-assume then that Asheville's infrastructure was more inundated than that of NE
-NC or other sites listed.
+This map can be understood as a representation of relative intensity compared
+to historical norms. While the size of the dots does not directly indicate the
+absolute intensity of precipitation or flooding, it reflects the magnitude of 
+these parameters relative to each area's historical averages.
+Flood management infrastructure is typically designed to handle 
+50-year or 75-year storms, making the relative magnitude to historical norms 
+critical for assessing how well the infrastructure performed under 
+Hurricane Helene's conditions—or how severely it was overwhelmed.
+Although the number of sites with all three parameters is limited,
+the analysis reveals that Helene's relative intensity to historical 
+norms was greatest along a path through central Western North Carolina, 
+particularly over Asheville. From this, we can reasonably infer that Asheville’s 
+infrastructure experienced greater inundation compared to areas in northeastern 
+North Carolina or other sites included in this study.
