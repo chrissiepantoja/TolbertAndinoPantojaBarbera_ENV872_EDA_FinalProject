@@ -1549,3 +1549,17 @@ leaflet(Eight_site_hazen_data) %>%
 
 
 ```
+**Why this analysis matters**
+
+We could call this a map of relative intensity to historical norms. While the 
+size of the dots don't map the absolute
+intensity of precipitation or flooding, they do indicate the magntitude of
+those parameters in relation to the historical norms of each area.
+Flooding infrastructure is often calibrated to 50 year or 75
+year storms, so the relative magntiude to historical norms is important for
+measuring how much the calibrated infrastructure was overwhelmed (or resiliant to)
+Helene. While our sites that contain all three paramters are limited,
+we can see that Helene's relative intensity to historical norms was greater in a
+path throuh central Western NC, particularly over Ashveille. We can reasonably
+assume then that Asheville's infrastructure was more inundated than that of NE
+NC or other sites listed.
