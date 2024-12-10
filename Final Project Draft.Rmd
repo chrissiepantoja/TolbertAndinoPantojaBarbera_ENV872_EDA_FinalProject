@@ -418,6 +418,9 @@ ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Discharge`)) +
 
 
 ```
+All three locations show relatively low discharge levels throughout most of the year, with significant spikes around September/october 2024, coinciding with the impact of Helene. This suggests that the extreme precipitation during Helene led to substantial water runoff and river discharge increases. Among the three, Asheville has the highest peak discharge which surpasses the other locations. Pigeon River shows a comparable degree of discharge, while Sugar Grove experiences the smallest peak among the three, although it is still notably high.
+
+When analyzing the annual distribution, Sugar Grove and Pigeon River maintain relatively steady, low discharge levels throughout the year, while Asheville displays a more variable discharge pattern with multiple small peaks. This should give a sense to the heightened flood risk potential during extreme weather events like Helene. A key question that arises from these observations is whether these peaks are influenced by urbanization or the limited infiltration capacity of the city of Asheville which might also explain why Sugar Grove shows a smaller peak? 
 
 
 
