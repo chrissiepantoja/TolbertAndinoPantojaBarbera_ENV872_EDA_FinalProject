@@ -8,9 +8,25 @@ output:
     toc_float: true
 ---
 **Context and Motivation**
-Hurricane Helene struck North Carolina in late September, rapidly intensifying to a Category 4 storm with sustained winds of 140 mph. The hurricane brought catastrophic rainfall, widespread flooding, landslides, destructive winds, and tornados, causing severe disruptions to both the economy and daily life. Months later, the state is still recovering from the storm’s far-reaching effects. Particularly striking is that Helene followed closely on the heels of Hurricane Milton, a Category 5 storm that had already devastated the west coast of the United States. These concurrent events underscore the increasing severity and frequency of hurricanes, highlighting the urgent need to better understand the mechanisms behind and the impacts of such extreme weather events.
+Hurricane Helene struck North Carolina in late September, rapidly intensifying
+to a Category 4 storm with sustained winds of 140 mph. The hurricane brought 
+catastrophic rainfall, widespread flooding, landslides, destructive winds, and 
+tornados, causing severe disruptions to both the economy and daily life. Months
+later, the state is still recovering from the storm’s far-reaching effects.
+Particularly striking is that Helene followed closely on the heels of 
+Hurricane Milton, a Category 5 storm that had already devastated the west coast
+of the United States. These concurrent events underscore the increasing severity 
+and frequency of hurricanes, highlighting the urgent need to better understand 
+the mechanisms behind and the impacts of such extreme weather events.
 
-The devastation caused by Hurricane Helene has left a profound and lasting impact on North Carolina. The storm wreaked unprecedented destruction, leaving thousands of homes either destroyed or severely damaged. Millions of residents were cut off from critical infrastructure, including water, electricity, telecommunications, and healthcare services (OSBM, 2024). Key infrastructure, such as roadways and bridges, was also heavily damaged. Economically, the storm's effects will be felt for years to come. Preliminary estimates of the damage and recovery needs across the state total approximately $53.6 billion, which includes $41.1 billion in direct damages, $7.6 billion in indirect impacts, and $4.8 billion needed for strengthening and mitigation efforts (OSBM, 2024). These figures highlight the enormity of the storm’s impact compared to other recent hurricanes, such as Hurricane Florence in 2018, which resulted in $16.7 billion in damages. Beyond the immediate economic losses, the storm significantly altered the state’s physical landscape, eroding valuable topsoil, changing river courses, and submerging homes that had stood for generations. The long-term effects on agriculture and other industries will continue to be felt for years to come (OSBM, 2024).
+The devastation caused by Hurricane Helene has left a profound and lasting 
+impact on North Carolina. The storm wreaked unprecedented destruction, 
+leaving thousands of homes either destroyed or severely damaged. Millions of 
+residents were cut off from critical infrastructure, including water, 
+electricity, telecommunications, and healthcare services (OSBM, 2024).
+Key infrastructure, such as roadways and bridges, was also heavily damaged. 
+Economically, the storm's effects will be felt for years to come. 
+Preliminary estimates of the damage and recovery needs across the state total approximately $53.6 billion, which includes $41.1 billion in direct damages, $7.6 billion in indirect impacts, and $4.8 billion needed for strengthening and mitigation efforts (OSBM, 2024). These figures highlight the enormity of the storm’s impact compared to other recent hurricanes, such as Hurricane Florence in 2018, which resulted in $16.7 billion in damages. Beyond the immediate economic losses, the storm significantly altered the state’s physical landscape, eroding valuable topsoil, changing river courses, and submerging homes that had stood for generations. The long-term effects on agriculture and other industries will continue to be felt for years to come (OSBM, 2024).
   
 **Why should we understand rainfall trends and why is disaster preparedness important?** 
 The rainfall from Hurricane Helene was both unprecedented and catastrophic. In some areas of North Carolina, over 26 inches of rain fell within a 24-hour period, resulting in widespread flooding that devastated entire towns across 27 counties (OSBM, 2024). Analyzing precipitation patterns and discharge before, during, and after the hurricane is crucial for understanding its long-term effects on regional climates and water systems. This information is vital for informed decision-making in disaster preparedness and water resource management.
