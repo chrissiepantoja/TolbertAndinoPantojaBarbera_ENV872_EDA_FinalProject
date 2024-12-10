@@ -31,7 +31,7 @@ Preliminary estimates of the damage and recovery needs across the state total ap
   
 **Why should we understand rainfall trends and why is disaster preparedness important?** 
 The rainfall from Hurricane Helene was both unprecedented and catastrophic. In some areas of North Carolina, over 26 inches of rain fell within a 24-hour period, resulting in widespread flooding that devastated entire towns across 27 counties (OSBM, 2024). Analyzing precipitation patterns and discharge before, during, and after the hurricane is crucial for understanding its long-term effects on regional climates and water systems. This information is vital for informed decision-making in disaster preparedness and water resource management.
-Hurricane Helene serves as a reminder for strengthening communities against flooding and extreme weather events. Climate change knows no boundaries, and we should not be surprised when such extreme events continue to occur. By focusing on Helene and its unprecedented nature, this study provides important benchmarks, analyses, and comparisons that will be invaluable for future disaster response planning.
+Hurricane Helene is a reminder of the importance of strengthening communities against flooding and extreme weather events. Climate change knows no boundaries, and we should not be surprised when such extreme events continue to occur. By focusing on Helene and its unprecedented nature, this study provides important benchmarks, analyses, and comparisons that will be invaluable for future disaster response planning.
 Through examining these rainfall trends, this study aims to emphasize the historical significance of Hurricane Helene as a rare event with far-reaching consequences. Understanding these patterns offers a foundation for contextualizing the storm’s impact within the broader context of climate change, while also identifying anomalies in long-term climatic trends.
 
 
@@ -44,47 +44,38 @@ Through examining these rainfall trends, this study aims to emphasize the histor
 
 
 **Rationale for Dataset of Choice and Data Description**
-Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene, enhancing our understanding of extreme weather events. USGS stream gages collect daily discharge volumes in cubic feet per second and were used because of their accuracy and daily collection. This data analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, the study selected Sugar Grove, Asheville, and Pigeon River as focal sites. These locations provide a broad representation of the storm’s effects throughout Western North Carolina as they were chosen based on their proximity to Helene’s storm path. 
+Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene, enhancing our understanding of extreme weather events. USGS stream gages collect daily discharge volumes in cubic feet per second and were used because of their accuracy and daily collection. This data analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, the study selected Sugar Grove, Asheville, and Pigeon River as focal sites. These locations provide a broad representation of the storm’s effects throughout Western North Carolina as they were chosen based on their proximity to Helene’s storm path. For instance, Asheville provides a setting with a unique size and location as a metropolitan hub while Sugar Grove shows a setting with agricultural production. 
 
 The study examines three critical parameters: precipitation, stream discharge, and gage height. For each parameter, daily means and cumulative sums were calculated to identify patterns and assess the storm’s severity across different regions.
-
-FALTA (explanation on why those three: 
-Sugar Grove data was used because of it's setting with agricultural production and how hard it was hit from Hurricane Helene. 
-Asheville data was used due to it's size and location as a metropolitan hub in rural Western North Carolina.
-Pigeon River data was used due to its proximity to the Tennessee border and its implications for the necessity of cross-border storm management strategy. 
 
 Together, these datasets and locations provide a multi-dimensional view of Hurricane Helene’s impact, bridging historical context, storm-specific data, and hydrological consequences. This integrated approach ensures that the study not only quantifies the immediate effects of the hurricane but also contributes to long-term disaster preparedness and climate resilience.
 
 **Data Description**
 
 USGS stream gage data shows the latitude and longitude of the stream gage, discharge in cubic feet per second, and the date-time that the data was recorded. 
-(This was already mostly in the paragraph above- we could keep this here or not)
+
 
 **Describe wrangling process from raw to processed data**
 
 MISSING 
 
-###Table with dataset structure
-
-
+**Data Structure**
 ```{r Data Table, echo=FALSE}
 dataset_structure <- data.frame(
   Variable_Name = c(
-    "Location", "Latitude", "Longitude", "DateTime", 
+    "Location", "Latitude", "Longitude", 
     "Total Daily Precipitation", "Mean Discharge", "Mean Gage Height"
   ),
   Description = c(
     "Name of the site (e.g., Asheville, Sugar Grove, Pigeon River)",
     "Latitude coordinate of the site",
     "Longitude coordinate of the site",
-    "Timestamp of data observation",
     "Daily total precipitation measured at the site",
     "Mean stream discharge over the day",
     "Mean water level height above the gauge reference point"
   ),
   Data_Type = c(
-    "Categorical", "Numeric", "Numeric", 
-    "Date (YYYY-MM-DD)", "Numeric", "Numeric (cubic meters/sec)", 
+    "Categorical", "Numeric", "Numeric","Numeric", "Numeric (cubic meters/sec)", 
     "Numeric (feet)"
   )
 )
