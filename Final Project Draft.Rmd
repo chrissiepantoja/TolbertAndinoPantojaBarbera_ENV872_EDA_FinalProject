@@ -1027,10 +1027,60 @@ meaning Helene's precipitation was less unusual in Sugar Grove than in Asheville
 during thrat maxiumum 7 day event or Pigeon River.
 
 
-Let's now automate this function for our other two parameters and run our sites.
+Let's now automate this function for all three parameters and run our sites.
+
+
+
+**Automated Precipitation**
+```{r}
+
+Hazen2024Precip.Function<-function(siteNo, pcode, scode){
+
+SiteData<-readNWISdata(
+  siteNumbers = siteNo,
+  parameterCd= pcode,
+  statCd= scode,
+  startDate= ymd('1900-01-01'),
+  endDate= Sys.Date()
+)
+
+  CleanData<-SiteData%>% 
+select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
+  rename(
+  'Total Daily Precipitation (Inches)' = X_00045_00006, #renaming columns
+    'Mean Discharge' = X_00060_00003,
+    'Mean Gage Height' = X_00065_00003
+  )
+  
+CleanDataFlood<-CleanData%>% 
+  mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+CleanDataFlood<- CleanDataFlood%>%
+  mutate(Year = year(dateTime))
+
+CleanDataFlood <- CleanDataFlood%>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm=T))
+
+CleanDataFlood <- CleanDataFlood %>% 
+  filter(MaxEvent > 0)
+
+CleanDataFlood <- CleanDataFlood %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100*(2*rank - 1))/(2*n()))) %>% 
+  mutate(hazen = 100/Fa_Value)
+
+CleanDataFlood2024 <- CleanDataFlood %>% filter(Year == 2024)
+
+
+return(CleanDataFlood2024)
+}
+
+```
+
 
 **Automated Discharge**
-
 ```{r}
 
 Hazen2024Discharge.Function<-function(siteNo, pcode, scode){
@@ -1187,55 +1237,85 @@ hazen_data <- data.frame(
 )
 
 
+# Define distinct colors for each layer
+precip_color <- "blue"
+discharge_color <- "green"
+gage_height_color <- "orange"
 
+# Define a scaling factor for marker sizes
+base_size <- 5  # Base size for markers
+scaling_factor <- 10  # Scaling factor for marker sizes
 
+# Create a custom function to add size legend
+addLegendSize <- function(map, title, sizes, values, colors, position = "bottomright") {
+  size_labels <- paste0(values)
+  legend_html <- paste0(
+    "<div style='padding: 5px;'><strong>", title, "</strong><br>",
+    paste0(
+      mapply(function(size, label) {
+        paste0(
+          "<div style='display: flex; align-items: center;'>",
+          "<div style='height:", size * 2, "px; width:", size * 2, "px; ",
+          "border-radius: 50%; background-color:", colors, "; ",
+          "margin-right: 8px;'></div>",
+          label, "</div>"
+        )
+      }, sizes, size_labels, SIMPLIFY = FALSE),
+      collapse = ""
+    ),
+    "</div>"
+  )
+  addControl(map, html = legend_html, position = position)
+}
 
-color_pal <- colorNumeric(
-  palette = c("blue", "green", "red"),  # Custom palette: low -> medium -> high
-  domain = range(
-    hazen_data$Precipitation_Hazen,
-    hazen_data$Discharge_Hazen,
-    hazen_data$GageHeight_Hazen,
-    na.rm = TRUE
-  ),
-  reverse = FALSE
-)
+# Predefined Hazen value examples for the size legend
+size_values <- c(10, 50, 100, 200)  # Example Hazen values
+size_sizes <- base_size + size_values / scaling_factor  # Corresponding marker sizes
 
-
+# Create the Leaflet Map
 leaflet(hazen_data) %>%
   addTiles() %>%
   
   # Precipitation Layer
   addCircleMarkers(
     ~Longitude, ~Latitude,
-    color = ~color_pal(Precipitation_Hazen),
+    color = precip_color,
+    fillColor = precip_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + Precipitation_Hazen / scaling_factor,  # Scale marker size
     label = ~paste0(
       "Location: ", Location, "<br>",
       "Precipitation Hazen: ", round(Precipitation_Hazen, 2)
     ),
-    radius = 10, group = "Precipitation"
+    group = "Precipitation"
   ) %>%
   
   # Discharge Layer
   addCircleMarkers(
     ~Longitude, ~Latitude,
-    color = ~color_pal(Discharge_Hazen),
+    color = discharge_color,
+    fillColor = discharge_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + Discharge_Hazen / scaling_factor,  # Scale marker size
     label = ~paste0(
       "Location: ", Location, "<br>",
       "Discharge Hazen: ", round(Discharge_Hazen, 2)
     ),
-    radius = 10, group = "Discharge"
+    group = "Discharge"
   ) %>%
   
   # Gage Height Layer
   addCircleMarkers(
     ~Longitude, ~Latitude,
-    color = ~color_pal(GageHeight_Hazen),
+    color = gage_height_color,
+    fillColor = gage_height_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + GageHeight_Hazen / scaling_factor,  # Scale marker size
     label = ~paste0(
       "Location: ", Location, "<br>",
       "Gage Height Hazen: ", round(GageHeight_Hazen, 2)
     ),
-    radius = 10, group = "Gage Height"
+    group = "Gage Height"
   ) %>%
   
   # Add Layer Controls
@@ -1244,80 +1324,226 @@ leaflet(hazen_data) %>%
     options = layersControlOptions(collapsed = FALSE)
   ) %>%
   
-  # Add a Legend
+  # Add a Color Legend for Layers
   addLegend(
-    "bottomright",
-    pal = color_pal,
-    values = range(
-      hazen_data$Precipitation_Hazen,
-      hazen_data$Discharge_Hazen,
-      hazen_data$GageHeight_Hazen,
-      na.rm = TRUE
-    ),
-    title = "Hazen Value (Recurrence Interval)",
-    opacity = 0.7
+    "bottomleft",
+    colors = c(precip_color, discharge_color, gage_height_color),
+    labels = c("Precipitation", "Discharge", "Gage Height"),
+    title = "Hazen Value Layers",
+    opacity = 1
+  ) %>%
+  
+  # Add a Size Legend for Hazen Values
+  addLegendSize(
+    title = "Hazen Value (Size)",
+    sizes = size_sizes,
+    values = size_values,
+    colors = "grey",
+    position = "bottomright"
   )
+
 
 
 ```
 
 This is cool! I want to add a lot more sites now that I have this functioning.
-I go and download more sites in Western NC, by randomly selecting one per county
-for every counry in Western NC and find the Hazen numbers for each parameter
-```{r}
+I go and download more sites in Western NC, by randomly selecting a site that has
+each of the three parameters available for 6 additional in Western NC and 
+find the Hazen numbers for each parameter.
 
 
+
+
+```{r message=FALSE}
+
+#CHEOAH RIVER NR BEARPEN GAP NR TAPOCO, NC 
+CheoahRiverSiteNo<-as.character('0351706800')
+CheoahRiverGageHeightHazen2024<-Hazen2024GageHeight.Function(CheoahRiverSiteNo , pcode, scode)
+CheoahRiverDischargeHazen2024<-Hazen2024Discharge.Function(CheoahRiverSiteNo , pcode, scode)
+CheoahRiverPrecipHazen2024<-Hazen2024Precip.Function(CheoahRiverSiteNo , pcode, scode)
+
+#SWANNANOA RIVER AT BILTMORE, NC 
+SwannanoaSiteNo<-as.character('03451000')
+SwannanoaGageHeightHazen2024<-Hazen2024GageHeight.Function(SwannanoaSiteNo, pcode, scode)
+SwannanoaDischargeHazen2024<-Hazen2024Discharge.Function(SwannanoaSiteNo, pcode, scode)
+SwannanoaPrecipHazen2024<-Hazen2024Precip.Function(SwannanoaSiteNo, pcode, scode)
+
+#SECOND BROAD RIVER NR LOGAN, NC
+SecondBroadRiverSiteNo<-as.character('02150495')
+SecondBroadRiverGageHeightHazen2024<-Hazen2024GageHeight.Function(SecondBroadRiverSiteNo , pcode, scode)
+SecondBroadRiverDischargeHazen2024<-Hazen2024Discharge.Function(SecondBroadRiverSiteNo , pcode, scode)
+SecondBroadRiverPrecipHazen2024<-Hazen2024Precip.Function(SecondBroadRiverSiteNo, pcode, scode)
+
+#CHEOAH RIVER NR BEARPEN GAP NR TAPOCO, NC 
+CheoahRiverSiteNo<-as.character('0351706800')
+CheoahGageHeightHazen2024<-Hazen2024GageHeight.Function(CheoahRiverSiteNo , pcode, scode)
+CheoahDischargeHazen2024<-Hazen2024Discharge.Function(CheoahRiverSiteNo , pcode, scode)
+CheoahPrecipHazen2024<-Hazen2024Precip.Function(CheoahRiverSiteNo , pcode, scode)
+
+#ELK CREEK AT ELKVILLE, NC
+ElkCreekSiteNo<-as.character('02111180')
+ElkCreekGageHeightHazen2024<-Hazen2024GageHeight.Function(ElkCreekSiteNo , pcode, scode)
+ElkCreekDischargeHazen2024<-Hazen2024Discharge.Function(ElkCreekSiteNo , pcode, scode)
+ElkCreekPrecipHazen2024<-Hazen2024Precip.Function(ElkCreekSiteNo, pcode, scode)
+
+#TAR RIVER AT NC 97 AT ROCKY MOUNT, NC 
+TarRiverSiteNo<-as.character('02082585')
+TarRiverGageHeightHazen2024<-Hazen2024GageHeight.Function(TarRiverSiteNo , pcode, scode)
+TarRiverDischargeHazen2024<-Hazen2024Discharge.Function(TarRiverSiteNo , pcode, scode)
+TarRiverPrecipHazen2024<-Hazen2024Precip.Function(TarRiverSiteNo , pcode, scode)
 
 
 ```
+I then add these sites to an array to add them to my map and can see the
+magnitude of each hazen interval, that is, how unusual the 7 day Helene event
+was, expressed in the size of the dot. The larger the dot, the more unusual that
+7 day average was for that parameter. While limited sites of have all 3 parameters
+available, further analysis could have us create increasinly granular data for
+each site.
 
-
-
-I then add them to the heatmap
 ```{r}
 
-#install.packages("leaflet.extras")
-library(leaflet.extras)
+# Create Data Frame with Hazen Values
+Eight_site_hazen_data <- data.frame(
+  Location = c(
+    "Pigeon River", "Asheville", "Sugar Grove", 
+    "Cheoah River", "Swannanoa River", "Second Broad River", 
+    "Elk Creek", "Tar River"
+  ),
+  Latitude = c(
+    35.554, 35.595, 36.267, 
+    35.447, 35.572, 35.362, 
+    36.153, 35.942
+  ),
+  Longitude = c(
+    -82.982, -82.551, -81.785, 
+    -83.852, -82.544, -81.958, 
+    -81.421, -77.814
+  ),
+  Precipitation_Hazen = sapply(list(
+    PigeonRiverPrecipHazen2024$hazen, AshevillePrecipHazen2024$hazen, SugarGrovePrecipHazen2024$hazen,
+    CheoahRiverPrecipHazen2024$hazen, SwannanoaPrecipHazen2024$hazen, SecondBroadRiverPrecipHazen2024$hazen,
+    ElkCreekPrecipHazen2024$hazen, TarRiverPrecipHazen2024$hazen
+  ), function(x) as.numeric(unlist(x))),
+  Discharge_Hazen = sapply(list(
+    PigeonRiverDischargeHazen2024$hazen, AshevilleDischargeHazen2024$hazen, SugarGroveDischargeHazen2024$hazen,
+    CheoahRiverDischargeHazen2024$hazen, SwannanoaDischargeHazen2024$hazen, SecondBroadRiverDischargeHazen2024$hazen,
+    ElkCreekDischargeHazen2024$hazen, TarRiverDischargeHazen2024$hazen
+  ), function(x) as.numeric(unlist(x))),
+  GageHeight_Hazen = sapply(list(
+    PigeonRiverGageHeightHazen2024$hazen, AshevilleGageHeightHazen2024$hazen, SugarGroveGageHeightHazen2024$hazen,
+    CheoahRiverGageHeightHazen2024$hazen, SwannanoaGageHeightHazen2024$hazen, SecondBroadRiverGageHeightHazen2024$hazen,
+    ElkCreekGageHeightHazen2024$hazen, TarRiverGageHeightHazen2024$hazen
+  ), function(x) as.numeric(unlist(x)))
+)
 
-leaflet(hazen_data) %>%
-  addTiles() %>%
-  addHeatmap(
-    lng = ~Longitude,
-    lat = ~Latitude,
-    intensity = ~Precipitation_Hazen,
-    blur = 20,
-    max = max(hazen_data$Precipitation_Hazen, na.rm = TRUE),
-    radius = 15
-  ) %>%
-  addLegend(
-    "bottomright",
-    pal = color_pal,
-    values = hazen_data$Precipitation_Hazen,
-    title = "Precipitation Hazen",
-    opacity = 0.7
+# Define distinct colors for each layer
+precip_color <- "blue"
+discharge_color <- "green"
+gage_height_color <- "orange"
+
+# Define a scaling factor for marker sizes
+base_size <- 5  # Base size for markers
+scaling_factor <- 10  # Scaling factor for marker sizes
+
+# Create a custom function to add size legend
+addLegendSize <- function(map, title, sizes, values, colors, position = "bottomright") {
+  size_labels <- paste0(values)
+  legend_html <- paste0(
+    "<div style='padding: 5px;'><strong>", title, "</strong><br>",
+    paste0(
+      mapply(function(size, label) {
+        paste0(
+          "<div style='display: flex; align-items: center;'>",
+          "<div style='height:", size * 2, "px; width:", size * 2, "px; ",
+          "border-radius: 50%; background-color:", colors, "; ",
+          "margin-right: 8px;'></div>",
+          label, "</div>"
+        )
+      }, sizes, size_labels, SIMPLIFY = FALSE),
+      collapse = ""
+    ),
+    "</div>"
   )
+  addControl(map, html = legend_html, position = position)
+}
 
+# Predefined Hazen value examples for the size legend
+size_values <- c(10, 50, 100, 200)  # Example Hazen values
+size_sizes <- base_size + size_values / scaling_factor  # Corresponding marker sizes
 
-leaflet(hazen_data) %>%
+# Create the Leaflet Map
+leaflet(Eight_site_hazen_data) %>%
   addTiles() %>%
+  
+  # Precipitation Layer
   addCircleMarkers(
     ~Longitude, ~Latitude,
-    fillColor = ~color_pal(Discharge_Hazen),
-    fillOpacity = 0.8,
-    stroke = FALSE,
-    radius = 10,
+    color = precip_color,
+    fillColor = precip_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + Precipitation_Hazen / scaling_factor,  # Scale marker size
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Precipitation Hazen: ", round(Precipitation_Hazen, 2)
+    ),
+    group = "Precipitation"
+  ) %>%
+  
+  # Discharge Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = discharge_color,
+    fillColor = discharge_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + Discharge_Hazen / scaling_factor,  # Scale marker size
     label = ~paste0(
       "Location: ", Location, "<br>",
       "Discharge Hazen: ", round(Discharge_Hazen, 2)
-    )
+    ),
+    group = "Discharge"
   ) %>%
+  
+  # Gage Height Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = gage_height_color,
+    fillColor = gage_height_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + GageHeight_Hazen / scaling_factor,  # Scale marker size
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Gage Height Hazen: ", round(GageHeight_Hazen, 2)
+    ),
+    group = "Gage Height"
+  ) %>%
+  
+  # Add Layer Controls
+  addLayersControl(
+    overlayGroups = c("Precipitation", "Discharge", "Gage Height"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  
+  # Add a Color Legend for Layers
   addLegend(
-    "bottomright",
-    pal = color_pal,
-    values = hazen_data$Discharge_Hazen,
-    title = "Discharge Hazen",
-    opacity = 0.7
+    "bottomleft",
+    colors = c(precip_color, discharge_color, gage_height_color),
+    labels = c("Precipitation", "Discharge", "Gage Height"),
+    title = "Hazen Value Layers",
+    opacity = 1
+  ) %>%
+  
+  # Add a Size Legend for Hazen Values
+  addLegendSize(
+    title = "Hazen Value (Size)",
+    sizes = size_sizes,
+    values = size_values,
+    colors = "grey",
+    position = "bottomright"
   )
+
+
+
 
 
 
