@@ -154,7 +154,7 @@ SugarGroveData<-readNWISdata( #dataRetrival function from USGS API
   endDate= Sys.Date()
 )
   
-#View(SugarGroveData)  
+#View(SugarGroveData)
 ```
 
 This is our data! However, It needs to be cleaned. 
