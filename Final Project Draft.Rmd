@@ -559,78 +559,90 @@ print(PigeonRiverDailyTotalPrecipitationPlot)
 
 
 ```
-
+These graphs clearly shows how Helene stands out as a historical event. All three locations (Sugar Grove, Asheville, and Pigeon River) experience occasional extreme rainfall events and relatively consistent patterns of lower daily precipitation over the decades. These historical records highlight that the extreme peaks observed in 2024, particularly during Helene are
 
 **Discharge**
 ```{r, warning=FALSE}
 
-#First:Sugar Grove Historical Discharge Data
+CleanedDataSugarGrove$dateTime <- as.Date(CleanedDataSugarGrove$dateTime)
+CleanedDataAsheville$dateTime <- as.Date(CleanedDataAsheville$dateTime)
+CleanedDataPigeonRiver$dateTime <- as.Date(CleanedDataPigeonRiver$dateTime)
+HeleneData_sg$dateTime <- as.Date(HeleneData_sg$dateTime)
+HeleneData_ash$dateTime <- as.Date(HeleneData_ash$dateTime)
+HeleneData_pg$dateTime <- as.Date(HeleneData_pg$dateTime)
 
-SugarGroveDailyDischargeLinePlot<-ggplot(CleanedDataSugarGrove%>%
+# First: Sugar Grove Historical Discharge Data
+SugarGroveDailyDischargeLinePlot <- ggplot(CleanedDataSugarGrove %>%
     drop_na(`Mean Discharge`), aes(
-  x= dateTime,
-  y= `Mean Discharge`)) +
-  geom_line(color="lightblue")+
+  x = dateTime,
+  y = `Mean Discharge`)) +
+  geom_line(color = "lightblue") +
   geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Discharge`),
              color = "red",
              size = 3) +
+  scale_x_date(
+    limits = as.Date(c("1954-01-01", "2024-12-31")),
+    date_labels = "%Y"
+  ) +
   labs(
-    title = "Mean Daily Discharge Over time",
-    subtitle = "Sugar Grove(1954-2024)",
-    x= "Date",
-    y= "Mean Discharge (cubic meters per second)"
-  )+ theme_minimal()
- 
-print(SugarGroveDailyDischargeLinePlot) 
+    title = "Mean Daily Discharge Over Time",
+    subtitle = "Sugar Grove (1954-2024)",
+    x = "Date",
+    y = "Mean Discharge (cubic meters per second)"
+  ) +
+  theme_minimal()
 
+print(SugarGroveDailyDischargeLinePlot)
 
-
-#Second: Asheville Historical Discharge Data 
-
-AshevilleDailyDischargeLinePlot<-ggplot(CleanedDataAsheville %>%
+# Second: Asheville Historical Discharge Data
+AshevilleDailyDischargeLinePlot <- ggplot(CleanedDataAsheville %>%
     drop_na(`Mean Discharge`), aes(
-  x = dateTime, 
+  x = dateTime,
   y = `Mean Discharge`)) +
   geom_line(color = "darkred", size = 1) +
   geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Discharge`),
              color = "red",
              size = 3) +
+  scale_x_date(
+    limits = as.Date(c("1954-01-01", "2024-12-31")),
+    date_labels = "%Y"
+  ) +
   labs(
     title = "Mean Daily Discharge Over Time",
-    subtitle = "Asheville(1954-2024)",
+    subtitle = "Asheville (1954-2024)",
     x = "Date",
     y = "Mean Discharge (cubic meters per second)"
   ) +
-  theme_minimal() 
+  theme_minimal()
 
 print(AshevilleDailyDischargeLinePlot)
 
-
-#Third: Pigeon River Historical Discharge Data 
-
-PigeonRiverDailyDischargeLinePlot<-ggplot(CleanedDataPigeonRiver%>%
+# Third: Pigeon River Historical Discharge Data
+PigeonRiverDailyDischargeLinePlot <- ggplot(CleanedDataPigeonRiver %>%
     drop_na(`Mean Discharge`), aes(
-  x= dateTime,
-  y= `Mean Discharge`)) +
-  geom_line(color="grey")+
+  x = dateTime,
+  y = `Mean Discharge`)) +
+  geom_line(color = "grey") +
   geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Discharge`),
              color = "red",
              size = 3) +
+  scale_x_date(
+    limits = as.Date(c("1954-01-01", "2024-12-31")),
+    date_labels = "%Y"
+  ) +
   labs(
-    title = "Mean Daily Discharge Over time",
-    subtitle = "Pigeon River(1954-2024)",
-    x= "Date",
-    y= "Mean Discharge (cubic meters per second)"
-  )+ theme_minimal()
+    title = "Mean Daily Discharge Over Time",
+    subtitle = "Pigeon River (1954-2024)",
+    x = "Date",
+    y = "Mean Discharge (cubic meters per second)"
+  ) +
+  theme_minimal()
 
 print(PigeonRiverDailyDischargeLinePlot)
 
 
 ```
-
-
-
-
+All three locations show a generally stable pattern of daily mean discharge, marked by periodic spikes indicative of extreme events, with Helene standing out as a significant event in the last 70 years. Sugar Pine exhibits a noticeable peak that is unparalleled compared to the historical record, while Sugar Grove has experienced higher peaks of discharge in the past. However, it is important to highlight Asheville: despite appearing stable with its highest peak around 2005, the dataset is missing data for three critical days (September 27–29), precisely when Helene impacted the area. Therefore, the results for Asheville in this graph should be interpreted with caution.
 
 **Gage Height**
 ```{r, warning=FALSE}
