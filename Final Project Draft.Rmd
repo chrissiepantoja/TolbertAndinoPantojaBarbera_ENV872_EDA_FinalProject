@@ -1,25 +1,92 @@
 ---
 title: "Final Project Draft"
-author: "Sam Tolbert"
+author: "Sam Tolbert, Chrissie Pantoja, Ana Andino, Gretchen Barbera"
 date: "2024-12-09"
 output:
   html_document:
     toc: true
     toc_float: true
 ---
+##Context and Motivation
+Hurricane Helene struck North Carolina in late September after it quickly intensified to a Category 4 hurricane with sustained winds of 140 mph. Hurricane Helene brought historical rainfall, catastrophic flooding, landslides, strong winds and tornadoes that struck the economy and livelihoods in such a way that up to this date, they are still recovering. Most striking is that Helene happened just a few days after Hurricane Milton (category 5) had also hit the west coast of the US.  These events underscore the growing severity and frequency of hurricanes, highlighting the urgent need to understand the mechanisms and impacts of such extreme weather events.
 
+ Hurricane Helene has left a profound and lasting impact on North Carolina. The storm caused unprecedented destruction, leaving thousands of homes destroyed or damaged. Millions of residents were left without access to critical infrastructure, including water, electricity, telecommunications, and healthcare (OSBM, 2024). Infrastructure such as roadways and bridges were severely damaged. In economic terms, the impact of the storm will be long standing. Preliminary estimates of damage and needs across the state approach $53.6 billion, including $41.1 billion in direct damage, $7.6 billion in indirect impacts, and $4.8 billion in necessary investments for strengthening and mitigation (OSBM, 2024). These figures highlight the storm's disproportionate impact compared to other recent hurricanes, such as Hurricane Florence in 2018, whose total damages amounted to $16.7 billion. Beyond economic losses, the storm reshaped the physical landscape eroding valuable topsoil, altering river paths, and submerging homes that had stood for generations under newly formed waterways plus affecting agriculture production in the long run as well (OSBM, 2024).
+  
+###Why should we understand rainfall trends and why is disaster preparedness important? 
+The rainfall brought by Hurricane Helene was both unprecedented and catastrophic. Some areas in North Carolina received over 26 inches of rain within a 24-hour period, leading to flooding that decimated entire towns across 27 counties (OSBM, 2024). Analyzing precipitation patterns and discharge before, during, and after the hurricane is critical for understanding its lingering effects on regional climates and water systems. This is necessary to make inform decisions in disaster preparedness and water resource management.  
+Hurricane Helene now serves as a reminder of the importance of strengthening communities against flooding and extreme weather. Climate change has no boundaries, and we should be surprised of these extreme effects keep happening thus by focusing on Helene and its uniqueness, the study provides important benchmarks, analysis and comparisons to think about future disaster response.
+By examining these rainfall trends, this study seeks to highlight the unique nature of Hurricane Helene historically as a rare phenomenon with broad consequences. Understanding these patterns provides a foundation for contextualizing Helene's impact within the wider scope of climate change while identifying anomalies in long-term climatic trends. 
+
+##Research Question 
+Question 1: What were the temporal and spatial rainfall patterns in the countisof Asheville, Sugar Grove, and Pigeon River following Hurricane Helene? 
+
+Question 2: Which counties in North Carolina were most vulnerable to extreme rainfall during and after Hurricane Helene, and why? 
+
+Question 3: How did urban vs. rural areas experience rainfall and flooding impacts differently? 
+
+
+###Rationale for Dataset of Choice 
+Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene and to better understanding extreme weather events. To do so, we focused on daily precipitation trends, flood data and hurricane patterns. Additionally, the selection of Asheville, Sugar Grove, and Pigeon River as focal sites ensures both geographical and hydrological diversity, capturing a wide range of storm impacts in North Carolina. The study focuses in three critical parameters: Stream Discharge, Precipitation, and Gage Height. For them, we find the daily means and sums
+
+FALTA (explanation on why those three: Asheville is a small urban place that is typically not affected by these events, sugar grove a setting with agro production and pigeon river ??)
+
+Together, these datasets and locations provide a multi-dimensional view of Hurricane Helene’s impact, bridging historical context, storm-specific data, and hydrological consequences. This integrated approach ensures that the study not only quantifies the immediate effects of the hurricane but also contributes to long-term disaster preparedness and climate resilience.
+##Data Description 
+
+(Data suources and content)
+
+##Describe wrangling process from raw to processed data 
+
+MISSING 
+###Table with datsdet structure
+
+
+```{r Data Table, echo=FALSE}
+dataset_structure <- data.frame(
+  Variable_Name = c(
+    "Location", "Latitude", "Longitude", "DateTime", 
+    "Total Daily Precipitation", "Mean Discharge", "Mean Gage Height"
+  ),
+  Description = c(
+    "Name of the site (e.g., Asheville, Sugar Grove, Pigeon River)",
+    "Latitude coordinate of the site",
+    "Longitude coordinate of the site",
+    "Timestamp of data observation",
+    "Daily total precipitation measured at the site",
+    "Mean stream discharge over the day",
+    "Mean water level height above the gauge reference point"
+  ),
+  Data_Type = c(
+    "Categorical", "Numeric", "Numeric", 
+    "Date (YYYY-MM-DD)", "Numeric", "Numeric (cubic meters/sec)", 
+    "Numeric (feet)"
+  )
+)
+
+knitr::kable(
+  dataset_structure, 
+  col.names = c("Variable Name", "Description", "Data Type"),
+  caption = "Dataset Structure for Analyzing Hurricane Helene's Impact",
+  align = "l"
+)
+
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+options(warn = -1) 
+
 library(rvest)
 library(purrr)
 library(lubridate)
-library(here)
 library(dplyr)
 library(zoo)
 library(ggplot2)
 library(tidyr)
+library(RColorBrewer)
+library(leaflet)
+library(zoo)
 
 #install.packages("dataRetrieval")
 library(dataRetrieval)
@@ -392,7 +459,7 @@ ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Gage Height`)) +
 ```
 
 
-Okay, so clearly Helen was the maximum event for these parameters for 2024.
+Okay, so clearly Helene was the maximum event for these parameters for 2024.
 
 
 <span style="font-size:15px;font-style:italic;">How do these maximums compare to all historical data we have access to?</span>
@@ -620,18 +687,234 @@ Let's decompose to account for these trends
 
 ###CHRISSIE PUT YOUR DECOMPS HERE###
 
+```{r SUGAR GROVE}
+
+
+# Convert dateTime to Date class and clean columns
+CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataSugarGrove.clean <- CleanedDataSugarGrove.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataSugarGrove.clean$dateTime))
+s_month <- month(first(CleanedDataSugarGrove.clean$dateTime))
+f_year <- year(last(CleanedDataSugarGrove.clean$dateTime))
+f_month <- month(last(CleanedDataSugarGrove.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataSugarGrove.daily.7DayAvg.ts <- ts(
+  CleanedDataSugarGrove.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataSugarGrove.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataSugarGrove.daily.7DayAvg.decomp <- stl(
+  CleanedDataSugarGrove.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataSugarGrove.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Sugar Grove"
+)
+
+
+```
+
+
+```{r}
+# Convert dateTime to Date class and clean columns
+CleanedDataAsheville <- CleanedDataAsheville %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataAsheville.clean <- CleanedDataAsheville %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataAsheville.clean <- CleanedDataAsheville.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataAsheville.clean <- CleanedDataAsheville.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataAsheville.clean$dateTime))
+s_month <- month(first(CleanedDataAsheville.clean$dateTime))
+f_year <- year(last(CleanedDataAsheville.clean$dateTime))
+f_month <- month(last(CleanedDataAsheville.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataAsheville.daily.7DayAvg.ts <- ts(
+  CleanedDataAsheville.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataAsheville.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataAsheville.daily.7DayAvg.decomp <- stl(
+  CleanedDataAsheville.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataAsheville.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Asheville"
+)
+
+
+```
+
+
+```{r PIGEON RIVER}
 
 
 
+# Convert dateTime to Date class and clean columns
+CleanedDataPigeonRiver <- CleanedDataPigeonRiver %>%
+  mutate(
+    dateTime = as.Date(dateTime),
+    mean_discharge = as.numeric(`Mean Discharge`),
+    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
+    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
+  )
+
+# Fill missing Mean Discharge values using linear interpolation
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver %>%
+  mutate(
+    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
+  )
+
+# Calculate the 7-day moving average, filling any remaining NAs
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver.clean %>%
+  arrange(dateTime) %>%
+  mutate(
+    Mean.Discharge.7DayAvg = rollapply(
+      Mean.Discharge.clean,
+      width = 7,
+      FUN = mean,
+      align = "right",
+      fill = NA
+    )
+  ) %>%
+  # Fill remaining NAs in the 7-day moving average
+  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
+
+# If any missing values exist, replace them with a default value or use interpolation
+CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver.clean %>%
+  mutate(
+    Mean.Discharge.7DayAvg = ifelse(
+      is.na(Mean.Discharge.7DayAvg),
+      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      Mean.Discharge.7DayAvg
+    )
+  )
+
+# Generate a daily time series object for the 7-day moving average
+s_year <- year(first(CleanedDataPigeonRiver.clean$dateTime))
+s_month <- month(first(CleanedDataPigeonRiver.clean$dateTime))
+f_year <- year(last(CleanedDataPigeonRiver.clean$dateTime))
+f_month <- month(last(CleanedDataPigeonRiver.clean$dateTime))
+
+# Re-create the daily time series object
+CleanedDataPigeonRiver.daily.7DayAvg.ts <- ts(
+  CleanedDataPigeonRiver.clean$Mean.Discharge.7DayAvg,
+  start = c(s_year, s_month),
+  end = c(f_year, f_month),
+  frequency = 365
+)
+
+# Verify no missing values in the time series object
+sum(is.na(CleanedDataPigeonRiver.daily.7DayAvg.ts))
+
+# Decompose the 7-day moving average time series
+CleanedDataPigeonRiver.daily.7DayAvg.decomp <- stl(
+  CleanedDataPigeonRiver.daily.7DayAvg.ts,
+  s.window = "periodic"
+)
+
+# Plot the components of the 7-day moving average decomposition
+plot(
+  CleanedDataPigeonRiver.daily.7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Pigeon River"
+)
 
 
+```
 
 
-
-
-
-
-These graphs are interesting, and some of them show 2024 as an outlierbut they
+These graphs are interesting, and some of them show 2024 as an outlier but they
 don't say by exactly how much Helen was an outlier.
 
 We want to be able to say with statistical certainty how unusual Helene was as
@@ -669,11 +952,14 @@ SugarGrovePrecip <- SugarGrovePrecip %>%
   mutate(Fa_Value = ((100*(2*rank - 1))/(2*n()))) %>% 
   mutate(hazen = 100/Fa_Value)
 
-SugarGrovePrecipHazen_2024 <- SugarGrovePrecip %>% filter(Year == 2024)
-print(SugarGrovePrecipHazen_2024)
+SugarGrovePrecipHazen2024 <- SugarGrovePrecip %>% filter(Year == 2024)
+print(SugarGrovePrecipHazen2024)
 
 
 ```
+The Hazen number of 18 tells us that the max 7 day average precipitation event
+during 2024 was an 18 year event, or had about a 20% chance of happening any given
+year.
 
 
 **Asheville Hazen Precipitation**
@@ -697,13 +983,13 @@ AshevillePrecip <- AshevillePrecip %>%
   mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * n()))) %>% 
   mutate(hazen = 100 / Fa_Value)
 
-AshevillePrecipHazen_2024 <- AshevillePrecip %>% filter(Year == 2024)
-print(AshevillePrecipHazen_2024)
+AshevillePrecipHazen2024 <- AshevillePrecip %>% filter(Year == 2024)
+print(AshevillePrecipHazen2024)
 
 
 ```
 
-The Hazen number tells us that the 7 day average discharge observed in
+This Hazen number tells us that the 7 day average discharge observed in
 Asheville in 2024 was a 54 year event, in other words it can be expected to
 happen once every 54 years, or about a 2% chance of happening any one year. That
 gives us a statistical number to match to our observed outliers. Let's find the 
@@ -731,20 +1017,70 @@ PigeonRiverPrecip <- PigeonRiverPrecip %>%
   mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * n()))) %>% 
   mutate(hazen = 100 / Fa_Value)
 
-PigeonRiverPrecipHazen_2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
+PigeonRiverPrecipHazen2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
 
-print(PigeonRiverPrecipHazen_2024)
+print(PigeonRiverPrecipHazen2024)
 ```
 
 In Pigeon River, it Helene was a 52 year event in terms of total precipitation,
-but in Sugar Grove only an 18 year event, meaning Helene's
-precipitation was less unusual in Sugar Grove than in Asheville or Pigeon River.
+meaning Helene's precipitation was less unusual in Sugar Grove than in Asheville
+during thrat maxiumum 7 day event or Pigeon River.
 
 
-Let's now automate this function for our other two parameters and run our sites.
+Let's now automate this function for all three parameters and run our sites.
+
+
+
+**Automated Precipitation**
+```{r}
+
+Hazen2024Precip.Function<-function(siteNo, pcode, scode){
+
+SiteData<-readNWISdata(
+  siteNumbers = siteNo,
+  parameterCd= pcode,
+  statCd= scode,
+  startDate= ymd('1900-01-01'),
+  endDate= Sys.Date()
+)
+
+  CleanData<-SiteData%>% 
+select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
+  rename(
+  'Total Daily Precipitation (Inches)' = X_00045_00006, #renaming columns
+    'Mean Discharge' = X_00060_00003,
+    'Mean Gage Height' = X_00065_00003
+  )
+  
+CleanDataFlood<-CleanData%>% 
+  mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
+
+CleanDataFlood<- CleanDataFlood%>%
+  mutate(Year = year(dateTime))
+
+CleanDataFlood <- CleanDataFlood%>% 
+  group_by(Year) %>%                  
+  summarize(MaxEvent = max(moving_avg, na.rm=T))
+
+CleanDataFlood <- CleanDataFlood %>% 
+  filter(MaxEvent > 0)
+
+CleanDataFlood <- CleanDataFlood %>% 
+  arrange(desc(MaxEvent)) %>% 
+  mutate(rank = row_number()) %>% 
+  mutate(Fa_Value = ((100*(2*rank - 1))/(2*n()))) %>% 
+  mutate(hazen = 100/Fa_Value)
+
+CleanDataFlood2024 <- CleanDataFlood %>% filter(Year == 2024)
+
+
+return(CleanDataFlood2024)
+}
+
+```
+
 
 **Automated Discharge**
-
 ```{r}
 
 Hazen2024Discharge.Function<-function(siteNo, pcode, scode){
@@ -854,8 +1190,6 @@ CleanDataGageHeight <- CleanDataGageHeight %>%
 CleanDataGageHeight2024 <- CleanDataGageHeight %>% filter(Year == 2024)
 
 
-
-
 return(CleanDataGageHeight2024)
 }
 
@@ -864,49 +1198,368 @@ return(CleanDataGageHeight2024)
 SugarGroveGageHeightHazen2024<-
   Hazen2024GageHeight.Function(siteNumberSugarGrove, pcode, scode)
 
-AshevilleGageHeightHaze024<-
+AshevilleGageHeightHazen2024<-
   Hazen2024GageHeight.Function(siteNumberAsheville, pcode, scode)
 
-PigeonRiverGageHeightHaze2024<-
+PigeonRiverGageHeightHazen2024<-
   Hazen2024GageHeight.Function(siteNoPigeonRiver, pcode, scode)
 
 SugarGroveGageHeightHazen2024
-AshevilleGageHeightHaze024
-PigeonRiverGageHeightHaze2024
+AshevilleGageHeightHazen2024
+PigeonRiverGageHeightHazen2024
 
 ```
 
 
 
 **Map of Gage Sites**
+
+I would like to be tell visually how unusual Helene was for each
+site. I will create a map that ties the magnitutude of the Hazen interval,
+that is, how unusual the Helene event was, to the size of the dot on the map.
+The larger the dot, the less likely that even was to occur.
 ```{r}
 
-library(leaflet)
 
-locations <- data.frame(
-  Location = c("Sugar Grove", "Asheville", "Pigeon River"),
+
+# Create Data Frame with Hazen Values
+hazen_data <- data.frame(
+  Location = c("Pigeon River", "Asheville", "Sugar Grove"),
   Latitude = c(35.554, 35.595, 36.267),
   Longitude = c(-82.982, -82.551, -81.785),
-  Precipitation = c(max(Data2024_pg$`Total Daily Precipitation (Inches)`, na.rm = TRUE),
-                    max(Data2024_ash$`Total Daily Precipitation (Inches)`, na.rm = TRUE),
-                    max(Data2024_sg$`Total Daily Precipitation (Inches)`, na.rm = TRUE)),
-  Discharge = c(max(Data2024_pg$`Mean Discharge`, na.rm = TRUE),
-                max(Data2024_ash$`Mean Discharge`, na.rm = TRUE),
-                max(Data2024_sg$`Mean Discharge`, na.rm = TRUE))
+  Precipitation_Hazen = sapply(list(PigeonRiverPrecipHazen2024$hazen, 
+                                    AshevillePrecipHazen2024$hazen, 
+                                    SugarGrovePrecipHazen2024$hazen), function(x) as.numeric(unlist(x))),
+  Discharge_Hazen = sapply(list(PigeonRiverDischargeHazen2024$hazen, 
+                                 AshevilleDischargeHazen2024$hazen, 
+                                 SugarGroveDischargeHazen2024$hazen), function(x) as.numeric(unlist(x))),
+  GageHeight_Hazen = sapply(list(PigeonRiverGageHeightHazen2024$hazen, 
+                                  AshevilleGageHeightHazen2024$hazen, 
+                                  SugarGroveGageHeightHazen2024$hazen), function(x) as.numeric(unlist(x)))
 )
 
-leaflet(locations) %>%
+
+# Define distinct colors for each layer
+precip_color <- "blue"
+discharge_color <- "green"
+gage_height_color <- "orange"
+
+# Define a scaling factor for marker sizes
+base_size <- 3  # Base size for markers
+scaling_factor <- 10  # Scaling factor for marker sizes
+
+# Create a custom function to add size legend
+addLegendSize <- function(map, title, sizes, values, colors, position = "bottomright") {
+  size_labels <- paste0(values)
+  legend_html <- paste0(
+    "<div style='padding: 5px;'><strong>", title, "</strong><br>",
+    paste0(
+      mapply(function(size, label) {
+        paste0(
+          "<div style='display: flex; align-items: center;'>",
+          "<div style='height:", size * 2, "px; width:", size * 2, "px; ",
+          "border-radius: 50%; background-color:", colors, "; ",
+          "margin-right: 8px;'></div>",
+          label, "</div>"
+        )
+      }, sizes, size_labels, SIMPLIFY = FALSE),
+      collapse = ""
+    ),
+    "</div>"
+  )
+  addControl(map, html = legend_html, position = position)
+}
+
+# Predefined Hazen value examples for the size legend
+size_values <- c(10, 50, 100, 200)  # Example Hazen values
+size_sizes <- base_size + size_values / scaling_factor  # Corresponding marker sizes
+
+# Create the Leaflet Map
+leaflet(hazen_data) %>%
   addTiles() %>%
+  
+  # Precipitation Layer
   addCircleMarkers(
     ~Longitude, ~Latitude,
-    label = ~paste0(Location, "<br>Precipitation: ", Precipitation, " in",
-                    "<br>Discharge: ", Discharge, " m³/s"),
-    radius = 8,
-    color = "blue",
-    fillOpacity = 0.7
+    color = precip_color,
+    fillColor = precip_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + Precipitation_Hazen / scaling_factor,  # Scale marker size
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Precipitation Hazen: ", round(Precipitation_Hazen, 2)
+    ),
+    group = "Precipitation"
   ) %>%
-  addLegend("bottomright", colors = "blue", labels = "Monitoring Sites", title = "Legend")
+  
+  # Discharge Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = discharge_color,
+    fillColor = discharge_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + Discharge_Hazen / scaling_factor,  # Scale marker size
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Discharge Hazen: ", round(Discharge_Hazen, 2)
+    ),
+    group = "Discharge"
+  ) %>%
+  
+  # Gage Height Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = gage_height_color,
+    fillColor = gage_height_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + GageHeight_Hazen / scaling_factor,  # Scale marker size
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Gage Height Hazen: ", round(GageHeight_Hazen, 2)
+    ),
+    group = "Gage Height"
+  ) %>%
+  
+  # Add Layer Controls
+  addLayersControl(
+    overlayGroups = c("Precipitation", "Discharge", "Gage Height"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  
+  # Add a Color Legend for Layers
+  addLegend(
+    "bottomleft",
+    colors = c(precip_color, discharge_color, gage_height_color),
+    labels = c("Precipitation", "Discharge", "Gage Height"),
+    title = "Hazen Value Layers",
+    opacity = 1
+  ) %>%
+  
+  # Add a Size Legend for Hazen Values
+  addLegendSize(
+    title = "Hazen Value (Size)",
+    sizes = size_sizes,
+    values = size_values,
+    colors = "grey",
+    position = "bottomright"
+  )
 
-# Just go show off we can start with this map to show the locations. I cant think of what other map to do 
+
 
 ```
+
+This is cool! I want to add a lot more sites now that I have this functioning.
+I go and download more sites in Western NC, selecting sites that have
+all of our the three parameters available. There is a limited number.
+
+
+
+
+```{r message=FALSE}
+
+#CHEOAH RIVER NR BEARPEN GAP NR TAPOCO, NC 
+CheoahRiverSiteNo<-as.character('0351706800')
+CheoahRiverGageHeightHazen2024<-Hazen2024GageHeight.Function(CheoahRiverSiteNo , pcode, scode)
+CheoahRiverDischargeHazen2024<-Hazen2024Discharge.Function(CheoahRiverSiteNo , pcode, scode)
+CheoahRiverPrecipHazen2024<-Hazen2024Precip.Function(CheoahRiverSiteNo , pcode, scode)
+
+#SWANNANOA RIVER AT BILTMORE, NC 
+SwannanoaSiteNo<-as.character('03451000')
+SwannanoaGageHeightHazen2024<-Hazen2024GageHeight.Function(SwannanoaSiteNo, pcode, scode)
+SwannanoaDischargeHazen2024<-Hazen2024Discharge.Function(SwannanoaSiteNo, pcode, scode)
+SwannanoaPrecipHazen2024<-Hazen2024Precip.Function(SwannanoaSiteNo, pcode, scode)
+
+#SECOND BROAD RIVER NR LOGAN, NC
+SecondBroadRiverSiteNo<-as.character('02150495')
+SecondBroadRiverGageHeightHazen2024<-Hazen2024GageHeight.Function(SecondBroadRiverSiteNo , pcode, scode)
+SecondBroadRiverDischargeHazen2024<-Hazen2024Discharge.Function(SecondBroadRiverSiteNo , pcode, scode)
+SecondBroadRiverPrecipHazen2024<-Hazen2024Precip.Function(SecondBroadRiverSiteNo, pcode, scode)
+
+#CHEOAH RIVER NR BEARPEN GAP NR TAPOCO, NC 
+CheoahRiverSiteNo<-as.character('0351706800')
+CheoahGageHeightHazen2024<-Hazen2024GageHeight.Function(CheoahRiverSiteNo , pcode, scode)
+CheoahDischargeHazen2024<-Hazen2024Discharge.Function(CheoahRiverSiteNo , pcode, scode)
+CheoahPrecipHazen2024<-Hazen2024Precip.Function(CheoahRiverSiteNo , pcode, scode)
+
+#ELK CREEK AT ELKVILLE, NC
+ElkCreekSiteNo<-as.character('02111180')
+ElkCreekGageHeightHazen2024<-Hazen2024GageHeight.Function(ElkCreekSiteNo , pcode, scode)
+ElkCreekDischargeHazen2024<-Hazen2024Discharge.Function(ElkCreekSiteNo , pcode, scode)
+ElkCreekPrecipHazen2024<-Hazen2024Precip.Function(ElkCreekSiteNo, pcode, scode)
+
+#TAR RIVER AT NC 97 AT ROCKY MOUNT, NC 
+TarRiverSiteNo<-as.character('02082585')
+TarRiverGageHeightHazen2024<-Hazen2024GageHeight.Function(TarRiverSiteNo , pcode, scode)
+TarRiverDischargeHazen2024<-Hazen2024Discharge.Function(TarRiverSiteNo , pcode, scode)
+TarRiverPrecipHazen2024<-Hazen2024Precip.Function(TarRiverSiteNo , pcode, scode)
+
+
+```
+I then add these sites to an array to add them to my map and can see the
+magnitude of each hazen interval, that is, how unusual the 7 day Helene event
+was, expressed in the size of the dot. The larger the dot, the more unusual that
+7 day average was for that parameter. While limited sites of have all 3 parameters
+available, further analysis could have us create increasinly granular data for
+each site.
+
+```{r}
+
+# Create Data Frame with Hazen Values
+Eight_site_hazen_data <- data.frame(
+  Location = c(
+    "Pigeon River", "Asheville", "Sugar Grove", 
+    "Cheoah River", "Swannanoa River", "Second Broad River", 
+    "Elk Creek", "Tar River"
+  ),
+  Latitude = c(
+    35.554, 35.595, 36.267, 
+    35.447, 35.572, 35.362, 
+    36.153, 35.942
+  ),
+  Longitude = c(
+    -82.982, -82.551, -81.785, 
+    -83.852, -82.544, -81.958, 
+    -81.421, -77.814
+  ),
+  Precipitation_Hazen = sapply(list(
+    PigeonRiverPrecipHazen2024$hazen, AshevillePrecipHazen2024$hazen, SugarGrovePrecipHazen2024$hazen,
+    CheoahRiverPrecipHazen2024$hazen, SwannanoaPrecipHazen2024$hazen, SecondBroadRiverPrecipHazen2024$hazen,
+    ElkCreekPrecipHazen2024$hazen, TarRiverPrecipHazen2024$hazen
+  ), function(x) as.numeric(unlist(x))),
+  Discharge_Hazen = sapply(list(
+    PigeonRiverDischargeHazen2024$hazen, AshevilleDischargeHazen2024$hazen, SugarGroveDischargeHazen2024$hazen,
+    CheoahRiverDischargeHazen2024$hazen, SwannanoaDischargeHazen2024$hazen, SecondBroadRiverDischargeHazen2024$hazen,
+    ElkCreekDischargeHazen2024$hazen, TarRiverDischargeHazen2024$hazen
+  ), function(x) as.numeric(unlist(x))),
+  GageHeight_Hazen = sapply(list(
+    PigeonRiverGageHeightHazen2024$hazen, AshevilleGageHeightHazen2024$hazen, SugarGroveGageHeightHazen2024$hazen,
+    CheoahRiverGageHeightHazen2024$hazen, SwannanoaGageHeightHazen2024$hazen, SecondBroadRiverGageHeightHazen2024$hazen,
+    ElkCreekGageHeightHazen2024$hazen, TarRiverGageHeightHazen2024$hazen
+  ), function(x) as.numeric(unlist(x)))
+)
+
+# Define distinct colors for each layer
+precip_color <- "blue"
+discharge_color <- "green"
+gage_height_color <- "orange"
+
+# Define a scaling factor for marker sizes
+base_size <- 3  # Base size for markers
+scaling_factor <- 10  # Scaling factor for marker sizes
+
+# Create a custom function to add size legend
+addLegendSize <- function(map, title, sizes, values, colors, position = "bottomright") {
+  size_labels <- paste0(values)
+  legend_html <- paste0(
+    "<div style='padding: 5px;'><strong>", title, "</strong><br>",
+    paste0(
+      mapply(function(size, label) {
+        paste0(
+          "<div style='display: flex; align-items: center;'>",
+          "<div style='height:", size * 2, "px; width:", size * 2, "px; ",
+          "border-radius: 50%; background-color:", colors, "; ",
+          "margin-right: 8px;'></div>",
+          label, "</div>"
+        )
+      }, sizes, size_labels, SIMPLIFY = FALSE),
+      collapse = ""
+    ),
+    "</div>"
+  )
+  addControl(map, html = legend_html, position = position)
+}
+
+# Predefined Hazen value examples for the size legend
+size_values <- c(10, 50, 100, 200)  # Example Hazen values
+size_sizes <- base_size + size_values / scaling_factor  # Corresponding marker sizes
+
+# Create the Leaflet Map
+leaflet(Eight_site_hazen_data) %>%
+  addTiles() %>%
+  
+  # Precipitation Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = precip_color,
+    fillColor = precip_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + Precipitation_Hazen / scaling_factor,  # Scale marker size
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Precipitation Hazen: ", round(Precipitation_Hazen, 2)
+    ),
+    group = "Precipitation"
+  ) %>%
+  
+  # Discharge Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = discharge_color,
+    fillColor = discharge_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + Discharge_Hazen / scaling_factor,  # Scale marker size
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Discharge Hazen: ", round(Discharge_Hazen, 2)
+    ),
+    group = "Discharge"
+  ) %>%
+  
+  # Gage Height Layer
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = gage_height_color,
+    fillColor = gage_height_color,
+    fillOpacity = 1,   # Ensure full opacity
+    radius = ~base_size + GageHeight_Hazen / scaling_factor,  # Scale marker size
+    label = ~paste0(
+      "Location: ", Location, "<br>",
+      "Gage Height Hazen: ", round(GageHeight_Hazen, 2)
+    ),
+    group = "Gage Height"
+  ) %>%
+  
+  # Add Layer Controls
+  addLayersControl(
+    overlayGroups = c("Precipitation", "Discharge", "Gage Height"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  
+  # Add a Color Legend for Layers
+  addLegend(
+    "bottomleft",
+    colors = c(precip_color, discharge_color, gage_height_color),
+    labels = c("Precipitation", "Discharge", "Gage Height"),
+    title = "Hazen Value Layers",
+    opacity = 1
+  ) %>%
+  
+  # Add a Size Legend for Hazen Values
+  addLegendSize(
+    title = "Hazen Value (Size)",
+    sizes = size_sizes,
+    values = size_values,
+    colors = "grey",
+    position = "bottomright"
+  )
+
+
+
+
+
+
+```
+**Why this analysis matters**
+
+We could call this a map of relative intensity to historical norms. While the 
+size of the dots don't map the absolute
+intensity of precipitation or flooding, they do indicate the magntitude of
+those parameters in relation to the historical norms of each area.
+Flooding infrastructure is often calibrated to 50 year or 75
+year storms, so the relative magntiude to historical norms is important for
+measuring how much the calibrated infrastructure was overwhelmed (or resiliant to)
+Helene. While our sites that contain all three paramters are limited,
+we can see that Helene's relative intensity to historical norms was greater in a
+path throuh central Western NC, particularly over Ashveille. We can reasonably
+assume then that Asheville's infrastructure was more inundated than that of NE
+NC or other sites listed.
