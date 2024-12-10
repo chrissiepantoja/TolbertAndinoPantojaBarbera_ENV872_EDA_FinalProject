@@ -63,7 +63,7 @@ dataset_structure <- data.frame(
   )
 )
 
-kable(
+knitr::kable(
   dataset_structure, 
   col.names = c("Variable Name", "Description", "Data Type"),
   caption = "Dataset Structure for Analyzing Hurricane Helene's Impact",
@@ -83,6 +83,8 @@ library(dplyr)
 library(zoo)
 library(ggplot2)
 library(tidyr)
+library(RColorBrewer)
+library(leaflet)
 
 #install.packages("dataRetrieval")
 library(dataRetrieval)
@@ -1164,8 +1166,6 @@ site:
 ```{r}
 
 
-
-library(RColorBrewer)
 
 # Create Data Frame with Hazen Values
 hazen_data <- data.frame(
