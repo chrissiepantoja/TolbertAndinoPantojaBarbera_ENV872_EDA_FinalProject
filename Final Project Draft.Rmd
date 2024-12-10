@@ -31,7 +31,7 @@ Preliminary estimates of the damage and recovery needs across the state total ap
   
 **Why should we understand rainfall trends and why is disaster preparedness important?** 
 The rainfall from Hurricane Helene was both unprecedented and catastrophic. In some areas of North Carolina, over 26 inches of rain fell within a 24-hour period, resulting in widespread flooding that devastated entire towns across 27 counties (OSBM, 2024). Analyzing precipitation patterns and discharge before, during, and after the hurricane is crucial for understanding its long-term effects on regional climates and water systems. This information is vital for informed decision-making in disaster preparedness and water resource management.
-Hurricane Helene serves as a reminder for strengthening communities against flooding and extreme weather events. Climate change knows no boundaries, and we should not be surprised when such extreme events continue to occur. By focusing on Helene and its unprecedented nature, this study provides important benchmarks, analyses, and comparisons that will be invaluable for future disaster response planning.
+Hurricane Helene is a reminder of the importance of strengthening communities against flooding and extreme weather events. Climate change knows no boundaries, and we should not be surprised when such extreme events continue to occur. By focusing on Helene and its unprecedented nature, this study provides important benchmarks, analyses, and comparisons that will be invaluable for future disaster response planning.
 Through examining these rainfall trends, this study aims to emphasize the historical significance of Hurricane Helene as a rare event with far-reaching consequences. Understanding these patterns offers a foundation for contextualizing the storm’s impact within the broader context of climate change, while also identifying anomalies in long-term climatic trends.
 
 
@@ -44,47 +44,44 @@ Through examining these rainfall trends, this study aims to emphasize the histor
 
 
 **Rationale for Dataset of Choice and Data Description**
-Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene, enhancing our understanding of extreme weather events. USGS stream gages collect daily discharge volumes in cubic feet per second and were used because of their accuracy and daily collection. This data analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, the study selected Sugar Grove, Asheville, and Pigeon River as focal sites. These locations provide a broad representation of the storm’s effects throughout Western North Carolina as they were chosen based on their proximity to Helene’s storm path. 
+Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene, enhancing our understanding of extreme weather events. USGS stream gages collect daily discharge volumes in cubic feet per second and were used because of their accuracy and daily collection. This data analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, the study selected Sugar Grove, Asheville, and Pigeon River as focal sites. These locations provide a broad representation of the storm’s effects throughout Western North Carolina as they were chosen based on their proximity to Helene’s storm path. For instance, Asheville provides a setting with a unique size and location as a metropolitan hub while Sugar Grove shows a setting with agricultural production. 
 
 The study examines three critical parameters: precipitation, stream discharge, and gage height. For each parameter, daily means and cumulative sums were calculated to identify patterns and assess the storm’s severity across different regions.
-
-FALTA (explanation on why those three: 
-Sugar Grove data was used because of it's setting with agricultural production and how hard it was hit from Hurricane Helene. 
-Asheville data was used due to it's size and location as a metropolitan hub in rural Western North Carolina.
-Pigeon River data was used due to its proximity to the Tennessee border and its implications for the necessity of cross-border storm management strategy. 
 
 Together, these datasets and locations provide a multi-dimensional view of Hurricane Helene’s impact, bridging historical context, storm-specific data, and hydrological consequences. This integrated approach ensures that the study not only quantifies the immediate effects of the hurricane but also contributes to long-term disaster preparedness and climate resilience.
 
 **Data Description**
 
 USGS stream gage data shows the latitude and longitude of the stream gage, discharge in cubic feet per second, and the date-time that the data was recorded. 
-(This was already mostly in the paragraph above- we could keep this here or not)
+
 
 **Describe wrangling process from raw to processed data**
 
-MISSING 
+MISSING (coming from below: This is our data! However, It needs to be cleaned. 
+First I want to remove the 'cd' columns that indicate if the data is official or 
+provisional as this won't have a significant effect on our findings. 
+We can mention that in our discussion of the meta data but its not 
+worth a column in our df. 
 
-###Table with dataset structure
+Then I want to clearly label each column with its parameter and stat code:)
 
-
+**Data Structure**
 ```{r Data Table, echo=FALSE}
 dataset_structure <- data.frame(
   Variable_Name = c(
-    "Location", "Latitude", "Longitude", "DateTime", 
+    "Location", "Latitude", "Longitude", 
     "Total Daily Precipitation", "Mean Discharge", "Mean Gage Height"
   ),
   Description = c(
     "Name of the site (e.g., Asheville, Sugar Grove, Pigeon River)",
     "Latitude coordinate of the site",
     "Longitude coordinate of the site",
-    "Timestamp of data observation",
     "Daily total precipitation measured at the site",
     "Mean stream discharge over the day",
     "Mean water level height above the gauge reference point"
   ),
   Data_Type = c(
-    "Categorical", "Numeric", "Numeric", 
-    "Date (YYYY-MM-DD)", "Numeric", "Numeric (cubic meters/sec)", 
+    "Categorical", "Numeric", "Numeric","Numeric", "Numeric (cubic meters/sec)", 
     "Numeric (feet)"
   )
 )
@@ -163,16 +160,10 @@ SugarGroveData<-readNWISdata( #dataRetrival function from USGS API
   endDate= Sys.Date()
 )
   
-#View(SugarGroveData)  
+#View(SugarGroveData)
 ```
 
-This is our data! However, It needs to be cleaned. 
-First I want to remove the 'cd' columns that indicate if the data is official or 
-provisional as this won't have a significant effect on our findings. 
-We can mention that in our discussion of the meta data but its not 
-worth a column in our df. 
 
-Then I want to clearly label each column with its parameter and stat code:
 
 ```{r}
 CleanedDataSugarGrove<-SugarGroveData%>% 
@@ -319,7 +310,7 @@ Then, let's see how the week of Helene compares to the rest of 2024 within our
 parameters
 
 **Precipitation**
-```{r, warning=FALSE}
+```{r precipitation, warning=FALSE}
 
 # First: Sugar Grove Precipitation for 2024
 ggplot(Data2024_sg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
@@ -370,7 +361,7 @@ ggplot(Data2024_pg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`))
 
 
 ```
-
+All three locations show relatively low daily precipitation throughout the year, with notable peaks when Helene struck (around September). Looking at each graph individually, the Pigeon River location experienced the highest peak precipitation event during the hurricane, with over 6 inches in a single day, indicating it faced the most intense rainfall compared to the other two locations. However, this does not diminish the intensity observed in Asheville and Sugar Grove (5 inch peaks). Asheville's peaks appear slightly narrower and more intense compared to Sugar Grove's. Surprisingly, the graphs highlight Asheville's pattern of dry periods, which might explain why many people were surprised by the impacts of Helene in a place like Asheville, given its geographical location.
 
 
 **Then discharge**
@@ -427,6 +418,9 @@ ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Discharge`)) +
 
 
 ```
+All three locations show relatively low discharge levels throughout most of the year, with significant spikes around September/october 2024, coinciding with the impact of Helene. This suggests that the extreme precipitation during Helene led to substantial water runoff and river discharge increases. Among the three, Asheville has the highest peak discharge which surpasses the other locations. Pigeon River shows a comparable degree of discharge, while Sugar Grove experiences the smallest peak among the three, although it is still notably high.
+
+When analyzing the annual distribution, Sugar Grove and Pigeon River maintain relatively steady, low discharge levels throughout the year, while Asheville displays a more variable discharge pattern with multiple small peaks. This should give a sense to the heightened flood risk potential during extreme weather events like Helene. A key question that arises from these observations is whether these peaks are influenced by urbanization or the limited infiltration capacity of the city of Asheville which might also explain why Sugar Grove shows a smaller peak? 
 
 
 
@@ -565,78 +559,90 @@ print(PigeonRiverDailyTotalPrecipitationPlot)
 
 
 ```
-
+These graphs clearly shows how Helene stands out as a historical event. All three locations (Sugar Grove, Asheville, and Pigeon River) experience occasional extreme rainfall events and relatively consistent patterns of lower daily precipitation over the decades. These historical records highlight that the extreme peaks observed in 2024, particularly during Helene are
 
 **Discharge**
 ```{r, warning=FALSE}
 
-#First:Sugar Grove Historical Discharge Data
+CleanedDataSugarGrove$dateTime <- as.Date(CleanedDataSugarGrove$dateTime)
+CleanedDataAsheville$dateTime <- as.Date(CleanedDataAsheville$dateTime)
+CleanedDataPigeonRiver$dateTime <- as.Date(CleanedDataPigeonRiver$dateTime)
+HeleneData_sg$dateTime <- as.Date(HeleneData_sg$dateTime)
+HeleneData_ash$dateTime <- as.Date(HeleneData_ash$dateTime)
+HeleneData_pg$dateTime <- as.Date(HeleneData_pg$dateTime)
 
-SugarGroveDailyDischargeLinePlot<-ggplot(CleanedDataSugarGrove%>%
+# First: Sugar Grove Historical Discharge Data
+SugarGroveDailyDischargeLinePlot <- ggplot(CleanedDataSugarGrove %>%
     drop_na(`Mean Discharge`), aes(
-  x= dateTime,
-  y= `Mean Discharge`)) +
-  geom_line(color="lightblue")+
+  x = dateTime,
+  y = `Mean Discharge`)) +
+  geom_line(color = "lightblue") +
   geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Discharge`),
              color = "red",
              size = 3) +
+  scale_x_date(
+    limits = as.Date(c("1954-01-01", "2024-12-31")),
+    date_labels = "%Y"
+  ) +
   labs(
-    title = "Mean Daily Discharge Over time",
-    subtitle = "Sugar Grove(1954-2024)",
-    x= "Date",
-    y= "Mean Discharge (cubic meters per second)"
-  )+ theme_minimal()
- 
-print(SugarGroveDailyDischargeLinePlot) 
+    title = "Mean Daily Discharge Over Time",
+    subtitle = "Sugar Grove (1954-2024)",
+    x = "Date",
+    y = "Mean Discharge (cubic meters per second)"
+  ) +
+  theme_minimal()
 
+print(SugarGroveDailyDischargeLinePlot)
 
-
-#Second: Asheville Historical Discharge Data 
-
-AshevilleDailyDischargeLinePlot<-ggplot(CleanedDataAsheville %>%
+# Second: Asheville Historical Discharge Data
+AshevilleDailyDischargeLinePlot <- ggplot(CleanedDataAsheville %>%
     drop_na(`Mean Discharge`), aes(
-  x = dateTime, 
+  x = dateTime,
   y = `Mean Discharge`)) +
   geom_line(color = "darkred", size = 1) +
   geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Discharge`),
              color = "red",
              size = 3) +
+  scale_x_date(
+    limits = as.Date(c("1954-01-01", "2024-12-31")),
+    date_labels = "%Y"
+  ) +
   labs(
     title = "Mean Daily Discharge Over Time",
-    subtitle = "Asheville(1954-2024)",
+    subtitle = "Asheville (1954-2024)",
     x = "Date",
     y = "Mean Discharge (cubic meters per second)"
   ) +
-  theme_minimal() 
+  theme_minimal()
 
 print(AshevilleDailyDischargeLinePlot)
 
-
-#Third: Pigeon River Historical Discharge Data 
-
-PigeonRiverDailyDischargeLinePlot<-ggplot(CleanedDataPigeonRiver%>%
+# Third: Pigeon River Historical Discharge Data
+PigeonRiverDailyDischargeLinePlot <- ggplot(CleanedDataPigeonRiver %>%
     drop_na(`Mean Discharge`), aes(
-  x= dateTime,
-  y= `Mean Discharge`)) +
-  geom_line(color="grey")+
+  x = dateTime,
+  y = `Mean Discharge`)) +
+  geom_line(color = "grey") +
   geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Discharge`),
              color = "red",
              size = 3) +
+  scale_x_date(
+    limits = as.Date(c("1954-01-01", "2024-12-31")),
+    date_labels = "%Y"
+  ) +
   labs(
-    title = "Mean Daily Discharge Over time",
-    subtitle = "Pigeon River(1954-2024)",
-    x= "Date",
-    y= "Mean Discharge (cubic meters per second)"
-  )+ theme_minimal()
+    title = "Mean Daily Discharge Over Time",
+    subtitle = "Pigeon River (1954-2024)",
+    x = "Date",
+    y = "Mean Discharge (cubic meters per second)"
+  ) +
+  theme_minimal()
 
 print(PigeonRiverDailyDischargeLinePlot)
 
 
 ```
-
-
-
-
+All three locations show a generally stable pattern of daily mean discharge, marked by periodic spikes indicative of extreme events, with Helene standing out as a significant event in the last 70 years. Sugar Pine exhibits a noticeable peak that is unparalleled compared to the historical record, while Sugar Grove has experienced higher peaks of discharge in the past. However, it is important to highlight Asheville: despite appearing stable with its highest peak around 2005, the dataset is missing data for three critical days (September 27–29), precisely when Helene impacted the area. Therefore, the results for Asheville in this graph should be interpreted with caution.
 
 **Gage Height**
 ```{r, warning=FALSE}
