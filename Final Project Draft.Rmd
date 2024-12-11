@@ -103,7 +103,23 @@ knitr::kable(
 
 ## Data Wrangling
 
-(You only need to describe)
+For the selected sites we retrieve data from USGS using USGS's "dataRetrieval"
+package. We want to compare as many parameters as possible between our sites, so
+we selected all common parameters:
+for stream discharge (00060) , precipitation (00045), and gage height (0065).
+The relevant codes we will use are daily mean (0003) for Discharge and Gage
+Height and sum (00006) for Precipitaion.
+
+To clean the data we remove the 'cd' columns that indicate if the data is
+official or provisional as this won't have a significant effect on our findings. 
+
+We then clearly label each column with its parameter and stat code.
+
+After initial retreival, I create a Water Data retrieval function for my chosen
+parameters based on my previous retreival and use it for all data wrangling
+going forward.
+
+
 
 ```{r setup, echo=FALSE, include=FALSE, echo =FALSE, warning=FALSE, results='hide'}
 knitr::opts_chunk$set(echo = TRUE)
@@ -1645,3 +1661,12 @@ North Carolina or other sites included in this study.
 ## Summary and Conclusions
 
 ## References
+
+North Carolina Office of State Budget and Management (OSBM, 2024). 
+Hurricane Helene DNA." https://www.osbm.nc.gov/hurricane-helene-dna/open
+(accessed December 09,2024)
+
+Please Note: 
+Portions of code created in cooperation with "R Wizard" AI on OpenAI's
+ChatGPT platform. Limited prompts available upon request.
+
