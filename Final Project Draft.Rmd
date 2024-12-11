@@ -2,13 +2,23 @@
 title: "Title: Rainfall Trends Following the Impact of Hurricane Helene 
 in Sugar Grove, Asheville, and Pigeon River"
 author: "Sam Tolbert, Chrissie Pantoja, Ana Andino, Gretchen Barbera"
-date: "2024-12-09"
+date: "2024-12-11"
 output:
-  html_document:
+  bookdown::html_document2:
+    number_sections: true
     toc: true
-    toc_float: true
+    df_print: kable
+    keep_md: true
 ---
-**Context and Motivation**
+
+\listoftables
+\listoffigures
+
+**Project Repository**
+
+https://github.com/chrissiepantoja/TolbertAndinoPantojaBarbera_ENV872_EDA_FinalProject
+
+## Context and Motivation
 Hurricane Helene struck North Carolina in late September, rapidly intensifying
 to a Category 4 storm with sustained winds of 140 mph. The hurricane brought 
 catastrophic rainfall, widespread flooding, landslides, destructive winds, and 
@@ -29,59 +39,53 @@ Key infrastructure, such as roadways and bridges, was also heavily damaged.
 Economically, the storm's effects will be felt for years to come. 
 Preliminary estimates of the damage and recovery needs across the state total approximately $53.6 billion, which includes $41.1 billion in direct damages, $7.6 billion in indirect impacts, and $4.8 billion needed for strengthening and mitigation efforts (OSBM, 2024). These figures highlight the enormity of the storm’s impact compared to other recent hurricanes, such as Hurricane Florence in 2018, which resulted in $16.7 billion in damages. Beyond the immediate economic losses, the storm significantly altered the state’s physical landscape, eroding valuable topsoil, changing river courses, and submerging homes that had stood for generations. The long-term effects on agriculture and other industries will continue to be felt for years to come (OSBM, 2024).
   
-**Why should we understand rainfall trends and why is disaster preparedness important?** 
+### Why should we understand rainfall trends and why is disaster preparedness important?
 The rainfall from Hurricane Helene was both unprecedented and catastrophic. In some areas of North Carolina, over 26 inches of rain fell within a 24-hour period, resulting in widespread flooding that devastated entire towns across 27 counties (OSBM, 2024). Analyzing precipitation patterns and discharge before, during, and after the hurricane is crucial for understanding its long-term effects on regional climates and water systems. This information is vital for informed decision-making in disaster preparedness and water resource management.
-Hurricane Helene is a reminder of the importance of strengthening communities against flooding and extreme weather events. Climate change knows no boundaries, and we should not be surprised when such extreme events continue to occur. By focusing on Helene and its unprecedented nature, this study provides important benchmarks, analyses, and comparisons that will be invaluable for future disaster response planning.
+Hurricane Helene serves as a reminder for strengthening communities against flooding and extreme weather events. Climate change knows no boundaries, and we should not be surprised when such extreme events continue to occur. By focusing on Helene and its unprecedented nature, this study provides important benchmarks, analyses, and comparisons that will be invaluable for future disaster response planning.
 Through examining these rainfall trends, this study aims to emphasize the historical significance of Hurricane Helene as a rare event with far-reaching consequences. Understanding these patterns offers a foundation for contextualizing the storm’s impact within the broader context of climate change, while also identifying anomalies in long-term climatic trends.
 
 
-**Research Question**
+## Research Questions
+
 *Question 1: What were the temporal and spatial rainfall patterns in Asheville, Sugar Grove, and Pigeon River following Hurricane Helene?*
 
-*Question 2: Which counties in North Carolina were most vulnerable to extreme rainfall during and after Hurricane Helene, and why?*
-
-*Question 3: How did urban vs. rural areas experience rainfall and flooding impacts differently?* 
+*Question 2: How these counties experience rainfall and flooding impacts differently?*
 
 
-**Rationale for Dataset of Choice and Data Description**
-Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene, enhancing our understanding of extreme weather events. USGS stream gages collect daily discharge volumes in cubic feet per second and were used because of their accuracy and daily collection. This data analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, the study selected Sugar Grove, Asheville, and Pigeon River as focal sites. These locations provide a broad representation of the storm’s effects throughout Western North Carolina as they were chosen based on their proximity to Helene’s storm path. For instance, Asheville provides a setting with a unique size and location as a metropolitan hub while Sugar Grove shows a setting with agricultural production. 
+## Data Description
+
+Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene, enhancing our understanding of extreme weather events. USGS stream gages collect daily discharge volumes in cubic feet per second and were used because of their accuracy and daily collection. This data analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, the study selected Sugar Grove, Asheville, and Pigeon River as focal sites. These locations provide a broad representation of the storm’s effects throughout Western North Carolina as they were chosen based on their proximity to Helene’s storm path. 
 
 The study examines three critical parameters: precipitation, stream discharge, and gage height. For each parameter, daily means and cumulative sums were calculated to identify patterns and assess the storm’s severity across different regions.
 
+FALTA (explanation on why those three: 
+Sugar Grove data was used because of it's setting with agricultural production and how hard it was hit from Hurricane Helene. 
+Asheville data was used due to it's size and location as a metropolitan hub in rural Western North Carolina.
+Pigeon River data was used due to its proximity to the Tennessee border and its implications for the necessity of cross-border storm management strategy. 
+
 Together, these datasets and locations provide a multi-dimensional view of Hurricane Helene’s impact, bridging historical context, storm-specific data, and hydrological consequences. This integrated approach ensures that the study not only quantifies the immediate effects of the hurricane but also contributes to long-term disaster preparedness and climate resilience.
 
-**Data Description**
+USGS stream gage data shows the latitude and longitude of the stream gage, discharge in cubic feet per second, and the date-time that the data was recorded. (This was already mostly in the paragraph above- we could keep this here or not)
 
-USGS stream gage data shows the latitude and longitude of the stream gage, discharge in cubic feet per second, and the date-time that the data was recorded. 
-
-
-**Describe wrangling process from raw to processed data**
-
-MISSING (coming from below: This is our data! However, It needs to be cleaned. 
-First I want to remove the 'cd' columns that indicate if the data is official or 
-provisional as this won't have a significant effect on our findings. 
-We can mention that in our discussion of the meta data but its not 
-worth a column in our df. 
-
-Then I want to clearly label each column with its parameter and stat code:)
-
-**Data Structure**
 ```{r Data Table, echo=FALSE}
+
 dataset_structure <- data.frame(
   Variable_Name = c(
-    "Location", "Latitude", "Longitude", 
+    "Location", "Latitude", "Longitude", "DateTime", 
     "Total Daily Precipitation", "Mean Discharge", "Mean Gage Height"
   ),
   Description = c(
     "Name of the site (e.g., Asheville, Sugar Grove, Pigeon River)",
     "Latitude coordinate of the site",
     "Longitude coordinate of the site",
+    "Timestamp of data observation",
     "Daily total precipitation measured at the site",
     "Mean stream discharge over the day",
     "Mean water level height above the gauge reference point"
   ),
   Data_Type = c(
-    "Categorical", "Numeric", "Numeric","Numeric", "Numeric (cubic meters/sec)", 
+    "Categorical", "Numeric", "Numeric", 
+    "Date (YYYY-MM-DD)", "Numeric", "Numeric (cubic meters/sec)", 
     "Numeric (feet)"
   )
 )
@@ -90,13 +94,18 @@ knitr::kable(
   dataset_structure, 
   col.names = c("Variable Name", "Description", "Data Type"),
   caption = "Dataset Structure for Analyzing Hurricane Helene's Impact",
-  align = "l"
+  align = "l",
+  label = "DataTable"
+  
 )
-
 ```
 
 
-```{r setup, include=FALSE}
+## Data Wrangling
+
+(You only need to describe)
+
+```{r setup, echo=FALSE, include=FALSE, echo =FALSE, warning=FALSE, results='hide'}
 knitr::opts_chunk$set(echo = TRUE)
 
 options(warn = -1) 
@@ -111,12 +120,15 @@ library(tidyr)
 library(RColorBrewer)
 library(leaflet)
 library(zoo)
-
+library(knitr)  # For kable
 #install.packages("dataRetrieval")
 library(dataRetrieval)
 
 #install.packages("forecast")
 library(forecast)
+
+#install.packages("patchwork")
+library(patchwork)
 
 ```
 
@@ -130,14 +142,12 @@ I find its siteNumber is 03479000 from "https://waterdata.usgs.gov/monitoring-lo
 
 
 **Sugar Grove**
-```{r echo=TRUE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, results='hide'}
 
 siteNumberSugarGrove<-('03479000')
-
 #I find the MetaData for the site
 SugarGroveMeta <- whatNWISsites(siteNumbers = siteNumberSugarGrove)
 print(SugarGroveMeta) 
-
 #I then use sitedata function to look at what data is available
 SugarGroveSiteData<-suppressWarnings(whatNWISdata(siteNumber=siteNumberSugarGrove))
 ```
@@ -147,25 +157,31 @@ for stream discharge (00060) , precipitation (00045), and gage height (0065).
 I also see that our relevant stat codes are daily mean (0003) and sum (00006)
 #
 
-```{r message=FALSE, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, results='hide', include =FALSE, message=FALSE}
 pcodes<-c('00060','00045','00065') #parameters discharge, precip, and gage height
 scode<-c('00003', '00006') #daily mean and daily accumulated
 
-
-SugarGroveData<-readNWISdata( #dataRetrival function from USGS API
-  siteNumbers = siteNumberSugarGrove,
-  parameterCd= pcodes,
-  statCd= scode,
-  startDate= ymd('1900-01-01'),
-  endDate= Sys.Date()
-)
-  
-#View(SugarGroveData)
+SugarGroveData <- invisible(suppressWarnings(suppressMessages(
+  readNWISdata(  # dataRetrieval function from USGS API
+    siteNumbers = siteNumberSugarGrove,
+    parameterCd = pcodes,
+    statCd = scode,
+    startDate = ymd('1900-01-01'),
+    endDate = Sys.Date()
+  )
+)))
+#View(SugarGroveData)  
 ```
 
+This is our data! However, It needs to be cleaned. 
+First I want to remove the 'cd' columns that indicate if the data is official or 
+provisional as this won't have a significant effect on our findings. 
+We can mention that in our discussion of the meta data but its not 
+worth a column in our df. 
 
+Then I want to clearly label each column with its parameter and stat code:
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, results='hide'}
 CleanedDataSugarGrove<-SugarGroveData%>% 
 select(-ends_with("cd")) %>% #removing cd columns that indicate provisional or official data
   rename(
@@ -189,7 +205,7 @@ are available to compare to Sugar Grove
 
 **Asheville**
 
-```{r, warning=FALSE}
+```{r, echo=FALSE, warning=FALSE, results='hide'}
 
 #First the Asheville site
 
@@ -207,7 +223,7 @@ AshevilleSiteData<-whatNWISdata(siteNumber=siteNumberAsheville)
 Then I decide I want to create an easy data retrieval function for my chosen
 parameters based on my previous retreival.
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, results='hide'}
 
 WaterData.Function<-function(siteNo, pcode, scode){
 
@@ -235,7 +251,7 @@ return(CleanData)
 ```
 
 I run this function for Asheville's siteNo
-```{r}
+```{r, echo=FALSE, warning=FALSE, results='hide', include=FALSE}
 siteNoAsheville<-'03451500'
 
 siteNo<-siteNoAsheville
@@ -251,7 +267,7 @@ CleanedDataAsheville<-WaterData.Function(siteNo, pcode, scode)
 I then do the same for the Pigeon River Site and its site number
 **Pigeon River**
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, results='hide'}
 
 siteNoPigeonRiver<-'03456500'
 
@@ -264,16 +280,10 @@ CleanedDataPigeonRiver<-WaterData.Function(siteNo, pcode, scode)
 #View(CleanedDataPigeonRiver)
 ```
 
-<span style="font-size:15px; font-weight:bold;">Research Question</span>
 
-<span style="font-size:20px; font-weight:bold;">How unusual was Helene?</span>
+## Seven-Day Time Series Analysis: Trend Patterns
 
-
-First let's create separate layers from our data for 2024 and
-then Helene as an event within 2024 a 7 day span from 9/22/24 to 9/29/24.
-**Investigating Helene**
-
-```{r Helene Precipitation event over 2024}
+```{r Helene Precipitation event over 2024, echo=FALSE, warning=FALSE, results='hide'}
 
 #first we create our df for 2024
 Data2024_sg <- CleanedDataSugarGrove %>%
@@ -284,9 +294,6 @@ Data2024_ash <- CleanedDataAsheville %>%
 
 Data2024_pg <- CleanedDataPigeonRiver %>%
   filter(year(dateTime) == 2024)
-
-
-
 
 #then we isolate the Helene as a 7 day event:
 
@@ -302,413 +309,401 @@ HeleneData_pg <- CleanedDataPigeonRiver %>%
 
 #View(HeleneData_pg)
 
-
 ```
 
+<span style="font-size:15px; font-weight:bold;">Research Question</span>
 
-Then, let's see how the week of Helene compares to the rest of 2024 within our
-parameters
+<span style="font-size:20px; font-weight:bold;">How unusual was Helene?</span>
 
-**Precipitation**
-```{r precipitation, warning=FALSE}
 
-# First: Sugar Grove Precipitation for 2024
-ggplot(Data2024_sg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
-  geom_line(color = "lightblue") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 2) +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 2) +
+First let's create separate layers from our data for 2024 and
+then Helene as an event within 2024 a 7 day span from 9/22/24 to 9/29/24.
+**Investigating Helene**
+
+*Then, let's see how the week of Helene compares to the rest of 2024 within our
+parameters*
+
+### Daily Precipitation Trend
+
+```{r Discharge event over 2024, warning=FALSE, echo=FALSE, fig.cap = "Total Daily Precipitation Trends (Inches) for 2024"}
+# Load necessary libraries
+library(ggplot2)
+library(patchwork)
+
+# Create individual plots with adjusted y-axis limits and larger text
+# 1. Sugar Grove Plot
+plot_sg <- ggplot(Data2024_sg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
+  geom_line(color = "lightblue", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
   geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`),
-             color = "red",
-             size = 3) +
-  labs(
-    title = "Precipitation Trends for 2024 in Sugar Grove",
-    x = "Date",
-    y = "Total Daily Precipitation (Inches)"
-  ) +
-  theme_minimal()
+             color = "red", size = 1) +
+  labs(x = NULL, y = "Sugar Grove") +
+  theme_minimal(base_size = 12)
 
-# Second: Asheville Precipitation for 2024
-ggplot(Data2024_ash, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
-  geom_line(color = "darkred") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
-  geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`),
-             color = "red",
-             size = 3) +
-  labs(
-    title = "Precipitation Trends for 2024 in Asheville",
-    x = "Date",
-    y = "Total Daily Precipitation (Inches)"
-  ) +
-  theme_minimal()
+# 2. Asheville Plot
+plot_ash <- ggplot(Data2024_ash, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
+  geom_line(color = "darkred", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
+  geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`),
+             color = "red", size = 1) +
+  labs(x = NULL, y = "Asheville") +
+  theme_minimal(base_size = 12)
 
-# Third: Pigeon River Precipitation for 2024
-ggplot(Data2024_pg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
-  geom_line(color = "grey") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
+# 3. Pigeon River Plot
+plot_pg <- ggplot(Data2024_pg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`)) +
+  geom_line(color = "grey", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
   geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`),
-             color = "red",
-             size = 3) +
-  labs(
-    title = "Precipitation Trends for 2024 in Pigeon River",
-    x = "Date",
-    y = "Total Daily Precipitation (Inches)"
-  ) +
-  theme_minimal()
+             color = "red", size = 1) +
+  labs(x = "Date", y = "Pigeon River") +
+  theme_minimal(base_size = 12)
 
+# Combine plots into one using patchwork with more spacing
+combined_plot <- plot_sg / plot_ash / plot_pg + 
+  plot_annotation(
+    title = "Daily Precipitation Trends (Inches) for 2024",
+    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    theme = theme(
+      plot.title = element_text(size = 20, face = "bold"),
+      plot.subtitle = element_text(size = 16)
+    )
+  ) &
+  theme(plot.margin = margin(10, 10, 10, 10))
 
-
-
-```
-All three locations show relatively low daily precipitation throughout the year, with notable peaks when Helene struck (around September). Looking at each graph individually, the Pigeon River location experienced the highest peak precipitation event during the hurricane, with over 6 inches in a single day, indicating it faced the most intense rainfall compared to the other two locations. However, this does not diminish the intensity observed in Asheville and Sugar Grove (5 inch peaks). Asheville's peaks appear slightly narrower and more intense compared to Sugar Grove's. Surprisingly, the graphs highlight Asheville's pattern of dry periods, which might explain why many people were surprised by the impacts of Helene in a place like Asheville, given its geographical location.
-
-
-**Then discharge**
-```{r Helene Discharge event over 2024, warning=FALSE}
-
-# First: Sugar Grove Discharge for 2024
-ggplot(Data2024_sg, aes(x = dateTime, y = `Mean Discharge`)) +
-  geom_line(color = "lightblue") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
-  geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Discharge`),
-             color = "red",
-             size = 3) +
-  labs(
-    title = "Discharge Trends for 2024 in Sugar Grove",
-    x = "Date",
-    y = "Discharge"
-  ) +
-  theme_minimal()
-
-
-# Second: Asheville Discharge for 2024
-ggplot(Data2024_ash, aes(x = dateTime, y = `Mean Discharge`)) +
-  geom_line(color = "darkred") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
-  geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Discharge`),
-             color = "red",
-             size = 3) +
-  labs(
-    title = "Discharge Trends for 2024 in Asheville",
-    x = "Date",
-    y = "Discharge"
-  ) +
-  theme_minimal()
-
-
-
-
-# Third: Pigeon River Discharge for 2024
-ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Discharge`)) +
-  geom_line(color = "grey") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
-  geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Discharge`),
-             color = "red",
-             size = 3) +
-  labs(
-    title = "Discharge Trends for 2024 in Pigeon River",
-    x = "Date",
-    y = "Discharge"
-  ) +
-  theme_minimal()
-
+# Display the combined plot
+print(combined_plot)
 
 ```
-All three locations show relatively low discharge levels throughout most of the year, with significant spikes around September/october 2024, coinciding with the impact of Helene. This suggests that the extreme precipitation during Helene led to substantial water runoff and river discharge increases. Among the three, Asheville has the highest peak discharge which surpasses the other locations. Pigeon River shows a comparable degree of discharge, while Sugar Grove experiences the smallest peak among the three, although it is still notably high.
+### Daily Discharge Trend
 
-When analyzing the annual distribution, Sugar Grove and Pigeon River maintain relatively steady, low discharge levels throughout the year, while Asheville displays a more variable discharge pattern with multiple small peaks. This should give a sense to the heightened flood risk potential during extreme weather events like Helene. A key question that arises from these observations is whether these peaks are influenced by urbanization or the limited infiltration capacity of the city of Asheville which might also explain why Sugar Grove shows a smaller peak? 
+```{r Helene Discharge event over 2024, echo=FALSE, warning=FALSE, fig.cap = "Daily Discharge Trends (cfs) for 2024"}
 
-
-
-**Then Gage Height**
-```{r}
-
-# First: Sugar Grove Gage Height for 2024
-
-ggplot(Data2024_sg, aes(x = dateTime, y = `Mean Gage Height`)) +
-  geom_line(color = "lightblue") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
-  geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Gage Height`),
-             color = "red",
-             size = 3) +
+# Create individual plots with consistent formatting and vertical axis labels
+# 1. Sugar Grove Plot
+plot_sg <- ggplot(Data2024_sg, aes(x = dateTime, y = `Mean Discharge`)) +
+  geom_line(color = "lightblue", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
+  geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Discharge`), 
+             color = "red", size = 1) +
   labs(
-    title = "Gage Height Trends for 2024 in Sugar Grove",
-    x = "Date",
-    y = "Gage Height"
+    x = NULL,
+    y = "Sugar Grove"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 12)
 
-# Second: Asheville Discharge for 2024
-ggplot(Data2024_ash, aes(x = dateTime, y = `Mean Gage Height`)) +
-  geom_line(color = "darkred") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
-  geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Gage Height`),
-             color = "red",
-             size = 3) +
+# 2. Asheville Plot
+plot_ash <- ggplot(Data2024_ash, aes(x = dateTime, y = `Mean Discharge`)) +
+  geom_line(color = "darkred", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
+  geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Discharge`), 
+             color = "red", size = 1) +
   labs(
-    title = "Gage Height Trends for 2024 in Asheville",
-    x = "Date",
-    y = "Gage Height"
+    x = NULL,
+    y = "Asheville"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 12)
 
-
-# Third: Pigeon River Gage Height for 2024
-ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Gage Height`)) +
-  geom_line(color = "grey") +
-  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black") +
-  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black") +
-  geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Gage Height`),
-             color = "red",
-             size = 3) +
+# 3. Pigeon River Plot
+plot_pg <- ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Discharge`)) +
+  geom_line(color = "grey", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
+  geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Discharge`), 
+             color = "red", size = 1) +
   labs(
-    title = "Gage Height Trends for 2024 in Pigeon River",
-    x = "Date",
-    y = "Gage Height"
+    x = NULL,
+    y = "Pigeon River"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 12)
 
+# Combine plots into one using patchwork
+combined_plot <- plot_sg / plot_ash / plot_pg + 
+  plot_annotation(
+    title = "Daily Discharge Trends (cfs) for 2024",
+    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    theme = theme(
+      plot.title = element_text(size = 20, face = "bold"),
+      plot.subtitle = element_text(size = 16)
+    )
+  ) &
+  theme(plot.margin = margin(10, 10, 10, 10))
 
-
+# Display the combined plot
+print(combined_plot)
 
 ```
 
+### Daily Gage Height Trend
+
+```{r Gage Height event over 2024, echo=FALSE, warning=FALSE, fig.cap = "Daily Gage Height Trends (cfs) for 2024"}
+
+# Create individual plots with consistent formatting and clear axis labels
+# 1. Sugar Grove Gage Height
+plot_sg_gh <- ggplot(Data2024_sg, aes(x = dateTime, y = `Mean Gage Height`)) +
+  geom_line(color = "lightblue", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
+  geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Gage Height`), 
+             color = "red", size = 1) +
+  labs(
+    x = NULL,
+    y = "Sugar Grove"
+  ) +
+  theme_minimal(base_size = 12)
+
+# 2. Asheville Gage Height
+plot_ash_gh <- ggplot(Data2024_ash, aes(x = dateTime, y = `Mean Gage Height`)) +
+  geom_line(color = "darkred", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
+  geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Gage Height`), 
+             color = "red", size = 1) +
+  labs(
+    x = NULL,
+    y = "Asheville"
+  ) +
+  theme_minimal(base_size = 12)
+
+# 3. Pigeon River Gage Height
+plot_pg_gh <- ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Gage Height`)) +
+  geom_line(color = "grey", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-24"), linetype = "dashed", color = "black", size = 1) +
+  geom_vline(xintercept = as.Date("2024-09-27"), linetype = "dashed", color = "black", size = 1) +
+  geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Gage Height`), 
+             color = "red", size = 1) +
+  labs(
+    x = NULL,
+    y = "Pigeon River"
+  ) +
+  theme_minimal(base_size = 12)
+
+# Combine plots into one using patchwork
+combined_plot_gh <- plot_sg_gh / plot_ash_gh / plot_pg_gh + 
+  plot_annotation(
+    title = "Daily Gage Height Trends (ft) for 2024",
+    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    theme = theme(
+      plot.title = element_text(size = 20, face = "bold"),
+      plot.subtitle = element_text(size = 16)
+    )
+  ) &
+  theme(plot.margin = margin(10, 10, 10, 10))
+
+# Display the combined plot
+print(combined_plot_gh)
+
+```
 
 Okay, so clearly Helene was the maximum event for these parameters for 2024.
-
 
 <span style="font-size:15px;font-style:italic;">How do these maximums compare to all historical data we have access to?</span>
 
 
 Let's zoom out on the same dates but compared with all historical data.
 
-**Precipitation**
+### Historical Precipitation Trend
 
-```{r, warning=FALSE}
 
-#First: Sugar Grive Historical Precipitation 
+```{r warning=FALSE, echo=FALSE}
+library(ggplot2)
+library(patchwork)
 
-SugarGroveDailyPrecipitationLinePlot<-ggplot(CleanedDataSugarGrove%>%
+# 1. Sugar Grove Historical Precipitation Plot
+SugarGroveDailyPrecipitationPlot <- ggplot(CleanedDataSugarGrove %>%
     drop_na(`Total Daily Precipitation (Inches)`), aes(
-  x= dateTime,
-   y = `Total Daily Precipitation (Inches)`)) +
-  geom_line(color = "lightblue", size = 1) +
-  geom_point(data = HeleneData_sg, aes(x = dateTime,
-                                      y = `Total Daily Precipitation (Inches)`),
-             color = "red",
-             size = 3) +  
+  x = dateTime,
+  y = `Total Daily Precipitation (Inches)`)) +
+  geom_line(color = "lightblue") +
+  geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`),
+             color = "red", size = 1) +
   labs(
-    title = "Total Daily Precipitation Over Time",
-    subtitle = "Sugar Grove(1954-2024)",
-    x = "Date",
-    y = "Total Daily Precipitation (Inches)"
+    x = NULL,
+    y = "Sugar Grove"
   ) +
-  theme_minimal() 
- 
-print(SugarGroveDailyPrecipitationLinePlot) 
+  theme_minimal(base_size = 9) 
 
-
-#Second: Asheville Historical Precipitation 
-
-AshevilleDailyPrecipitationLinePlot<-ggplot(CleanedDataAsheville%>%
+# 2. Asheville Historical Precipitation Plot
+AshevilleDailyPrecipitationPlot <- ggplot(CleanedDataAsheville %>%
     drop_na(`Total Daily Precipitation (Inches)`), aes(
   x = dateTime, 
   y = `Total Daily Precipitation (Inches)`)) +
   geom_line(color = "darkred", size = 1) +
-  geom_point(data = HeleneData_ash, aes(x = dateTime,
-                                      y = `Total Daily Precipitation (Inches)`),
-             color = "red",
-             size = 3) +    
+  geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`),
+             color = "red", size = 1) +
   labs(
-    title = "Total Daily Precipitation Over Time",
-    subtitle = "Asheville(1954-2024)",
-    x = "Date",
-    y = "Total Daily Precipitation (Inches)"
+    x = NULL,
+    y = "Asheville"
   ) +
-  theme_minimal() 
+  theme_minimal(base_size = 9) 
 
-print(AshevilleDailyPrecipitationLinePlot)
-
-
-#Third: Pigeon River Historical Precipitation 
-PigeonRiverDailyTotalPrecipitationPlot<-ggplot(CleanedDataPigeonRiver%>%
+# 3. Pigeon River Historical Precipitation Plot
+PigeonRiverDailyPrecipitationPlot <- ggplot(CleanedDataPigeonRiver %>%
     drop_na(`Total Daily Precipitation (Inches)`), aes(
-  x= dateTime,
-   y = `Total Daily Precipitation (Inches)`)) +
-  geom_line(color = "grey", size = 1) +
-  geom_point(data = HeleneData_pg, aes(x = dateTime,
-                                      y = `Total Daily Precipitation (Inches)`),
-             color = "red",
-             size = 3) +    
+  x = dateTime,
+  y = `Total Daily Precipitation (Inches)`)) +
+  geom_line(color = "grey") +
+  geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Total Daily Precipitation (Inches)`),
+             color = "red", size = 1) +
   labs(
-    title = "Total Daily Precipitation Over Time",
-    subtitle = "Pigeon River (1954-2024)",
-    x = "Date",
-    y = "Total Daily Precipitation (Inches)"
+    x = NULL,
+    y = "Pigeon River"
   ) +
-  theme_minimal() 
+  theme_minimal(base_size = 9) 
 
-print(PigeonRiverDailyTotalPrecipitationPlot)
+# Combine the precipitation plots using patchwork for a single layout
+combined_precipitation_plot <- (SugarGroveDailyPrecipitationPlot + 
+  AshevilleDailyPrecipitationPlot + 
+  PigeonRiverDailyPrecipitationPlot) +
+  plot_annotation(
+    title = "Historical Total Daily Precipitation (Inches) (1954-2024)",
+    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    theme = theme(
+      plot.title = element_text(size = 18, face = "bold"),
+      plot.subtitle = element_text(size = 16)
+    )
+  ) & 
+  theme(plot.margin = margin(10, 10, 10, 10))
 
+# Display the combined precipitation plot
+print(combined_precipitation_plot)
 
 
 ```
-These graphs clearly shows how Helene stands out as a historical event. All three locations (Sugar Grove, Asheville, and Pigeon River) experience occasional extreme rainfall events and relatively consistent patterns of lower daily precipitation over the decades. These historical records highlight that the extreme peaks observed in 2024, particularly during Helene are
 
-**Discharge**
-```{r, warning=FALSE}
+### Historical Discharge Trend
 
-CleanedDataSugarGrove$dateTime <- as.Date(CleanedDataSugarGrove$dateTime)
-CleanedDataAsheville$dateTime <- as.Date(CleanedDataAsheville$dateTime)
-CleanedDataPigeonRiver$dateTime <- as.Date(CleanedDataPigeonRiver$dateTime)
-HeleneData_sg$dateTime <- as.Date(HeleneData_sg$dateTime)
-HeleneData_ash$dateTime <- as.Date(HeleneData_ash$dateTime)
-HeleneData_pg$dateTime <- as.Date(HeleneData_pg$dateTime)
+```{r warning=FALSE, echo=FALSE}
 
-# First: Sugar Grove Historical Discharge Data
+# 1. Sugar Grove Historical Discharge Plot
 SugarGroveDailyDischargeLinePlot <- ggplot(CleanedDataSugarGrove %>%
     drop_na(`Mean Discharge`), aes(
   x = dateTime,
   y = `Mean Discharge`)) +
   geom_line(color = "lightblue") +
   geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Discharge`),
-             color = "red",
-             size = 3) +
-  scale_x_date(
-    limits = as.Date(c("1954-01-01", "2024-12-31")),
-    date_labels = "%Y"
-  ) +
+             color = "red", size = 1) +
   labs(
-    title = "Mean Daily Discharge Over Time",
-    subtitle = "Sugar Grove (1954-2024)",
-    x = "Date",
-    y = "Mean Discharge (cubic meters per second)"
+    x = NULL,
+    y = "Sugar Grove"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 9) 
 
-print(SugarGroveDailyDischargeLinePlot)
-
-# Second: Asheville Historical Discharge Data
+# 2. Asheville Historical Discharge Plot
 AshevilleDailyDischargeLinePlot <- ggplot(CleanedDataAsheville %>%
     drop_na(`Mean Discharge`), aes(
-  x = dateTime,
+  x = dateTime, 
   y = `Mean Discharge`)) +
   geom_line(color = "darkred", size = 1) +
   geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Discharge`),
-             color = "red",
-             size = 3) +
-  scale_x_date(
-    limits = as.Date(c("1954-01-01", "2024-12-31")),
-    date_labels = "%Y"
-  ) +
+             color = "red", size = 1) +
   labs(
-    title = "Mean Daily Discharge Over Time",
-    subtitle = "Asheville (1954-2024)",
-    x = "Date",
-    y = "Mean Discharge (cubic meters per second)"
+    x = NULL,
+    y = "Asheville"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 9) 
 
-print(AshevilleDailyDischargeLinePlot)
-
-# Third: Pigeon River Historical Discharge Data
+# 3. Pigeon River Historical Discharge Plot
 PigeonRiverDailyDischargeLinePlot <- ggplot(CleanedDataPigeonRiver %>%
     drop_na(`Mean Discharge`), aes(
   x = dateTime,
   y = `Mean Discharge`)) +
   geom_line(color = "grey") +
   geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Discharge`),
-             color = "red",
-             size = 3) +
-  scale_x_date(
-    limits = as.Date(c("1954-01-01", "2024-12-31")),
-    date_labels = "%Y"
-  ) +
+             color = "red", size = 1) +
   labs(
-    title = "Mean Daily Discharge Over Time",
-    subtitle = "Pigeon River (1954-2024)",
-    x = "Date",
-    y = "Mean Discharge (cubic meters per second)"
+    x = NULL,
+    y = "Pigeon River"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 9) 
 
-print(PigeonRiverDailyDischargeLinePlot)
+# Combine the plots using patchwork for a single layout
+combined_discharge_plot <- (SugarGroveDailyDischargeLinePlot + 
+  AshevilleDailyDischargeLinePlot + 
+  PigeonRiverDailyDischargeLinePlot) +
+  plot_annotation(
+    title = "Historical Mean Daily Discharge (cfs) (1954-2024)",
+    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    theme = theme(
+      plot.title = element_text(size = 20, face = "bold"),
+      plot.subtitle = element_text(size = 16)
+    )
+  ) & 
+  theme(plot.margin = margin(10, 10, 10, 10))
 
+# Display the combined plot
+print(combined_discharge_plot)
 
 ```
-All three locations show a generally stable pattern of daily mean discharge, marked by periodic spikes indicative of extreme events, with Helene standing out as a significant event in the last 70 years. Sugar Pine exhibits a noticeable peak that is unparalleled compared to the historical record, while Sugar Grove has experienced higher peaks of discharge in the past. However, it is important to highlight Asheville: despite appearing stable with its highest peak around 2005, the dataset is missing data for three critical days (September 27–29), precisely when Helene impacted the area. Therefore, the results for Asheville in this graph should be interpreted with caution.
 
-**Gage Height**
-```{r, warning=FALSE}
+### Historical Gage Height Trend
 
-#First: Sugar Grove Historical Gage Height 
+```{r warning=FALSE, echo=FALSE}
+library(ggplot2)
+library(patchwork)
 
-SugarGroveDailyGageHeightPlot<-ggplot(CleanedDataSugarGrove %>%
+# 1. Sugar Grove Historical Gage Height Plot
+SugarGroveDailyGageHeightPlot <- ggplot(CleanedDataSugarGrove %>%
     drop_na(`Mean Gage Height`), aes(
-  x = dateTime, 
+  x = dateTime,
   y = `Mean Gage Height`)) +
-  geom_line(color = "lightblue", size = 1) +
+  geom_line(color = "lightblue") +
   geom_point(data = HeleneData_sg, aes(x = dateTime, y = `Mean Gage Height`),
-             color = "red",
-             size = 3) +    
+             color = "red", size = 1) +
   labs(
-    title = "Mean Daily Gage Height Over Time",
-    subtitle = "Sugar Grove Gage Height",
-    x = "Date",
-    y = "Mean Gage Height"
+    x = NULL,
+    y = "Sugar Grove"
   ) +
-  theme_minimal() 
+  theme_minimal(base_size = 9) 
 
-print(SugarGroveDailyGageHeightPlot)
-
-
-#Second: Asheville Historical Gage Height 
-
-AshevilleDailyGageHeightPlot<-ggplot(CleanedDataAsheville %>%
+# 2. Asheville Historical Gage Height Plot
+AshevilleDailyGageHeightPlot <- ggplot(CleanedDataAsheville %>%
     drop_na(`Mean Gage Height`), aes(
   x = dateTime, 
   y = `Mean Gage Height`)) +
   geom_line(color = "darkred", size = 1) +
   geom_point(data = HeleneData_ash, aes(x = dateTime, y = `Mean Gage Height`),
-             color = "red",
-             size = 3) +      
+             color = "red", size = 1) +
   labs(
-    title = "Mean Daily Gage Height Over Time",
-    subtitle = "Asheville(1954-2024)",
-    x = "Date",
-    y = "Mean Gage Height"
+    x = NULL,
+    y = "Asheville"
   ) +
-  theme_minimal() 
+  theme_minimal(base_size = 9) 
 
-print(AshevilleDailyGageHeightPlot)
-
-
-#Third: Pigeon River Historical Gage Height
-
-PigeonRiverDailyGageHeightPlot<-ggplot(CleanedDataPigeonRiver %>%
+# 3. Pigeon River Historical Gage Height Plot
+PigeonRiverDailyGageHeightPlot <- ggplot(CleanedDataPigeonRiver %>%
     drop_na(`Mean Gage Height`), aes(
-  x = dateTime, 
+  x = dateTime,
   y = `Mean Gage Height`)) +
-  geom_line(color = "grey", size = 1) +
+  geom_line(color = "grey") +
   geom_point(data = HeleneData_pg, aes(x = dateTime, y = `Mean Gage Height`),
-             color = "red",
-             size = 3) +      
+             color = "red", size = 1) +
   labs(
-    title = "Mean Daily Gage Height Over Time",
-    subtitle = "Pigeon River Gage Height",
-    x = "Date",
-    y = "Mean Gage Height"
+    x = NULL,
+    y = "Pigeon River"
   ) +
-  theme_minimal() 
+  theme_minimal(base_size = 9) 
 
-print(PigeonRiverDailyGageHeightPlot)
+# Combine the gage height plots into one using patchwork
+combined_gage_height_plot <- (SugarGroveDailyGageHeightPlot + 
+  AshevilleDailyGageHeightPlot + 
+  PigeonRiverDailyGageHeightPlot) +
+  plot_annotation(
+    title = "Historical Mean Daily Gage Height (ft) (1954-2024)",
+    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    theme = theme(
+      plot.title = element_text(size = 20, face = "bold"),
+      plot.subtitle = element_text(size = 16)
+    )
+  ) & 
+  theme(plot.margin = margin(10, 10, 10, 10))
 
+# Display the combined gage height plot
+print(combined_gage_height_plot)
 
 ```
 
@@ -716,10 +711,12 @@ These graphs reaveal that Helene was responsible for some
 outlier behavior, but it doesn't account for seasonality and other
 trends.
 
-Let's decompose to account for these trends
-**Decompositions**
+## Seven-Day Time Series Analysis: Seasonality Patterns
 
-```{r SUGAR GROVE}
+Let's decompose to account for these trends
+### Sugar Grove Analysis: Decomposition Plot
+
+```{r SUGAR GROVE, echo=FALSE}
 
 #Sugar Grove#
 # Convert dateTime to Date class and clean columns
@@ -794,8 +791,9 @@ plot(
 
 ```
 
+### Asheville Analysis: Decomposition Plot
 
-```{r ASHEVILLE}
+```{r ASHEVILLE, echo=FALSE}
 
 #Asheville
 
@@ -871,8 +869,9 @@ plot(
 
 ```
 
+### Pigeon River Analysis: Decomposition Plot
 
-```{r PIGEON RIVER}
+```{r PIGEON RIVER, echo=FALSE}
 
 #Pigeon River
 
@@ -945,7 +944,6 @@ plot(
   main = "Decomposition of 7-Day Moving Average of Daily Discharge for Pigeon River"
 )
 
-
 ```
 
 
@@ -959,49 +957,53 @@ intervals for Hurricane Helene within the analyzed parameters.
 This approach will help contextualize the storm’s magnitude and frequency 
 compared to historical data.
 
-
 First we will calculate the recurrence intervals for 7-day precipitation events. 
 Based on our initial analysis, assuming Hurricane Helene represents the 7-day 
 averaged maximum for 2024 is a reasonable starting point.
 
-
-
 <span style="font-size:18px; font-weight:bold;">Helene Recurrence Intervals</span>
 
-**Sugar Grove Hazen Precipitation**
+### Sugar Grove: Hazen Precipitation
 
-```{r Sugar Grove Precip Hazen, warning=FALSE}
-SugarGrovePrecip <- CleanedDataSugarGrove %>% 
-  mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
+```{r Sugar Grove Precip Hazen, warning=FALSE, echo = FALSE}
 
-SugarGrovePrecip <- SugarGrovePrecip %>%
-  mutate(Year = year(dateTime))
+# Process the data
+SugarGrovePrecip <- CleanedDataSugarGrove %>%
+  mutate(
+    moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA),
+    Year = year(dateTime)
+  ) %>%
+  group_by(Year) %>%
+  summarize(MaxEvent = max(moving_avg, na.rm = TRUE)) %>%
+  filter(MaxEvent > 0) %>%
+  arrange(desc(MaxEvent)) %>%
+  mutate(
+    rank = row_number(),
+    Fa_Value = (100 * (2 * rank - 1)) / (2 * n()),
+    hazen = 100 / Fa_Value
+  )
 
-SugarGrovePrecip <- SugarGrovePrecip %>% 
-  group_by(Year) %>%                  
-  summarize(MaxEvent = max(moving_avg, na.rm=T))
-
-SugarGrovePrecip <- SugarGrovePrecip %>% 
-  filter(MaxEvent > 0)
-
-SugarGrovePrecip <- SugarGrovePrecip %>% 
-  arrange(desc(MaxEvent)) %>% 
-  mutate(rank = row_number()) %>% 
-  mutate(Fa_Value = ((100*(2*rank - 1))/(2*n()))) %>% 
-  mutate(hazen = 100/Fa_Value)
-
+# Filter data for the year 2024
 SugarGrovePrecipHazen2024 <- SugarGrovePrecip %>% filter(Year == 2024)
-print(SugarGrovePrecipHazen2024)
 
-
+# Print the table using kable for a nicely formatted table with custom column names
+knitr::kable(SugarGrovePrecipHazen2024, 
+             caption = "Sugar Grove Precipitation Hazen Values for 2024", 
+             digits = 2,
+             label = "SugarGrovePrecipHazen",  # Add label to the table,
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
 ```
 
 The Hazen number of 18 indicates that the maximum 7-day average precipitation 
 event in 2024 was an 18-year event, meaning it had about a 20% chance of 
 occurring in any given year (Hazen interval: 18 years, probability: 20%).
 
-**Asheville Hazen Precipitation**
-```{r Asheville Precipitation Hazen, warning=FALSE}
+### Asheville: Hazen Precipitation
+
+```{r Asheville Precipitation Hazen, warning=FALSE, echo =FALSE}
+
+# Data manipulation for Asheville precipitation
 AshevillePrecip <- CleanedDataAsheville %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
@@ -1021,8 +1023,16 @@ AshevillePrecip <- AshevillePrecip %>%
   mutate(Fa_Value = ((100 * (2 * rank - 1)) / (2 * n()))) %>% 
   mutate(hazen = 100 / Fa_Value)
 
+# Filter for 2024 data
 AshevillePrecipHazen2024 <- AshevillePrecip %>% filter(Year == 2024)
-print(AshevillePrecipHazen2024)
+
+# Print the table using kable for a nicely formatted table
+knitr::kable(AshevillePrecipHazen2024, 
+             caption = "Asheville Precipitation Hazen Values for 2024", 
+             digits = 2,
+             label = "AshevillePrecipHazen",  # Add label to the table
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
 
 
 ```
@@ -1037,9 +1047,9 @@ This provides a statistical metric to quantify the observed outliers.
 Next, we will calculate the recurrence intervals for 2024 at our last 
 selected site.
 
-**Pigeon River Hazen Precipitation**
+### Pigeon River: Hazen Precipitation
 
-```{r Pigeon River Precip Hazen, warning=FALSE}
+```{r Pigeon River Precip Hazen, warning=FALSE, echo=FALSE}
 PigeonRiverPrecip <- CleanedDataPigeonRiver %>% 
   mutate(moving_avg = rollapply(`Total Daily Precipitation (Inches)`, width = 7, FUN = mean, align = "center", fill = NA)) 
 
@@ -1061,8 +1071,16 @@ PigeonRiverPrecip <- PigeonRiverPrecip %>%
 
 PigeonRiverPrecipHazen2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
 
-print(PigeonRiverPrecipHazen2024)
+# Print the table using kable for a nicely formatted table
+knitr::kable(PigeonRiverPrecipHazen2024, 
+             caption = "Pigeon River Precipitation Hazen Values for 2024", 
+             digits = 2,
+             label = "PigeonRiverPrecipHazen",  # Add label to the table
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
+
 ```
+
 
 At Pigeon River, Hurricane Helene was a 52-year event in terms of total
 precipitation. This indicates that Helene's precipitation was less unusual at 
@@ -1072,9 +1090,8 @@ maximum 7-day event. (Hazen interval: 52 years, probability: ~2%)
 
 Let's now automate this function for all three parameters and run our sites.
 
-
 **Automated Precipitation**
-```{r}
+```{r echo=FALSE}
 
 Hazen2024Precip.Function<-function(siteNo, pcode, scode){
 
@@ -1123,7 +1140,7 @@ return(CleanDataFlood2024)
 
 
 **Automated Discharge**
-```{r}
+```{r echo=FALSE}
 
 Hazen2024Discharge.Function<-function(siteNo, pcode, scode){
 
@@ -1164,7 +1181,6 @@ CleanDataFlood <- CleanDataFlood %>%
 
 CleanDataFlood2024 <- CleanDataFlood %>% filter(Year == 2024)
 
-
 return(CleanDataFlood2024)
 }
 
@@ -1172,7 +1188,7 @@ return(CleanDataFlood2024)
 
 *And now we run our sites through our discharge function*
 
-```{r}
+```{r echo=FALSE}
 
 SugarGroveDischargeHazen2024 <- Hazen2024Discharge.Function(siteNumberSugarGrove, pcode, scode)
 
@@ -1180,9 +1196,29 @@ AshevilleDischargeHazen2024 <- Hazen2024Discharge.Function(siteNumberAsheville, 
 
 PigeonRiverDischargeHazen2024 <- Hazen2024Discharge.Function(siteNoPigeonRiver, pcode, scode)
 
-SugarGroveDischargeHazen2024
-AshevilleDischargeHazen2024
-PigeonRiverDischargeHazen2024
+# Print Sugar Grove discharge Hazen table with 2 decimal places
+knitr::kable(SugarGroveDischargeHazen2024, 
+             caption = "Sugar Grove Discharge Hazen Values for 2024", 
+             digits = 2,
+             label = "SugarGroveDischargeHazen",  # Table label
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
+
+# Print Asheville discharge Hazen table with 2 decimal places
+knitr::kable(AshevilleDischargeHazen2024, 
+             caption = "Asheville Discharge Hazen Values for 2024", 
+             digits = 2,
+             label = "AshevilleDischargeHazen",  # Table label
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
+
+# Print Pigeon River discharge Hazen table with 2 decimal places
+knitr::kable(PigeonRiverDischargeHazen2024, 
+             caption = "Pigeon River Discharge Hazen Values for 2024", 
+             digits = 2,
+             label = "PigeonRiverDischargeHazen",  # Table label
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
 
 
 
@@ -1190,7 +1226,7 @@ PigeonRiverDischargeHazen2024
 
 *Now our function for Gage Height*
 
-```{r}
+```{r echo=FALSE}
 Hazen2024GageHeight.Function<-function(siteNo, pcode, scode){
 
 SiteData<-readNWISdata(
@@ -1252,21 +1288,13 @@ PigeonRiverGageHeightHazen2024
 
 ```
 
-
-
 **Map of Gage Sites**
 
-To visually illustrate how unusual Hurricane Helene was at each site,
-we will create a map that represents the magnitude of the Hazen interval. 
+To visually illustrate how unusual Hurricane Helene was at each site, we will create a map that represents the magnitude of the Hazen interval. 
 
-The size of the dot on the map will correspond to the rarity of the event: 
-the larger the dot, the less likely the event was to occur.
-This visualization will help convey the statistical significance of 
-Helene's impact across the selected sites.
+The size of the dot on the map will correspond to the rarity of the event: the larger the dot, the less likely the event was to occur.This visualization will help convey the statistical significance of Helene's impact across the selected sites.
 
-```{r}
-
-
+```{r echo=FALSE, fig.cap = "Hazen Value (Size)"}
 
 # Create Data Frame with Hazen Values
 hazen_data <- data.frame(
@@ -1401,7 +1429,7 @@ be a helpful visual in understanding the specific impacts in Sugar Grove, Ashevi
 and Pigeon River compared to the rest of the state. 
 
 
-```{r message=FALSE}
+```{r message=FALSE, echo=FALSE}
 
 #CHEOAH RIVER NR BEARPEN GAP NR TAPOCO, NC 
 CheoahRiverSiteNo<-as.character('0351706800')
@@ -1454,9 +1482,7 @@ further analysis could enable the creation of increasingly granular data for
 each site, improving the resolution of our insights.
 
 
-
-
-```{r}
+```{r echo=FALSE}
 
 # Create Data Frame with Hazen Values
 Eight_site_hazen_data <- data.frame(
@@ -1598,10 +1624,6 @@ leaflet(Eight_site_hazen_data) %>%
   )
 
 
-
-
-
-
 ```
 **Why this analysis matters**
 
@@ -1619,3 +1641,7 @@ norms was greatest along a path through central Western North Carolina,
 particularly over Asheville. From this, we can reasonably infer that Asheville’s 
 infrastructure experienced greater inundation compared to areas in northeastern 
 North Carolina or other sites included in this study.
+
+## Summary and Conclusions
+
+## References
