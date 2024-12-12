@@ -2,13 +2,14 @@
 title: "Title: Rainfall Trends Following the Impact of Hurricane Helene 
 in Sugar Grove, Asheville, and Pigeon River"
 author: "Sam Tolbert, Chrissie Pantoja, Ana Andino, Gretchen Barbera"
-date: "2024-12-11"
+date: "2024-12-12"
 output:
   bookdown::html_document2:
     number_sections: true
     toc: true
     df_print: kable
     keep_md: true
+    keep_tex: true
 ---
 
 \listoftables
@@ -16,32 +17,55 @@ output:
 
 **Project Repository**
 
-https://github.com/chrissiepantoja/TolbertAndinoPantojaBarbera_ENV872_EDA_FinalProject
+https://github.com/samtduke/TolbertAndinoPantojaBarbera_ENV872_EDA_FinalProject
+
+### List of Tables
+
+*Dataset Information*
+
+- Table \@ref(tab:table1): Data Description
+
+*Seven-Day Time Series Analysis: Trend Patterns*
+
+- Table \@ref(tab:table2): Sugar Grove Precipitation Hazen Values for 2024
+- Table \@ref(tab:table3): Asheville Precipitation Hazen Values for 2024
+- Table \@ref(tab:table4): Pigeon River Precipitation Hazen Values for 2024
+- Table \@ref(tab:table5): Sugar Grove Discharge Hazen Values for 2024
+- Table \@ref(tab:table6): Asheville Discharge Hazen Values for 2024
+- Table \@ref(tab:table7): Pigeon River Discharge Hazen Values for 2024
+- Table \@ref(tab:table8): Sugar Grove Gage Height Hazen Values for 2024
+- Table \@ref(tab:table9): Asheville Gage Height Hazen Values for 2024
+- Table \@ref(tab:table10): Sugar Grove Gage Height Hazen Values for 2024
+
+### List of Figures 
+
+*Time Series Analysis: Daily and Historical Trend Patterns*
+
+- Figure \@ref(fig:figure1): Daily Precipitation Trends (Inches) for 2024
+- Figure \@ref(fig:figure2): Daily Discharge Trends (cfs) for 2024
+- Figure \@ref(fig:figure3): Daily Gage Height Trends (cfs) for 2024
+- Figure \@ref(fig:figure4): Historical  Daily Precipitation (Inches)
+- Figure \@ref(fig:figure5): Historical Daily Discharge (cfs)
+- Figure \@ref(fig:figure6): Historical Daily Gage Height (ft)
+
+*Seven-Day Time Series Analysis: Trend Patterns*
+
+- Figure \@ref(fig:figure7): Decomposition of 7-Day Moving Average of Daily Discharge for Sugar Grove
+- Figure \@ref(fig:figure8): Decomposition of 7-Day Moving Average of Daily Discharge for Asheville
+- Figure \@ref(fig:figure9): Decomposition of 7-Day Moving Average of Daily Discharge for Pigeon River
+
 
 ## Context and Motivation
-Hurricane Helene struck North Carolina in late September, rapidly intensifying
-to a Category 4 storm with sustained winds of 140 mph. The hurricane brought 
-catastrophic rainfall, widespread flooding, landslides, destructive winds, and 
-tornados, causing severe disruptions to both the economy and daily life. Months
-later, the state is still recovering from the storm’s far-reaching effects.
-Particularly striking is that Helene followed closely on the heels of 
-Hurricane Milton, a Category 5 storm that had already devastated the west coast
-of the United States. These concurrent events underscore the increasing severity 
-and frequency of hurricanes, highlighting the urgent need to better understand 
-the mechanisms behind and the impacts of such extreme weather events.
+Hurricane Helene struck North Carolina in late September, rapidly intensifying to a Category 4 storm with sustained winds of 140 mph. The hurricane brought catastrophic rainfall, widespread flooding, landslides, destructive winds, and tornados, causing severe disruptions to both the economy and daily life. Months later, the state is still recovering from the storm’s far-reaching effects. Particularly striking is that Helene followed closely on the heels of Hurricane Milton, a Category 5 storm that had already devastated the west coast of the United States. These concurrent events underscore the increasing severity and frequency of hurricanes, highlighting the urgent need to better understand the mechanisms behind and the impacts of such extreme weather events.
 
-The devastation caused by Hurricane Helene has left a profound and lasting 
-impact on North Carolina. The storm wreaked unprecedented destruction, 
-leaving thousands of homes either destroyed or severely damaged. Millions of 
-residents were cut off from critical infrastructure, including water, 
-electricity, telecommunications, and healthcare services (OSBM, 2024).
-Key infrastructure, such as roadways and bridges, was also heavily damaged. 
-Economically, the storm's effects will be felt for years to come. 
-Preliminary estimates of the damage and recovery needs across the state total approximately $53.6 billion, which includes $41.1 billion in direct damages, $7.6 billion in indirect impacts, and $4.8 billion needed for strengthening and mitigation efforts (OSBM, 2024). These figures highlight the enormity of the storm’s impact compared to other recent hurricanes, such as Hurricane Florence in 2018, which resulted in $16.7 billion in damages. Beyond the immediate economic losses, the storm significantly altered the state’s physical landscape, eroding valuable topsoil, changing river courses, and submerging homes that had stood for generations. The long-term effects on agriculture and other industries will continue to be felt for years to come (OSBM, 2024).
-  
-### Why should we understand rainfall trends and why is disaster preparedness important?
+The devastation caused by Hurricane Helene has left a profound and lasting impact on North Carolina. The storm wreaked unprecedented destruction, leaving thousands of homes either destroyed or severely damaged. Millions of residents were cut off from critical infrastructure, including water, electricity, telecommunications, and healthcare services (OSBM, 2024). Key infrastructure, such as roadways and bridges, was also heavily damaged. Economically, the storm's effects will be felt for years to come. Preliminary estimates of the damage and recovery needs across the state total approximately $53.6 billion, which includes $41.1 billion in direct damages, $7.6 billion in indirect impacts, and $4.8 billion needed for strengthening and mitigation efforts (OSBM, 2024). These figures highlight the enormity of the storm’s impact compared to other recent hurricanes, such as Hurricane Florence in 2018, which resulted in $16.7 billion in damages. Beyond the immediate economic losses, the storm significantly altered the state’s physical landscape, eroding valuable topsoil, changing river courses, and submerging homes that had stood for generations. The long-term effects on agriculture and other industries will continue to be felt for years to come (OSBM, 2024).
+
+<span style="font-size:20px; font-weight:bold;">Why should we understand rainfall trends and why is disaster preparedness important?</span>
+
 The rainfall from Hurricane Helene was both unprecedented and catastrophic. In some areas of North Carolina, over 26 inches of rain fell within a 24-hour period, resulting in widespread flooding that devastated entire towns across 27 counties (OSBM, 2024). Analyzing precipitation patterns and discharge before, during, and after the hurricane is crucial for understanding its long-term effects on regional climates and water systems. This information is vital for informed decision-making in disaster preparedness and water resource management.
+
 Hurricane Helene serves as a reminder for strengthening communities against flooding and extreme weather events. Climate change knows no boundaries, and we should not be surprised when such extreme events continue to occur. By focusing on Helene and its unprecedented nature, this study provides important benchmarks, analyses, and comparisons that will be invaluable for future disaster response planning.
+
 Through examining these rainfall trends, this study aims to emphasize the historical significance of Hurricane Helene as a rare event with far-reaching consequences. Understanding these patterns offers a foundation for contextualizing the storm’s impact within the broader context of climate change, while also identifying anomalies in long-term climatic trends.
 
 
@@ -49,23 +73,28 @@ Through examining these rainfall trends, this study aims to emphasize the histor
 
 *Question 1: What were the temporal and spatial rainfall patterns in Asheville, Sugar Grove, and Pigeon River following Hurricane Helene?*
 
-*Question 2: How these counties experience rainfall and flooding impacts differently?*
+*Question 2: How these three counties experience rainfall and flooding impacts differently?*
+
+*Question 3: How have these three counties historically experienced rainfall and flooding impacts?*
 
 
 ## Data Description
 
-Data from the United States Geological Survey (USGS) was selected to analyze the impact and severity of Hurricane Helene, enhancing our understanding of extreme weather events. USGS stream gages collect daily discharge volumes in cubic feet per second and were used because of their accuracy and daily collection. This data analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, the study selected Sugar Grove, Asheville, and Pigeon River as focal sites. These locations provide a broad representation of the storm’s effects throughout Western North Carolina as they were chosen based on their proximity to Helene’s storm path. 
+To analyze the impact and severity of Hurricane Helene, we utilized data from the United States Geological Survey (USGS). This data is invaluable for understanding extreme weather events due to its accuracy and daily collection. USGS stream gages, which measure daily discharge volumes in cubic feet per second, were chosen for their reliability.
 
-The study examines three critical parameters: precipitation, stream discharge, and gage height. For each parameter, daily means and cumulative sums were calculated to identify patterns and assess the storm’s severity across different regions.
+Our analysis focused on daily precipitation trends, flood data, and hurricane patterns. To capture the diverse geographical and hydrological impacts of Helene across North Carolina, we selected three focal sites: Sugar Grove, Asheville, and Pigeon River. These locations were strategically chosen based on their proximity to Helene’s storm path, providing a comprehensive representation of the storm’s effects throughout Western North Carolina.
 
-FALTA (explanation on why those three: 
-Sugar Grove data was used because of it's setting with agricultural production and how hard it was hit from Hurricane Helene. 
-Asheville data was used due to it's size and location as a metropolitan hub in rural Western North Carolina.
-Pigeon River data was used due to its proximity to the Tennessee border and its implications for the necessity of cross-border storm management strategy. 
+The study examined three critical parameters: precipitation, stream discharge, and gage height. For each parameter, we calculated daily means and cumulative sums to identify patterns and assess the storm’s severity across different regions.
 
-Together, these datasets and locations provide a multi-dimensional view of Hurricane Helene’s impact, bridging historical context, storm-specific data, and hydrological consequences. This integrated approach ensures that the study not only quantifies the immediate effects of the hurricane but also contributes to long-term disaster preparedness and climate resilience.
+**Sugar Grove**: Selected for its agricultural setting and the significant impact it experienced from Hurricane Helene.
 
-USGS stream gage data shows the latitude and longitude of the stream gage, discharge in cubic feet per second, and the date-time that the data was recorded. (This was already mostly in the paragraph above- we could keep this here or not)
+**Asheville**: Chosen due to its size and role as a metropolitan hub in rural Western North Carolina.
+
+**Pigeon River**: Included because of its proximity to the Tennessee border, highlighting the need for cross-border storm management strategies.
+
+Together, these datasets and locations provide a multi-dimensional view of Hurricane Helene’s impact. This approach bridges historical context, storm-specific data, and hydrological consequences, ensuring that the study not only quantifies the immediate effects of the hurricane but also contributes to long-term disaster preparedness and climate resilience.
+
+USGS stream gage data includes the latitude and longitude of the gage, discharge in cubic feet per second, and the date and time of data recording.
 
 ```{r Data Table, echo=FALSE}
 
@@ -95,7 +124,7 @@ knitr::kable(
   col.names = c("Variable Name", "Description", "Data Type"),
   caption = "Dataset Structure for Analyzing Hurricane Helene's Impact",
   align = "l",
-  label = "DataTable"
+  label = "table1"
   
 )
 ```
@@ -103,23 +132,11 @@ knitr::kable(
 
 ## Data Wrangling
 
-For the selected sites we retrieve data from USGS using USGS's "dataRetrieval"
-package. We want to compare as many parameters as possible between our sites, so
-we selected all common parameters:
-for stream discharge (00060) , precipitation (00045), and gage height (0065).
-The relevant codes we will use are daily mean (0003) for Discharge and Gage
-Height and sum (00006) for Precipitaion.
+To set up the analysis for the selected sites, retrieve data from the USGS using USGS's "dataRetrieval" package. Begin by loading the necessary libraries, including dataRetrieval, dplyr, and tidyr and other relevant packages for analysis. We defined the site numbers and parameters of interest. The site numbers are: Sugar Grove (03479000), French Broad River in Asheville (03451500), and Pigeon River near Canton (03456500). We focused on the parameters stream discharge (00060), precipitation (00045), and gage height (00065). The statistical codes used are daily mean (00003) for discharge and gage height, and sum (00006) for precipitation.
 
-To clean the data we remove the 'cd' columns that indicate if the data is
-official or provisional as this won't have a significant effect on our findings. 
+Create a data retrieval function to streamline the process. This function should utilize readNWISdata from the dataRetrieval package to fetch data for the specified sites, parameters, and stat codes. The function should then clean the data by removing unnecessary "cd" columns, which indicate whether the data is official or provisional, as these columns do not significantly affect the analysis. Rename the remaining columns to include the parameter and statistical codes, ensuring clarity and consistency across datasets.
 
-We then clearly label each column with its parameter and stat code.
-
-After initial retreival, I create a Water Data retrieval function for my chosen
-parameters based on my previous retreival and use it for all data wrangling
-going forward.
-
-
+We applied the function to retrieve and clean data for each site: Sugar Grove, French Broad River, and Pigeon River. This step ensures uniformity in the data preparation process. After cleaning, we combined the datasets into a single, cohesive dataset, confirming that all columns are consistently labeled. This unified dataset allows for effective cross-site comparisons.
 
 ```{r setup, echo=FALSE, include=FALSE, echo =FALSE, warning=FALSE, results='hide'}
 knitr::opts_chunk$set(echo = TRUE)
@@ -148,56 +165,47 @@ library(patchwork)
 
 ```
 
-
-Retrieving data for Sugar Grove Gage from USGS using USGS's "dataRetrieval" package.
-I find its siteNumber is 03479000 from "https://waterdata.usgs.gov/monitoring-location/03479000/#parameterCode=
-00060&period=P7D&showMedian=false".
-
-
 <span style="font-size:15px; font-weight:bold;">Retrieving Data</span>
 
+Retrieving data for Sugar Grove Gage from USGS using USGS's "dataRetrieval" package. We found its siteNumber is 03479000 from "https://waterdata.usgs.gov/monitoring-location/03479000/#parameterCode=00060&period=P7D&showMedian=false".
 
-**Sugar Grove**
+Retrieving data for Asheville Gage from USGS using USGS's "dataRetrieval" package. We found its siteNumber is 03451500 from "https://waterdata.usgs.gov/monitoring-location/03451500/#parameterCode=00060&period=P7D&showMedian=false".
+
+Retrieving data for Pigeon River Gage from USGS using USGS's "dataRetrieval" package. We found its siteNumber is 03456500 from "https://waterdata.usgs.gov/monitoring-location/03456500/#parameterCode=00060&period=P7D&showMedian=false".
+
+
 ```{r, echo=FALSE, warning=FALSE, results='hide'}
 
 siteNumberSugarGrove<-('03479000')
 #I find the MetaData for the site
-SugarGroveMeta <- whatNWISsites(siteNumbers = siteNumberSugarGrove)
+SugarGroveMeta <- suppressMessages(whatNWISsites(siteNumbers = siteNumberSugarGrove))
 print(SugarGroveMeta) 
 #I then use sitedata function to look at what data is available
-SugarGroveSiteData<-suppressWarnings(whatNWISdata(siteNumber=siteNumberSugarGrove))
+SugarGroveSiteData<-suppressMessages(suppressWarnings(whatNWISdata(siteNumber=siteNumberSugarGrove)))
 ```
-
-Looking at what data is available, I see that the parameter codes (parmcodes)
-for stream discharge (00060) , precipitation (00045), and gage height (0065).
-I also see that our relevant stat codes are daily mean (0003) and sum (00006)
-#
 
 ```{r, echo=FALSE, warning=FALSE, results='hide', include =FALSE, message=FALSE}
 pcodes<-c('00060','00045','00065') #parameters discharge, precip, and gage height
 scode<-c('00003', '00006') #daily mean and daily accumulated
 
-SugarGroveData <- invisible(suppressWarnings(suppressMessages(
-  readNWISdata(  # dataRetrieval function from USGS API
+SugarGroveData <- suppressMessages((
+  readNWISdata(  
     siteNumbers = siteNumberSugarGrove,
     parameterCd = pcodes,
     statCd = scode,
     startDate = ymd('1900-01-01'),
     endDate = Sys.Date()
   )
-)))
+))
 #View(SugarGroveData)  
 ```
 
-This is our data! However, It needs to be cleaned. 
-First I want to remove the 'cd' columns that indicate if the data is official or 
-provisional as this won't have a significant effect on our findings. 
-We can mention that in our discussion of the meta data but its not 
-worth a column in our df. 
 
-Then I want to clearly label each column with its parameter and stat code:
 
 ```{r, echo=FALSE, warning=FALSE, results='hide'}
+
+# This is our data! However, It needs to be cleaned. First I want to remove the 'cd' columns that indicate if the data is official or provisional as this won't have a significant effect on our findings. We can mention that in our discussion of the meta data but its notworth a column in our df. Then I want to clearly label each column with its parameter and stat code:
+
 CleanedDataSugarGrove<-SugarGroveData%>% 
 select(-ends_with("cd")) %>% #removing cd columns that indicate provisional or official data
   rename(
@@ -211,45 +219,36 @@ select(-ends_with("cd")) %>% #removing cd columns that indicate provisional or o
 
 ```
 
-I want to repeat this data retrieval and cleaning for two additional sites,
-French Broad River in Asheville in Southwestern NC (03451500) 
-and East Fork Pigeon River in far Southwestern NC near Canton (03456500) for
-examinations of 3 different rivers in different parts of the state.
-
-First I check the metadata and sitedata to see if similar data and parameters
-are available to compare to Sugar Grove
-
-**Asheville**
 
 ```{r, echo=FALSE, warning=FALSE, results='hide'}
 
+#We want to repeat this data retrieval and cleaning for two additional sites, French Broad River in Asheville in Southwestern NC (03451500)  and East Fork Pigeon River in far Southwestern NC near Canton (03456500) for examinations of 3 different rivers in different parts of the state.First we check the metadata and sitedata to see if similar data and parameters are available to compare to Sugar Grove
 #First the Asheville site
 
 siteNumberAsheville<-('03451500')
 
 #I find the MetaData for the site
-AshevilleMeta <- whatNWISsites(siteNumbers = siteNumberAsheville)
+AshevilleMeta <- suppressMessages(whatNWISsites(siteNumbers = siteNumberAsheville))
 print(AshevilleMeta) 
 
 #I then use sitedata function to look at what data is available
-AshevilleSiteData<-whatNWISdata(siteNumber=siteNumberAsheville)
+AshevilleSiteData<-suppressMessages(whatNWISdata(siteNumber=siteNumberAsheville))
 
 ```
 
-Then I decide I want to create an easy data retrieval function for my chosen
-parameters based on my previous retreival.
 
 ```{r, echo=FALSE, warning=FALSE, results='hide'}
+#Then we decide we want to create an easy data retrieval function for my chosen parameters based on my previous retreival.
 
 WaterData.Function<-function(siteNo, pcode, scode){
 
-SiteData<-readNWISdata(
+SiteData<-suppressMessages(readNWISdata(
   siteNumbers = siteNo,
   parameterCd= pcode,
   statCd= scode,
   startDate= ymd('1900-01-01'),
   endDate= Sys.Date()
-)
+))
 
   CleanData<-SiteData%>% 
 select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
@@ -266,8 +265,11 @@ return(CleanData)
 }
 ```
 
-I run this function for Asheville's siteNo
+
 ```{r, echo=FALSE, warning=FALSE, results='hide', include=FALSE}
+
+# I run this function for Asheville's siteNo
+
 siteNoAsheville<-'03451500'
 
 siteNo<-siteNoAsheville
@@ -280,11 +282,11 @@ CleanedDataAsheville<-WaterData.Function(siteNo, pcode, scode)
 
 ```
 
-I then do the same for the Pigeon River Site and its site number
-**Pigeon River**
 
 ```{r, echo=FALSE, warning=FALSE, results='hide'}
 
+# I then do the same for the Pigeon River Site and its site number **Pigeon River**
+  
 siteNoPigeonRiver<-'03456500'
 
 siteNo<-siteNoPigeonRiver
@@ -296,8 +298,7 @@ CleanedDataPigeonRiver<-WaterData.Function(siteNo, pcode, scode)
 #View(CleanedDataPigeonRiver)
 ```
 
-
-## Seven-Day Time Series Analysis: Trend Patterns
+## Daily Time Series Analysis: Daily and Historical Trend Patterns
 
 ```{r Helene Precipitation event over 2024, echo=FALSE, warning=FALSE, results='hide'}
 
@@ -327,24 +328,13 @@ HeleneData_pg <- CleanedDataPigeonRiver %>%
 
 ```
 
-<span style="font-size:15px; font-weight:bold;">Research Question</span>
-
 <span style="font-size:20px; font-weight:bold;">How unusual was Helene?</span>
 
+First let's create separate layers from our data for 2024 and then Helene as an event within 2024 a 7 day span from 9/22/24 to 9/29/24.
 
-First let's create separate layers from our data for 2024 and
-then Helene as an event within 2024 a 7 day span from 9/22/24 to 9/29/24.
-**Investigating Helene**
+*Investigating Helene: Let's see how the week of Helene compares to the rest of 2024 within our parameters*
 
-*Then, let's see how the week of Helene compares to the rest of 2024 within our
-parameters*
-
-### Daily Precipitation Trend
-
-```{r Discharge event over 2024, warning=FALSE, echo=FALSE, fig.cap = "Total Daily Precipitation Trends (Inches) for 2024"}
-# Load necessary libraries
-library(ggplot2)
-library(patchwork)
+```{r figure1, warning=FALSE, echo=FALSE, fig.cap = "Daily Precipitation Trends (Inches) for 2024"}
 
 # Create individual plots with adjusted y-axis limits and larger text
 # 1. Sugar Grove Plot
@@ -381,10 +371,9 @@ plot_pg <- ggplot(Data2024_pg, aes(x = dateTime, y = `Total Daily Precipitation 
 combined_plot <- plot_sg / plot_ash / plot_pg + 
   plot_annotation(
     title = "Daily Precipitation Trends (Inches) for 2024",
-    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
     theme = theme(
-      plot.title = element_text(size = 20, face = "bold"),
-      plot.subtitle = element_text(size = 16)
+      plot.title = element_text(size = 16),
+      plot.subtitle = element_text(size = 12)
     )
   ) &
   theme(plot.margin = margin(10, 10, 10, 10))
@@ -393,9 +382,10 @@ combined_plot <- plot_sg / plot_ash / plot_pg +
 print(combined_plot)
 
 ```
-### Daily Discharge Trend
 
-```{r Helene Discharge event over 2024, echo=FALSE, warning=FALSE, fig.cap = "Daily Discharge Trends (cfs) for 2024"}
+This figure illustrates the comparison of daily precipitation trends (in inches) across Sugar Grove, Asheville, and Pigeon River for 2024. During the week of Hurricane Helene, we observed a peak of 5 to 6 inches in all three counties.
+
+```{r figure2, echo=FALSE, warning=FALSE, fig.cap = "Daily Discharge Trends (cfs) for 2024"}
 
 # Create individual plots with consistent formatting and vertical axis labels
 # 1. Sugar Grove Plot
@@ -441,9 +431,8 @@ plot_pg <- ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Discharge`)) +
 combined_plot <- plot_sg / plot_ash / plot_pg + 
   plot_annotation(
     title = "Daily Discharge Trends (cfs) for 2024",
-    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
     theme = theme(
-      plot.title = element_text(size = 20, face = "bold"),
+      plot.title = element_text(size = 16),
       plot.subtitle = element_text(size = 16)
     )
   ) &
@@ -454,9 +443,10 @@ print(combined_plot)
 
 ```
 
-### Daily Gage Height Trend
+As shown in Figure 1, this figure compares the daily discharge trends (in cubic feet) across Sugar Grove, Asheville, and Pigeon River for 2024. During the week of Hurricane Helene, we observed peak discharges of 4,000 cubic feet for Sugar Grove, 20,000 cubic feet for Asheville, and 60,000 cubic feet for Pigeon River.
 
-```{r Gage Height event over 2024, echo=FALSE, warning=FALSE, fig.cap = "Daily Gage Height Trends (cfs) for 2024"}
+
+```{r figure3, echo=FALSE, warning=FALSE, fig.cap = "Daily Gage Height Trends (cfs) for 2024"}
 
 # Create individual plots with consistent formatting and clear axis labels
 # 1. Sugar Grove Gage Height
@@ -502,10 +492,9 @@ plot_pg_gh <- ggplot(Data2024_pg, aes(x = dateTime, y = `Mean Gage Height`)) +
 combined_plot_gh <- plot_sg_gh / plot_ash_gh / plot_pg_gh + 
   plot_annotation(
     title = "Daily Gage Height Trends (ft) for 2024",
-    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
     theme = theme(
-      plot.title = element_text(size = 20, face = "bold"),
-      plot.subtitle = element_text(size = 16)
+      plot.title = element_text(size = 16),
+      plot.subtitle = element_text(size = 12)
     )
   ) &
   theme(plot.margin = margin(10, 10, 10, 10))
@@ -515,19 +504,15 @@ print(combined_plot_gh)
 
 ```
 
-Okay, so clearly Helene was the maximum event for these parameters for 2024.
+As shown in Figure 1 and 2, this figure compares the daily gage height trends (in feet) across Sugar Grove, Asheville, and Pigeon River for 2024. During the week of Hurricane Helene, we observed peak gage heights of 10 feet for Sugar Grove, 15 feet for Asheville, and 8 feet for Pigeon River. 
 
-<span style="font-size:15px;font-style:italic;">How do these maximums compare to all historical data we have access to?</span>
+Clearly, Helene was the most significant event for these parameters in 2024.
 
+<span style="font-size:20px; font-weight:bold;">How do these maximums compare to all historical data we have access to?</span>
 
-Let's zoom out on the same dates but compared with all historical data.
+Let's now zoom out to compare these dates with all historical data. This will help us understand how the 2024 data stands in the context of past events.
 
-### Historical Precipitation Trend
-
-
-```{r warning=FALSE, echo=FALSE}
-library(ggplot2)
-library(patchwork)
+```{r figure4, warning=FALSE, echo=FALSE, fig.cap = "Historical Daily Precipitation (Inches)"}
 
 # 1. Sugar Grove Historical Precipitation Plot
 SugarGroveDailyPrecipitationPlot <- ggplot(CleanedDataSugarGrove %>%
@@ -576,11 +561,10 @@ combined_precipitation_plot <- (SugarGroveDailyPrecipitationPlot +
   AshevilleDailyPrecipitationPlot + 
   PigeonRiverDailyPrecipitationPlot) +
   plot_annotation(
-    title = "Historical Total Daily Precipitation (Inches) (1954-2024)",
-    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    title = "Historical Daily Precipitation (Inches)",
     theme = theme(
-      plot.title = element_text(size = 18, face = "bold"),
-      plot.subtitle = element_text(size = 16)
+      plot.title = element_text(size = 16),
+      plot.subtitle = element_text(size = 12)
     )
   ) & 
   theme(plot.margin = margin(10, 10, 10, 10))
@@ -588,12 +572,12 @@ combined_precipitation_plot <- (SugarGroveDailyPrecipitationPlot +
 # Display the combined precipitation plot
 print(combined_precipitation_plot)
 
-
 ```
 
-### Historical Discharge Trend
+This plot illustrates the historical trend of daily precipitation (in inches) across Sugar Grove, Asheville, and Pigeon River. The highest peak, observed during Hurricane Helene, highlights the significant impact of this climate event on these counties.
 
-```{r warning=FALSE, echo=FALSE}
+
+```{r figure5, warning=FALSE, echo=FALSE, fig.cap = "Historical Daily Discharge (cfs)"}
 
 # 1. Sugar Grove Historical Discharge Plot
 SugarGroveDailyDischargeLinePlot <- ggplot(CleanedDataSugarGrove %>%
@@ -642,11 +626,9 @@ combined_discharge_plot <- (SugarGroveDailyDischargeLinePlot +
   AshevilleDailyDischargeLinePlot + 
   PigeonRiverDailyDischargeLinePlot) +
   plot_annotation(
-    title = "Historical Mean Daily Discharge (cfs) (1954-2024)",
-    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    title = "Historical Daily Discharge (cfs)",
     theme = theme(
-      plot.title = element_text(size = 20, face = "bold"),
-      plot.subtitle = element_text(size = 16)
+      plot.title = element_text(size = 16),
     )
   ) & 
   theme(plot.margin = margin(10, 10, 10, 10))
@@ -656,9 +638,9 @@ print(combined_discharge_plot)
 
 ```
 
-### Historical Gage Height Trend
+The plot displays the historical daily discharge, measured in cubic feet per second (cfs), for three locations: Sugar Grove, Asheville, and Pigeon River. Asheville exhibits the most significant discharge fluctuations, with peaks exceeding 60,000 cfs. In contrast, Sugar Grove shows a more stable pattern. However, both regions were significantly impacted on August 11th, 1940, by the decade's most deadly Atlantic storm, a Category 2 hurricane. Pigeon River generally has lower discharge and less pronounced peaks, but it experienced the highest discharge this year due to Hurricane Helene.
 
-```{r warning=FALSE, echo=FALSE}
+```{r figure6, warning=FALSE, echo=FALSE, fig.cap = "Historical Mean Daily Gage Height (ft)"}
 library(ggplot2)
 library(patchwork)
 
@@ -709,11 +691,9 @@ combined_gage_height_plot <- (SugarGroveDailyGageHeightPlot +
   AshevilleDailyGageHeightPlot + 
   PigeonRiverDailyGageHeightPlot) +
   plot_annotation(
-    title = "Historical Mean Daily Gage Height (ft) (1954-2024)",
-    subtitle = "Comparison across Sugar Grove, Asheville, and Pigeon River",
+    title = "Historical Mean Daily Gage Height (ft)",
     theme = theme(
-      plot.title = element_text(size = 20, face = "bold"),
-      plot.subtitle = element_text(size = 16)
+      plot.title = element_text(size = 16),
     )
   ) & 
   theme(plot.margin = margin(10, 10, 10, 10))
@@ -723,95 +703,84 @@ print(combined_gage_height_plot)
 
 ```
 
-These graphs reaveal that Helene was responsible for some
-outlier behavior, but it doesn't account for seasonality and other
-trends.
+The plot visualizes the historical mean daily gage height for three locations: Sugar Grove, Asheville, and Pigeon River. Asheville exhibits the most significant fluctuations, with peaks exceeding 15 feet, while Sugar Grove shows a more stable pattern. Pigeon River generally has lower gage heights and less pronounced peaks. Both Asheville and Pigeon River recorded their highest gage heights during Hurricane Helene.
+
+*These graphs reaveal that Helene was responsible for some outlier behavior, but it doesn't account for seasonality and other trends*
 
 ## Seven-Day Time Series Analysis: Seasonality Patterns
 
-Let's decompose to account for these trends
-### Sugar Grove Analysis: Decomposition Plot
+Let's decompose these trends to better understand them. It's worth noting that this analysis will focus on daily discharge data, as it spans from 1940 to the present. In contrast, precipitation and gage height data are only available from the late 1990s onward.
 
-```{r SUGAR GROVE, echo=FALSE}
+```{r figure7, echo=FALSE, warning = FALSE, fig.cap = "Decomposition of 7-Day Moving Average of Daily Discharge for Sugar Grove"}
 
-#Sugar Grove#
-# Convert dateTime to Date class and clean columns
+# Ensure the 'Mean Discharge' column is numeric and data is sorted
 CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
   mutate(
     dateTime = as.Date(dateTime),
-    mean_discharge = as.numeric(`Mean Discharge`),
-    `Mean Gage Height` = as.numeric(`Mean Gage Height`),
-    `Total Daily Precipitation (Inches)` = as.numeric(`Total Daily Precipitation (Inches)`)
-  )
+    `Mean Discharge` = as.numeric(`Mean Discharge`)
+  ) %>%
+  arrange(dateTime)
 
-# Fill missing Mean Discharge values using linear interpolation
-CleanedDataSugarGrove.clean <- CleanedDataSugarGrove %>%
+# Calculate the 7-day moving average
+CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
   mutate(
-    Mean.Discharge.clean = zoo::na.approx(mean_discharge, na.rm = FALSE)
-  )
-
-# Calculate the 7-day moving average, filling any remaining NAs
-CleanedDataSugarGrove.clean <- CleanedDataSugarGrove.clean %>%
-  arrange(dateTime) %>%
-  mutate(
-    Mean.Discharge.7DayAvg = rollapply(
-      Mean.Discharge.clean,
+    Discharge.7DayAvg = rollapply(
+      `Mean Discharge`,
       width = 7,
       FUN = mean,
       align = "right",
       fill = NA
     )
-  ) %>%
-  # Fill remaining NAs in the 7-day moving average
-  mutate(Mean.Discharge.7DayAvg = zoo::na.approx(Mean.Discharge.7DayAvg, na.rm = FALSE))
-
-# If any missing values exist, replace them with a default value or use interpolation
-CleanedDataSugarGrove.clean <- CleanedDataSugarGrove.clean %>%
-  mutate(
-    Mean.Discharge.7DayAvg = ifelse(
-      is.na(Mean.Discharge.7DayAvg),
-      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
-      Mean.Discharge.7DayAvg
-    )
   )
 
-# Generate a daily time series object for the 7-day moving average
-s_year <- year(first(CleanedDataSugarGrove.clean$dateTime))
-s_month <- month(first(CleanedDataSugarGrove.clean$dateTime))
-f_year <- year(last(CleanedDataSugarGrove.clean$dateTime))
-f_month <- month(last(CleanedDataSugarGrove.clean$dateTime))
+# Fill missing values in the 7-day moving average
+CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+  mutate(
+    Discharge.7DayAvg = zoo::na.approx(Discharge.7DayAvg, na.rm = FALSE)
+  )
 
-# Re-create the daily time series object
-CleanedDataSugarGrove.daily.7DayAvg.ts <- ts(
-  CleanedDataSugarGrove.clean$Mean.Discharge.7DayAvg,
+# Check for remaining missing values and suppress output with invisible()
+if (any(is.na(CleanedDataSugarGrove$Discharge.7DayAvg))) {
+  warning("Filling remaining missing values with the column mean.")
+  CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
+    mutate(
+      Discharge.7DayAvg = ifelse(
+        is.na(Discharge.7DayAvg),
+        invisible(mean(Discharge.7DayAvg, na.rm = TRUE)),
+        Discharge.7DayAvg
+      )
+    )
+}
+
+# Create a time series object
+s_year <- year(first(CleanedDataSugarGrove$dateTime))
+s_month <- month(first(CleanedDataSugarGrove$dateTime))
+f_year <- year(last(CleanedDataSugarGrove$dateTime))
+f_month <- month(last(CleanedDataSugarGrove$dateTime))
+
+
+SugarGroveDischarge7DayAvg.ts <- ts(
+  CleanedDataSugarGrove$Discharge.7DayAvg,
   start = c(s_year, s_month),
   end = c(f_year, f_month),
   frequency = 365
 )
 
-# Verify no missing values in the time series object
-sum(is.na(CleanedDataSugarGrove.daily.7DayAvg.ts))
-
-# Decompose the 7-day moving average time series
-CleanedDataSugarGrove.daily.7DayAvg.decomp <- stl(
-  CleanedDataSugarGrove.daily.7DayAvg.ts,
+# Perform decomposition
+SugarGroveDischarge7DayAvg.decomp <- stl(
+  SugarGroveDischarge7DayAvg.ts,
   s.window = "periodic"
 )
 
-# Plot the components of the 7-day moving average decomposition
+# Plot the decomposition
 plot(
-  CleanedDataSugarGrove.daily.7DayAvg.decomp,
-  main = "Decomposition of 7-Day Moving Average of Daily Discharge for Sugar Grove"
+  SugarGroveDischarge7DayAvg.decomp,
+  main = "Decomposition of 7-Day Moving Average Discharge for Sugar Grove"
 )
-
 
 ```
 
-### Asheville Analysis: Decomposition Plot
-
-```{r ASHEVILLE, echo=FALSE}
-
-#Asheville
+```{r figure8, echo=FALSE, warning=FALSE, fig.cap = "Decomposition of 7-Day Moving Average of Daily Discharge for Asheville"}
 
 # Convert dateTime to Date class and clean columns
 CleanedDataAsheville <- CleanedDataAsheville %>%
@@ -848,7 +817,7 @@ CleanedDataAsheville.clean <- CleanedDataAsheville.clean %>%
   mutate(
     Mean.Discharge.7DayAvg = ifelse(
       is.na(Mean.Discharge.7DayAvg),
-      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      invisible(mean(Mean.Discharge.7DayAvg, na.rm = TRUE)), 
       Mean.Discharge.7DayAvg
     )
   )
@@ -868,7 +837,7 @@ CleanedDataAsheville.daily.7DayAvg.ts <- ts(
 )
 
 # Verify no missing values in the time series object
-sum(is.na(CleanedDataAsheville.daily.7DayAvg.ts))
+invisible(sum(is.na(CleanedDataAsheville.daily.7DayAvg.ts)))
 
 # Decompose the 7-day moving average time series
 CleanedDataAsheville.daily.7DayAvg.decomp <- stl(
@@ -882,12 +851,9 @@ plot(
   main = "Decomposition of 7-Day Moving Average of Daily Discharge for Asheville"
 )
 
-
 ```
 
-### Pigeon River Analysis: Decomposition Plot
-
-```{r PIGEON RIVER, echo=FALSE}
+```{r figure9, echo=FALSE, warning=FALSE, fig.cap = "Decomposition of 7-Day Moving Average of Daily Discharge for Pigeon River"}
 
 #Pigeon River
 
@@ -926,7 +892,7 @@ CleanedDataPigeonRiver.clean <- CleanedDataPigeonRiver.clean %>%
   mutate(
     Mean.Discharge.7DayAvg = ifelse(
       is.na(Mean.Discharge.7DayAvg),
-      mean(Mean.Discharge.7DayAvg, na.rm = TRUE), # Replace NAs with column mean
+      invisible(mean(Mean.Discharge.7DayAvg, na.rm = TRUE)), 
       Mean.Discharge.7DayAvg
     )
   )
@@ -946,7 +912,7 @@ CleanedDataPigeonRiver.daily.7DayAvg.ts <- ts(
 )
 
 # Verify no missing values in the time series object
-sum(is.na(CleanedDataPigeonRiver.daily.7DayAvg.ts))
+invisible(sum(is.na(CleanedDataPigeonRiver.daily.7DayAvg.ts)))
 
 # Decompose the 7-day moving average time series
 CleanedDataPigeonRiver.daily.7DayAvg.decomp <- stl(
@@ -962,26 +928,15 @@ plot(
 
 ```
 
+The graphs reveal important patterns, highlighting 2024 as a potential statistical outlier. However, they do not quantify the extent to which Hurricane Helene deviates from historical norms. To assess this with statistical rigor, we aim to determine how unusual Helene was as an event.
 
-The graphs provide valuable insights, with some indicating 2024 as a statistical 
-outlier. However, they do not quantify precisely how much Hurricane Helene 
-deviates from historical norms. To evaluate this with statistical certainty,
-we aim to determine just how unusual Helene was as an event.
+To achieve this, we will use the Hazen Method to calculate the recurrence intervals for Hurricane Helene within the analyzed parameters. This method will help contextualize the storm’s magnitude and frequency relative to historical data.
 
-To achieve this, we will apply the: Hazen Method, to calculate the recurrence 
-intervals for Hurricane Helene within the analyzed parameters. 
-This approach will help contextualize the storm’s magnitude and frequency 
-compared to historical data.
+Our first step will be calculating recurrence intervals for 7-day precipitation events. Based on initial analysis, it is reasonable to begin by assuming that Hurricane Helene represents the 7-day averaged maximum for 2024.
 
-First we will calculate the recurrence intervals for 7-day precipitation events. 
-Based on our initial analysis, assuming Hurricane Helene represents the 7-day 
-averaged maximum for 2024 is a reasonable starting point.
+<span style="font-size:18px; font-weight:bold;">Helene Recurrence Intervals: Hazen Analysis</span>
 
-<span style="font-size:18px; font-weight:bold;">Helene Recurrence Intervals</span>
-
-### Sugar Grove: Hazen Precipitation
-
-```{r Sugar Grove Precip Hazen, warning=FALSE, echo = FALSE}
+```{r, warning=FALSE, echo = FALSE}
 
 # Process the data
 SugarGrovePrecip <- CleanedDataSugarGrove %>%
@@ -1006,16 +961,12 @@ SugarGrovePrecipHazen2024 <- SugarGrovePrecip %>% filter(Year == 2024)
 knitr::kable(SugarGrovePrecipHazen2024, 
              caption = "Sugar Grove Precipitation Hazen Values for 2024", 
              digits = 2,
-             label = "SugarGrovePrecipHazen",  # Add label to the table,
+             label = "table2",
              align = "c",
              col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
 ```
 
-The Hazen number of 18 indicates that the maximum 7-day average precipitation 
-event in 2024 was an 18-year event, meaning it had about a 20% chance of 
-occurring in any given year (Hazen interval: 18 years, probability: 20%).
-
-### Asheville: Hazen Precipitation
+The Hazen number of 18 indicates that the maximum 7-day average precipitation  event in 2024 was an 18-year event, meaning it had about a 20% chance of  occurring in any given year (Hazen interval: 18 years, probability: 20%).
 
 ```{r Asheville Precipitation Hazen, warning=FALSE, echo =FALSE}
 
@@ -1046,24 +997,18 @@ AshevillePrecipHazen2024 <- AshevillePrecip %>% filter(Year == 2024)
 knitr::kable(AshevillePrecipHazen2024, 
              caption = "Asheville Precipitation Hazen Values for 2024", 
              digits = 2,
-             label = "AshevillePrecipHazen",  # Add label to the table
+             label = "table3", 
              align = "c",
              col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
 
 
 ```
 
-The Hazen number reveals that the 7-day average discharge observed in Asheville
-in 2024 qualifies as a 54-year event. In other words, such an event is expected 
-to occur approximately once every 54 years, equating to a 2% probability of 
-happening in any given year.  (Hazen interval: 54 years, probability: 2%)
+The Hazen number reveals that the 7-day average discharge observed in Asheville in 2024 qualifies as a 54-year event. In other words, such an event is expected  to occur approximately once every 54 years, equating to a 2% probability of  happening in any given year. (Hazen interval: 54 years, probability: 2%)
 
 This provides a statistical metric to quantify the observed outliers. 
 
-Next, we will calculate the recurrence intervals for 2024 at our last 
-selected site.
-
-### Pigeon River: Hazen Precipitation
+Next, we will calculate the recurrence intervals for 2024 at our last selected site.
 
 ```{r Pigeon River Precip Hazen, warning=FALSE, echo=FALSE}
 PigeonRiverPrecip <- CleanedDataPigeonRiver %>% 
@@ -1091,33 +1036,27 @@ PigeonRiverPrecipHazen2024 <- PigeonRiverPrecip %>% filter(Year == 2024)
 knitr::kable(PigeonRiverPrecipHazen2024, 
              caption = "Pigeon River Precipitation Hazen Values for 2024", 
              digits = 2,
-             label = "PigeonRiverPrecipHazen",  # Add label to the table
+             label = "table4",  
              align = "c",
              col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
 
 ```
 
+At Pigeon River, Hurricane Helene was a 52-year event in terms of total precipitation. This indicates that Helene's precipitation was less unusual at  Sugar Grove than it was in Asheville or Pigeon River during the maximum 7-day event. (Hazen interval: 52 years, probability: ~2%)
 
-At Pigeon River, Hurricane Helene was a 52-year event in terms of total
-precipitation. This indicates that Helene's precipitation was less unusual at 
-Sugar Grove than it was in Asheville or Pigeon River during the
-maximum 7-day event. (Hazen interval: 52 years, probability: ~2%)
+Let's now automate this function for all the rest of parameters and run our sites.
 
-
-Let's now automate this function for all three parameters and run our sites.
-
-**Automated Precipitation**
 ```{r echo=FALSE}
 
 Hazen2024Precip.Function<-function(siteNo, pcode, scode){
 
-SiteData<-readNWISdata(
+SiteData<-suppressMessages(readNWISdata(
   siteNumbers = siteNo,
   parameterCd= pcode,
   statCd= scode,
   startDate= ymd('1900-01-01'),
   endDate= Sys.Date()
-)
+))
 
   CleanData<-SiteData%>% 
 select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
@@ -1155,18 +1094,17 @@ return(CleanDataFlood2024)
 ```
 
 
-**Automated Discharge**
 ```{r echo=FALSE}
 
 Hazen2024Discharge.Function<-function(siteNo, pcode, scode){
 
-SiteData<-readNWISdata(
+SiteData<-suppressMessages(readNWISdata(
   siteNumbers = siteNo,
   parameterCd= pcode,
   statCd= scode,
   startDate= ymd('1900-01-01'),
   endDate= Sys.Date()
-)
+))
 
   CleanData<-SiteData%>% 
 select(-ends_with("cd")) %>% #removing cd columns that indiciate provisional or offical data
@@ -1202,55 +1140,17 @@ return(CleanDataFlood2024)
 
 ```
 
-*And now we run our sites through our discharge function*
-
-```{r echo=FALSE}
-
-SugarGroveDischargeHazen2024 <- Hazen2024Discharge.Function(siteNumberSugarGrove, pcode, scode)
-
-AshevilleDischargeHazen2024 <- Hazen2024Discharge.Function(siteNumberAsheville, pcode, scode)
-
-PigeonRiverDischargeHazen2024 <- Hazen2024Discharge.Function(siteNoPigeonRiver, pcode, scode)
-
-# Print Sugar Grove discharge Hazen table with 2 decimal places
-knitr::kable(SugarGroveDischargeHazen2024, 
-             caption = "Sugar Grove Discharge Hazen Values for 2024", 
-             digits = 2,
-             label = "SugarGroveDischargeHazen",  # Table label
-             align = "c",
-             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
-
-# Print Asheville discharge Hazen table with 2 decimal places
-knitr::kable(AshevilleDischargeHazen2024, 
-             caption = "Asheville Discharge Hazen Values for 2024", 
-             digits = 2,
-             label = "AshevilleDischargeHazen",  # Table label
-             align = "c",
-             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
-
-# Print Pigeon River discharge Hazen table with 2 decimal places
-knitr::kable(PigeonRiverDischargeHazen2024, 
-             caption = "Pigeon River Discharge Hazen Values for 2024", 
-             digits = 2,
-             label = "PigeonRiverDischargeHazen",  # Table label
-             align = "c",
-             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  # Custom column names
-
-
-
-```
-
-*Now our function for Gage Height*
-
 ```{r echo=FALSE}
 Hazen2024GageHeight.Function<-function(siteNo, pcode, scode){
 
-SiteData<-readNWISdata(
-  siteNumbers = siteNo,
-  parameterCd= pcode,
-  statCd= scode,
-  startDate= ymd('1900-01-01'),
-  endDate= Sys.Date()
+SiteData <- suppressMessages(
+  readNWISdata(
+    siteNumbers = siteNo,
+    parameterCd = pcode,
+    statCd = scode,
+    startDate = ymd('1900-01-01'),
+    endDate = Sys.Date()
+  )
 )
 
   CleanData<-SiteData%>% 
@@ -1286,23 +1186,100 @@ CleanDataGageHeight2024 <- CleanDataGageHeight %>% filter(Year == 2024)
 
 return(CleanDataGageHeight2024)
 }
+```
 
-#testing function
 
-SugarGroveGageHeightHazen2024<-
-  Hazen2024GageHeight.Function(siteNumberSugarGrove, pcode, scode)
 
-AshevilleGageHeightHazen2024<-
-  Hazen2024GageHeight.Function(siteNumberAsheville, pcode, scode)
+```{r echo=FALSE}
 
-PigeonRiverGageHeightHazen2024<-
-  Hazen2024GageHeight.Function(siteNoPigeonRiver, pcode, scode)
+SugarGroveDischargeHazen2024 <- Hazen2024Discharge.Function(siteNumberSugarGrove, pcode, scode)
 
-SugarGroveGageHeightHazen2024
-AshevilleGageHeightHazen2024
-PigeonRiverGageHeightHazen2024
+AshevilleDischargeHazen2024 <- Hazen2024Discharge.Function(siteNumberAsheville, pcode, scode)
+
+PigeonRiverDischargeHazen2024 <- Hazen2024Discharge.Function(siteNoPigeonRiver, pcode, scode)
+
+# Print Sugar Grove discharge Hazen table with 2 decimal places
+knitr::kable(SugarGroveDischargeHazen2024, 
+             caption = "Sugar Grove Discharge Hazen Values for 2024", 
+             digits = 2,
+             label = "table5",  # Table label
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  
+```
+
+The table shows that for Sugar Grove in 2024, the maximum event had a Hazen value of 3.09. This indicates that the event had a return period of approximately 3.09 years, meaning an event of this magnitude or greater is expected to occur, on average, once every 3.09 years. In other words, the event was not particularly unusual or extreme for Sugar Grove.
+
+```{r echo=FALSE}
+knitr::kable(AshevilleDischargeHazen2024, 
+             caption = "Asheville Discharge Hazen Values for 2024", 
+             digits = 2,
+             label = "table6",  # Table label
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  
 
 ```
+
+The table shows that for Asheville in 2024, the maximum event had a Hazen value of 2.43. This indicates that the event had a return period of approximately 2.43 years, meaning an event of this magnitude or greater is expected to occur, on average, once every 2.43 years. In other words, the event was not particularly unusual or extreme for Asheville.
+
+
+```{r echo=FALSE}
+knitr::kable(PigeonRiverDischargeHazen2024, 
+             caption = "Pigeon River Discharge Hazen Values for 2024", 
+             digits = 2,
+             label = "table7",  # Table label
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value")) 
+
+```
+
+The table shows that for Pigeon River in 2024, the maximum event had a Hazen value of 47.33. This indicates that the event had a return period of approximately 47.33 years, meaning an event of this magnitude or greater is expected to occur, on average, once every 47.33 years. In other words, the event was particularly unusual or extreme for Pigeon River compared to Asheville and Sugar Grove.
+
+
+```{r echo=FALSE}
+
+# Calculate Hazen values for gage height
+SugarGroveGageHeightHazen2024 <- Hazen2024GageHeight.Function(siteNumberSugarGrove, pcode, scode)
+AshevilleGageHeightHazen2024 <- Hazen2024GageHeight.Function(siteNumberAsheville, pcode, scode)
+PigeonRiverGageHeightHazen2024 <- Hazen2024GageHeight.Function(siteNoPigeonRiver, pcode, scode)
+
+# Print Sugar Grove gage height Hazen table with 2 decimal places
+knitr::kable(SugarGroveGageHeightHazen2024, 
+             caption = "Sugar Grove Gage Height Hazen Values for 2024", 
+             digits = 2,
+             label = "table8",  
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value")) 
+```
+
+The table shows that for Sugar Grove in 2024, the maximum event had a Hazen value of 1.94. This indicates that the event had a return period of approximately 1.94 years, meaning an event of this magnitude or greater is expected to occur, on average, once every 1.94 years. In other words, the event was not particularly unusual or extreme for Pigeon River.
+
+
+```{r echo=FALSE}
+
+knitr::kable(AshevilleGageHeightHazen2024, 
+             caption = "Asheville Gage Height Hazen Values for 2024", 
+             digits = 2,
+             label = "table9",  
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  
+```
+
+The table shows that for Asheville in 2024, the maximum event had a Hazen value of 78. This indicates that the event had a return period of approximately 78 years, meaning an event of this magnitude or greater is expected to occur, on average, once every 78 years. In other words, the event was particularly unusual or extreme for Asheville.
+
+
+```{r echo=FALSE}
+
+knitr::kable(PigeonRiverGageHeightHazen2024, 
+             caption = "Pigeon River Gage Height Hazen Values for 2024", 
+             digits = 2,
+             label = "table10",  
+             align = "c",
+             col.names = c("Year", "Max Event", "Rank", "Fa Value", "Hazen Value"))  
+
+```
+
+The table shows that for Pigeon River in 2024, the maximum event had a Hazen value of 20. This indicates that the event had a return period of approximately 20 years, meaning an event of this magnitude or greater is expected to occur, on average, once every 20 years. In other words, the event was particularly unusual or extreme for Pigeon River
+
 
 **Map of Gage Sites**
 
@@ -1336,7 +1313,7 @@ gage_height_color <- "orange"
 
 # Define a scaling factor for marker sizes
 base_size <- 3  # Base size for markers
-scaling_factor <- 10  # Scaling factor for marker sizes
+scaling_factor <- 12  # Scaling factor for marker sizes
 
 # Create a custom function to add size legend
 addLegendSize <- function(map, title, sizes, values, colors, position = "bottomright") {
@@ -1361,7 +1338,7 @@ addLegendSize <- function(map, title, sizes, values, colors, position = "bottomr
 }
 
 # Predefined Hazen value examples for the size legend
-size_values <- c(10, 50, 100, 200)  # Example Hazen values
+size_values <- c(5, 25, 50, 100)  # Example Hazen values
 size_sizes <- base_size + size_values / scaling_factor  # Corresponding marker sizes
 
 # Create the Leaflet Map
@@ -1439,10 +1416,8 @@ leaflet(hazen_data) %>%
 ```
 
 What we found was very interesting! 
-Now that we have an easy function, we will download more sites in Western North
-Carolina that have precipitation, discharge, and gage height available. This will
-be a helpful visual in understanding the specific impacts in Sugar Grove, Asheville, 
-and Pigeon River compared to the rest of the state. 
+
+Now that we have an easy function, we will download more sites in Western North Carolina that have precipitation, discharge, and gage height available. This will be a helpful visual in understanding the specific impacts of Helene in Sugar Grove, Asheville,and Pigeon River compared to the rest of the state. 
 
 
 ```{r message=FALSE, echo=FALSE}
@@ -1487,15 +1462,9 @@ TarRiverPrecipHazen2024<-Hazen2024Precip.Function(TarRiverSiteNo , pcode, scode)
 ```
 
 
-After selecting the additional sites, they were Incorporated into an array to 
-enhance the map. 
-The map now displays the magnitude of each Hazen interval, 
-representing how unusual the 7-day Hurricane Helene event was at each site. 
-The size of the dot corresponds to the rarity of the event:
-larger dots indicate more unusual 7-day averages for the given parameter. 
-Although the number of sites with all three parameters is limited, 
-further analysis could enable the creation of increasingly granular data for 
-each site, improving the resolution of our insights.
+After selecting the additional sites, they were incorporated into an array to  enhance the map. 
+
+The map now displays the magnitude of each Hazen interval, representing how unusual the 7-day Hurricane Helene event was at each site. The size of the dot corresponds to the rarity of the event: larger dots indicate more unusual 7-day averages for the given parameter. Although the number of sites with all three parameters is limited, further analysis could enable the creation of increasingly granular data for  each site, improving the resolution of our insights.
 
 
 ```{r echo=FALSE}
@@ -1541,7 +1510,7 @@ gage_height_color <- "orange"
 
 # Define a scaling factor for marker sizes
 base_size <- 3  # Base size for markers
-scaling_factor <- 10  # Scaling factor for marker sizes
+scaling_factor <- 12  # Scaling factor for marker sizes
 
 # Create a custom function to add size legend
 addLegendSize <- function(map, title, sizes, values, colors, position = "bottomright") {
@@ -1566,7 +1535,7 @@ addLegendSize <- function(map, title, sizes, values, colors, position = "bottomr
 }
 
 # Predefined Hazen value examples for the size legend
-size_values <- c(10, 50, 100, 200)  # Example Hazen values
+size_values <- c(5, 25, 50, 100)  # Example Hazen values
 size_sizes <- base_size + size_values / scaling_factor  # Corresponding marker sizes
 
 # Create the Leaflet Map
@@ -1641,24 +1610,20 @@ leaflet(Eight_site_hazen_data) %>%
 
 
 ```
+
 **Why this analysis matters**
 
-This map can be understood as a representation of relative intensity compared
-to historical norms. While the size of the dots does not directly indicate the
-absolute intensity of precipitation or flooding, it reflects the magnitude of 
-these parameters relative to each area's historical averages.
-Flood management infrastructure is typically designed to handle 
-50-year or 75-year storms, making the relative magnitude to historical norms 
-critical for assessing how well the infrastructure performed under 
-Hurricane Helene's conditions—or how severely it was overwhelmed.
-Although the number of sites with all three parameters is limited,
-the analysis reveals that Helene's relative intensity to historical 
-norms was greatest along a path through central Western North Carolina, 
-particularly over Asheville. From this, we can reasonably infer that Asheville’s 
-infrastructure experienced greater inundation compared to areas in northeastern 
-North Carolina or other sites included in this study.
+This map serves as a representation of relative intensity compared to historical norms. While the size of the dots does not directly indicate the absolute intensity of precipitation or flooding, it reflects the magnitude of these parameters relative to each area's historical averages.
+
+Flood management infrastructure is typically designed to handle storms with a return period of 50 or 75 years. Therefore, understanding the relative magnitude compared to historical norms is crucial for assessing how well the infrastructure performed under the conditions of Hurricane Helene—or how severely it was overwhelmed.
+
+Although the number of sites with all three parameters is limited, the analysis reveals that Helene's relative intensity to historical norms was greatest along a path through central Western North Carolina, particularly over Asheville. Based on this, we can reasonably infer that Asheville's infrastructure faced greater inundation compared to areas in northeastern North Carolina or other sites included in this study.
 
 ## Summary and Conclusions
+
+The analysis of Hurricane Helene in 2024 reveals it was a significant event across multiple parameters, particularly precipitation, discharge, and gage height. Comparing daily trends in precipitation and discharge across Sugar Grove, Asheville, and Pigeon River, Helene caused peak values of up to 6 inches of rainfall, 60,000 cfs of discharge, and 15 feet of gage height in Asheville. When we extended this analysis to historical data, we found that Helene's precipitation and gage height were exceptionally high, marking a 52-78 year event at various sites. In contrast, the discharge levels were less unusual for Sugar Grove and Asheville, with Hazen values indicating these events were expected every 2-3 years. This suggests that while Helene was significant, particularly in precipitation and gage height, the discharge levels were relatively typical for these regions.
+
+To further contextualize the significance of Helene, we applied the Hazen Method to calculate recurrence intervals, revealing that the storm was a statistical outlier in terms of precipitation for Pigeon River and Asheville, but more typical in Sugar Grove. The Hazen values highlighted the extreme nature of Helene's impact, particularly in Asheville, where the maximum precipitation event in 2024 was a 54-year occurrence. A visual map of Hazen values reinforced these findings, showing that the storm's relative intensity was greatest in central Western North Carolina, especially Asheville, suggesting that the region's infrastructure likely faced more significant challenges in managing the storm's impacts compared to other areas in the study. This analysis provides valuable insights into the magnitude of the event and its implications for flood management and infrastructure in the region.
 
 ## References
 
@@ -1669,4 +1634,7 @@ Hurricane Helene DNA." https://www.osbm.nc.gov/hurricane-helene-dna/open
 Please Note: 
 Portions of code created in cooperation with "R Wizard" AI on OpenAI's
 ChatGPT platform. Limited prompts available upon request.
+
+
+
 
