@@ -739,7 +739,7 @@ CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
     Discharge.7DayAvg = zoo::na.approx(Discharge.7DayAvg, na.rm = FALSE)
   )
 
-# Check for remaining missing values
+# Check for remaining missing values and suppress output with invisible()
 if (any(is.na(CleanedDataSugarGrove$Discharge.7DayAvg))) {
   warning("Filling remaining missing values with the column mean.")
   CleanedDataSugarGrove <- CleanedDataSugarGrove %>%
@@ -757,6 +757,7 @@ s_year <- year(first(CleanedDataSugarGrove$dateTime))
 s_month <- month(first(CleanedDataSugarGrove$dateTime))
 f_year <- year(last(CleanedDataSugarGrove$dateTime))
 f_month <- month(last(CleanedDataSugarGrove$dateTime))
+
 
 SugarGroveDischarge7DayAvg.ts <- ts(
   CleanedDataSugarGrove$Discharge.7DayAvg,
@@ -780,9 +781,6 @@ plot(
 ```
 
 ```{r figure8, echo=FALSE, warning=FALSE, fig.cap = "Decomposition of 7-Day Moving Average of Daily Discharge for Asheville"}
-
-# Suppress output of any calculations
-invisible(any(is.na(CleanedDataAsheville$Discharge.7DayAvg)))
 
 # Convert dateTime to Date class and clean columns
 CleanedDataAsheville <- CleanedDataAsheville %>%
@@ -839,7 +837,7 @@ CleanedDataAsheville.daily.7DayAvg.ts <- ts(
 )
 
 # Verify no missing values in the time series object
-sum(is.na(CleanedDataAsheville.daily.7DayAvg.ts))
+invisible(sum(is.na(CleanedDataAsheville.daily.7DayAvg.ts)))
 
 # Decompose the 7-day moving average time series
 CleanedDataAsheville.daily.7DayAvg.decomp <- stl(
@@ -914,7 +912,7 @@ CleanedDataPigeonRiver.daily.7DayAvg.ts <- ts(
 )
 
 # Verify no missing values in the time series object
-sum(is.na(CleanedDataPigeonRiver.daily.7DayAvg.ts))
+invisible(sum(is.na(CleanedDataPigeonRiver.daily.7DayAvg.ts)))
 
 # Decompose the 7-day moving average time series
 CleanedDataPigeonRiver.daily.7DayAvg.decomp <- stl(
